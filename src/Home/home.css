@@ -1,0 +1,358 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    overflow-x: hidden; 
+}
+
+.main {
+    display: flex;
+    flex-direction: column; 
+    min-height: 100vh;
+}
+
+main {
+    flex: 1; 
+}
+  
+  header {
+    background-color: white;
+    color: #4CAF50;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: sticky;
+    z-index: 1000; 
+  }
+  
+  header .logo {
+    font-size: 24px;
+    font-weight: bold;
+    margin-right: 140px;
+  }
+  
+  header nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 20px;
+    z-index: 1000;
+  }
+  
+  header nav ul li {
+    display: inline;
+    margin: 0 20px;
+  }
+  
+  header nav ul li a {
+    text-decoration: none;
+    font-size: 18px;
+    color: black;
+    padding-bottom: 3px;
+    cursor: pointer;
+  }
+  
+  header nav ul li a:hover {
+    border-bottom: 1px solid #4CAF50;
+  }
+  
+  header nav ul li a i {
+    padding-right: 5px;
+  }
+  .menu-toggle {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+  }
+  
+  .slide-menu {
+    position: fixed;
+    top: 50px;
+    left: -175px; /* Initially hidden */
+    width: 75%;
+    height: 100%;
+    background-color: white;
+    color: #4CAF50;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    transition: left 0.3s ease-in-out;
+    z-index: 999; /* Ensure menu is above other content */
+    border-right: 2px solid #4CAF50;
+  }
+  
+  .slide-menu ul {
+    list-style-type: none;
+    padding: 0;
+    margin-top: 0px;
+    width: 100%;
+  }
+  
+  .slide-menu ul li {
+    margin: 30px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+  }
+  
+  
+  .slide-menu ul li a {
+    color: black;
+    text-decoration: none;
+    font-size: 16px;
+    margin: 20px 0;
+    padding-bottom: 3px;
+  }
+  
+  .slide-menu ul li a:hover {
+    border-bottom: 1px solid #4CAF50;
+  }
+  
+  .slide-menu ul li a i {
+    padding-right: 5px;
+  }
+  
+  .slide-menu.active {
+    left: 0; /* Slide in from the left */
+  }
+  .slide-menu.open {
+    display: block;
+  }
+  .hero {
+    text-align: center;
+    padding: 50px 20px;
+    background-color: #f4f4f4;
+  }
+  
+  .hero h1 {
+    font-size: 36px;
+    margin-bottom: 10px;
+  }
+  
+  .hero p {
+    font-size: 18px;
+    margin-bottom: 20px;
+  }
+  
+  .hero button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .search-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .search-form input {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    width: 300px;
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+  }
+  
+  .search-form input:focus {
+    border: 1px solid #ddd; /* Ensure border remains the same as unfocused state */
+    outline: none; /* Remove the default outline */
+  }
+  
+  .search-form button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: white;
+    color: #4CAF50;
+    border: 1px solid #4CAF50;
+    cursor: pointer;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+  }
+  .search-form button:hover {
+    background-color: #4CAF50;
+    color: white;
+  }
+  .search-form button i {
+    padding-right: 5px;
+  }
+  
+  .products {
+    padding: 20px;
+  }
+  
+  .products h2 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .product-list {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  
+  .product-item {
+    border: 1px solid #ddd;
+    padding: 20px;
+    text-align: center;
+    width: 200px;
+  }
+  .product-item:hover {
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3); /* Shadow effect on hover */
+    border-color: #388E3C; /* Slightly darker border on hover */
+  }
+  
+  .product-item img {
+    height: 150px;
+    width: 150px;
+  }
+  .product-item a {
+    text-decoration: none;
+    color: black;
+  }
+  
+  .product-item button {
+    font-size: 16px;
+    background-color: white;
+    color: #4CAF50;
+    border: 1px solid #4CAF50;
+    cursor: pointer;
+    padding: 7px;
+    border-radius: 5px;
+  }
+  
+  .product-item button:hover {
+    background-color: #4CAF50;
+    color: white;
+  }
+  
+  .product-item button i {
+    padding-right: 3px;
+  }
+  footer {
+    background-color: #4CAF50;
+    color: white;
+    text-align: center;
+    padding: 20px;
+    width: 100%;
+
+  }
+  
+  footer p {
+    margin: 0;
+    font-size: 14px;
+  }
+  
+  .menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: green;
+    font-size: 24px;
+    cursor: pointer;
+  }
+  @media (max-width: 768px) {
+    .main-nav {
+        display: none; /* Hide main navigation */
+    }
+  
+    .menu-toggle {
+        display: block; /* Show menu toggle button */
+    }
+    .menu-toggle:hover {
+        border: 1px solid #4CAF50;
+        border-radius: 8px;
+        background-color: #4CAF50;
+        color: white;
+    }
+  
+    .hero h1 {
+        font-size: 28px;
+    }
+  
+    .hero p {
+        font-size: 16px;
+    }
+  
+    .product-item {
+        width: 45%;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .hero h1 {
+        font-size: 24px;
+    }
+  
+    .hero p {
+        font-size: 14px;
+    }
+  
+    .hero button {
+        padding: 8px 16px;
+        font-size: 14px;
+    }
+  
+    .product-item {
+        width: 100%;
+    }
+  
+    footer {
+        padding: 15px;
+    }
+  
+    footer p {
+        font-size: 12px;
+    }
+    .search-form input {
+      font-size: 14px;
+      padding: 8px;
+    }
+    .search-form button .search-text {
+      display: none;
+    }
+  }
+/* alert.css */
+.alert {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: #4CAF50; 
+  color: white; 
+  padding: 15px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000; 
+  animation: slide-in 0.3s forwards; 
+}
+
+.close-alert {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+@keyframes slide-in {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}

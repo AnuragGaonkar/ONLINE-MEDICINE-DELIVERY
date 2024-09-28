@@ -1,0 +1,16 @@
+{
+    "name": "Dolo650",
+    "description": "Dolo650 is a pain reliever and fever reducer. It is used to treat mild to moderate pain such as headaches, toothaches, and muscle aches. It also helps reduce fever.",
+    "uses": [
+      {
+        "symptom": "headache",
+        "details": "Effective for mild to moderate headaches."
+      },
+      {
+        "symptom": "body pain",
+        "details": "Helps relieve body aches and muscle pains."
+      }
+    ],
+    "dosage": "Take 1-2 tablets every 6 hours as needed. Do not exceed 8 tablets in 24 hours."
+  }
+  
