@@ -4,7 +4,7 @@
   right: 20px;
   width: 60px;
   height: 60px;
-  border: 2px solid #007bff;
+  border: 2px solid #269f10;
   border-radius: 50%;
   display: flex;
   justify-content: center;
@@ -70,7 +70,7 @@
 }
 
 .chatbot-header {
-  background-color: #007bff; /* Same as icon color */
+  background-color: #269f10; /* Same as icon color */
   color: white; /* Text color */
   padding: 10px; /* Padding inside header */
   display: flex; /* Flexbox for alignment */
@@ -110,7 +110,7 @@
 
 .chatbot-input button {
   margin-left: 10px; /* Space between input and button */
-  background-color: #007bff; /* Same as header color */
+  background-color: #269f10; /* Same as header color */
   color: white; /* Button text color */
   border: none; /* No border */
   padding: 10px 15px; /* Padding for button */

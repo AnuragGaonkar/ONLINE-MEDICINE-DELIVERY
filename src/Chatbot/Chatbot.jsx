@@ -3,10 +3,11 @@ import chatbot from './chatbot.png';
 import './Chatbot.css';
 
 const Chatbot = () => {
+  // Define state variables
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isNotificationVisible, setIsNotificationVisible] = useState(true);
   const [messages, setMessages] = useState([{ text: 'Hello! How can I help you today?', from: 'bot' }]);
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState(''); // Define inputValue state
 
   const handleInputChange = (e) => {
     setInputValue(e.target.value);
@@ -21,26 +22,42 @@ const Chatbot = () => {
 
   const handleSendMessage = async () => {
     if (inputValue.trim()) {
-        const userMessage = inputValue;
-        setMessages((prevMessages) => [...prevMessages, { text: userMessage, from: 'user' }]);
-        setInputValue('');
+      const userMessage = inputValue;
+      setMessages((prevMessages) => [...prevMessages, { text: userMessage, from: 'user' }]);
+      setInputValue('');
 
-        // Call the Python chatbot API
+      try {
         const response = await fetch('http://127.0.0.1:5000/chat', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ message: userMessage }),
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ message: userMessage }),
         });
 
-        const data = await response.json();
-        const botResponse = data.response;
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
 
+        const data = await response.json();
+
+        if (data.error) {
+          throw new Error(data.error);
+        }
+
+        const botResponse = data.message;
+        const matchingSubstitutes = data.substitutes || []; // Adjusted for substitutes
+
+        // Add bot response and matching substitutes to the messages
         setMessages((prevMessages) => [
-            ...prevMessages,
-            { text: botResponse, from: 'bot' },
+          ...prevMessages,
+          { text: botResponse, from: 'bot' },
+          ...matchingSubstitutes.map(med => ({ text: `Medicine: ${med}`, from: 'bot' })), // Adjusted for substitutes
         ]);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        setMessages((prevMessages) => [...prevMessages, { text: "An error occurred while fetching data. Please try again.", from: 'bot' }]);
+      }
     }
   };
 
