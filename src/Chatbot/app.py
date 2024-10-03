@@ -1,115 +1,81 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from flask_pymongo import PyMongo
-import pandas as pd
 import nltk
-import os
-import logging
-
-# Setup logging
-logging.basicConfig(level=logging.DEBUG)
-logger = logging.getLogger(__name__)
+import re
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})  # Adjust as needed
+CORS(app)
 
 # MongoDB configuration
-app.config["MONGO_URI"] = "mongodb://localhost:27017/medicineDB"
+app.config["MONGO_URI"] = "mongodb://localhost:27017/medicineDB"  # Adjust your MongoDB URI
 mongo = PyMongo(app)
 
 # Tokenization function
 def tokenize(text):
-    return nltk.word_tokenize(text.lower().replace(" ", ""))  # Convert to lowercase and remove spaces
+    words = nltk.word_tokenize(text.lower())
+    words = [word for word in words if word.isalnum()]
+    return words
 
-# Define possible keywords
-KEYWORDS = [
-    'painrelief', 'feverreduction', 'antiemetic', 'antidiarrheal',
-    'antitussive', 'expectorant', 'decongestant', 'antihistamine',
-    'antiseptic', 'analgesic', 'sedative', 'hypnotic', 'anxiolytic',
-    'antidepressant', 'antibiotic', 'antipyretic', 'antifungal',
-    'antiviral', 'antiinflammatory', 'bronchodilator', 
-    'cardiovascularsupport', 'gastrointestinalrelief',
-    'neurologicalsupport', 'respiratorysupport', 'immunomodulator', 'headache'
-]
+# Function to find relevant medicines
+def find_medicines(symptoms):
+    medicines = mongo.db.medicines.find()
+    medicine_scores = []
 
-def find_matching_substitutes(tokens):
-    matching_substitutes = []
-    for token in tokens:
-        if token in KEYWORDS:
-            # Retrieve medicines matching the token
-            medicines = mongo.db.medicines.find({
-                "$or": [
-                    {"use0": token},
-                    {"use1": token},
-                    {"use2": token},
-                    {"use3": token},
-                    {"use4": token}
-                ]
+    for medicine in medicines:
+        score = 0
+        # Check for matching symptoms in uses
+        for i in range(5):  # Check up to use0 to use4
+            use_key = f'use{i}'
+            if medicine[use_key] and medicine[use_key] in symptoms:
+                score += 1
+
+        # Append medicines with a score greater than 0
+        if score > 0:
+            medicine_scores.append({
+                'name': medicine['name'],
+                'description': medicine['description'],
+                'dosage': medicine['dosage'],
+                'score': score
             })
-            for medicine in medicines:
-                # Collect substitutes from substitute0 to substitute4
-                substitutes = [
-                    medicine.get('substitute0'),
-                    medicine.get('substitute1'),
-                    medicine.get('substitute2'),
-                    medicine.get('substitute3'),
-                    medicine.get('substitute4')
-                ]
-                # Filter out None values
-                substitutes = [sub for sub in substitutes if sub]
-                matching_substitutes.extend(substitutes)
-    return matching_substitutes
 
-@app.route('/', methods=['GET'])
-def home():
-    return "Flask server is running.", 200
+    # Sort by score in descending order and return top 5
+    medicine_scores.sort(key=lambda x: x['score'], reverse=True)
+    return medicine_scores[:5]
 
-@app.route('/load-data', methods=['POST'])
-def load_data():
-    try:
-        csv_path = os.path.join(os.path.dirname(__file__), 'medicine_dataset.csv')
-        if not os.path.exists(csv_path):
-            logger.error("medicine_dataset.csv not found.")
-            return jsonify({"error": "medicine_dataset.csv not found."}), 400
-        df = pd.read_csv(csv_path)
-        data = df.to_dict(orient='records')
-        mongo.db.medicines.insert_many(data)
-        logger.info("Data loaded successfully.")
-        return jsonify({"message": "Data loaded successfully!"}), 200
-    except Exception as e:
-        logger.error(f"Error loading data: {str(e)}")
-        return jsonify({"error": str(e)}), 500
+# Function to handle default responses for common greetings or general queries
+def get_default_response(message):
+    greetings = ['hello', 'hi', 'hey', 'howdy', 'greetings']
+    # Check if the message is a greeting
+    if any(greeting in message.lower() for greeting in greetings):
+        return "Hello! How can I assist you today?"
+    return None  # No default response, continue to find medicines
 
 @app.route('/chat', methods=['POST'])
 def chat():
-    try:
-        data = request.get_json()
-        user_message = data.get('message', '')
-        
-        # Tokenize the user's message
-        tokens = tokenize(user_message)
-        
-        # Find matching substitutes based on keywords
-        matching_substitutes = find_matching_substitutes(tokens)
-        
-        matching_substitutes = matching_substitutes[:5]
+    user_message = request.json.get('message')
 
-        # Prepare the response
-        if matching_substitutes:
-            response_message = {
-                "message": "We found the following medicines that can help you:",
-                "substitutes": matching_substitutes
-            }
-        else:
-            response_message = {
-                "message": "I'm sorry, I couldn't find any medicines for your symptoms."
-            }
+    # Check for a default response first
+    default_response = get_default_response(user_message)
+    if default_response:
+        return jsonify({'message': default_response, 'medicines': []})
 
-        return jsonify(response_message), 200
-    except Exception as e:
-        logger.error(f"Error in /chat endpoint: {str(e)}")
-        return jsonify({"error": str(e)}), 500
+    # Tokenize user message to extract symptoms
+    tokens = tokenize(user_message)
+    medicines = find_medicines(tokens)
+
+    if medicines:
+        response = {
+            'message': "Here are the recommended medicines for your symptoms:",
+            'medicines': medicines
+        }
+    else:
+        response = {
+            'message': "I'm sorry, I couldn't find any medicines for your symptoms.",
+            'medicines': []
+        }
+
+    return jsonify(response)
 
 if __name__ == '__main__':
-    nltk.download('punkt')  # Ensure 'punkt' is downloaded before running
     app.run(debug=True)

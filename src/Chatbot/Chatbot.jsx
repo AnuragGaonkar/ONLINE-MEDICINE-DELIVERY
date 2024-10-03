@@ -8,6 +8,7 @@ const Chatbot = () => {
   const [messages, setMessages] = useState([{ text: 'Hello! How can I help you today?', from: 'bot' }]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isThinking, setIsThinking] = useState(false); // State to show thinking animation
 
   const handleInputChange = (e) => {
     setInputValue(e.target.value);
@@ -26,40 +27,41 @@ const Chatbot = () => {
       setMessages((prevMessages) => [...prevMessages, { text: userMessage, from: 'user' }]);
       setInputValue('');
       setIsLoading(true); // Set loading state
-  
-      try {
-        const response = await fetch('http://127.0.0.1:5000/chat', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ message: userMessage }),
-        });
-  
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+      setIsThinking(true); // Set thinking state
+
+      // Simulate a delay for the bot response
+      setTimeout(async () => {
+        try {
+          const response = await fetch('http://127.0.0.1:5000/chat', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ message: userMessage }),
+          });
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
+          const data = await response.json();
+          const botResponse = data.message; // Get the response message from backend
+          const medicines = data.medicines || []; // Medicines are returned as an array
+
+          // Adding the bot response to messages
+          setMessages((prevMessages) => [
+            ...prevMessages,
+            { text: botResponse, from: 'bot' },
+            ...medicines.map(med => ({ text: `Medicine: ${med.name} - ${med.description} - Dosage: ${med.dosage}`, from: 'bot' })),
+          ]);
+        } catch (error) {
+          console.error('Error fetching data:', error);
+          setMessages((prevMessages) => [...prevMessages, { text: "An error occurred while fetching data. Please try again.", from: 'bot' }]);
+        } finally {
+          setIsLoading(false); // Reset loading state
+          setIsThinking(false); // Reset thinking state after showing response
         }
-  
-        const data = await response.json();
-  
-        if (data.error) {
-          throw new Error(data.error);
-        }
-  
-        const botResponse = data.message;
-        const matchingSubstitutes = data.substitutes || [];
-  
-        setMessages((prevMessages) => [
-          ...prevMessages,
-          { text: botResponse, from: 'bot' },
-          ...matchingSubstitutes.map(med => ({ text: `Medicine: ${med}`, from: 'bot' })),
-        ]);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-        setMessages((prevMessages) => [...prevMessages, { text: "An error occurred while fetching data. Please try again.", from: 'bot' }]);
-      } finally {
-        setIsLoading(false); // Reset loading state
-      }
+      }, 1500); // Simulate a 2-second delay before processing the bot's response
     }
   };
 
@@ -83,11 +85,11 @@ const Chatbot = () => {
           </div>
           <div className="chatbot-messages">
             {messages.map((msg, index) => (
-              <p key={index} className={msg.from}>
-                {msg.text}
-              </p>
+              <div key={index} className={`message ${msg.from}`}>
+                <p className={msg.from === 'bot' ? 'bot-response' : 'user-response'}>{msg.text}</p>
+              </div>
             ))}
-            {isLoading && <p className="loading-message">Finding medicines...</p>}
+            {isThinking && <p className="thinking-message">Bot is typing<span className="dots">...</span></p>} {/* Typing animation */}
           </div>
           <div className="chatbot-input">
             <input 

@@ -1,0 +1,3532 @@
+[
+  {
+    "name": "Dolo650",
+    "description": "Dolo650 is used to treat mild pain and fever.",
+    "use0": "headache",
+    "use1": "fever",
+    "use2": "body pain",
+    "use3": "cold",
+    "use4": "muscle pain",
+    "dosage": "Take 1-2 tablets every 6 hours."
+  },
+  {
+    "name": "Paracetamol",
+    "description": "Paracetamol is a common pain reliever and fever reducer.",
+    "use0": "fever",
+    "use1": "headache",
+    "use2": "toothache",
+    "use3": "back pain",
+    "use4": "joint pain",
+    "dosage": "Take 1-2 tablets every 4-6 hours as needed."
+  },
+  {
+    "name": "Aspirin",
+    "description": "Aspirin is used to reduce fever and relieve mild to moderate pain.",
+    "use0": "fever",
+    "use1": "migraine",
+    "use2": "headache",
+    "use3": "inflammation",
+    "use4": "pain",
+    "dosage": "Take 1 tablet every 4-6 hours."
+  },
+  {
+    "name": "Ibuprofen",
+    "description": "Ibuprofen is a nonsteroidal anti-inflammatory drug (NSAID).",
+    "use0": "pain",
+    "use1": "inflammation",
+    "use2": "fever",
+    "use3": "headache",
+    "use4": "muscle soreness",
+    "dosage": "Take 1-2 tablets every 6-8 hours."
+  },
+  {
+    "name": "Amoxicillin",
+    "description": "Amoxicillin is a penicillin antibiotic used to treat various infections.",
+    "use0": "infection",
+    "use1": "ear infection",
+    "use2": "throat infection",
+    "use3": "sinus infection",
+    "use4": "urinary tract infection",
+    "dosage": "Take 1 capsule every 8 hours."
+  },
+  {
+    "name": "Cetirizine",
+    "description": "Cetirizine is an antihistamine used to relieve allergy symptoms.",
+    "use0": "allergy",
+    "use1": "hay fever",
+    "use2": "itching",
+    "use3": "sneezing",
+    "use4": "runny nose",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Metformin",
+    "description": "Metformin is used to control blood sugar levels in type 2 diabetes.",
+    "use0": "diabetes",
+    "use1": "high blood sugar",
+    "use2": "insulin resistance",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet with meals."
+  },
+  {
+    "name": "Simvastatin",
+    "description": "Simvastatin is used to lower cholesterol levels.",
+    "use0": "high cholesterol",
+    "use1": "heart disease",
+    "use2": "stroke prevention",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily in the evening."
+  },
+  {
+    "name": "Lisinopril",
+    "description": "Lisinopril is used to treat high blood pressure and heart failure.",
+    "use0": "hypertension",
+    "use1": "heart failure",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Omeprazole",
+    "description": "Omeprazole is used to treat gastroesophageal reflux disease (GERD).",
+    "use0": "GERD",
+    "use1": "stomach ulcers",
+    "use2": "heartburn",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily before meals."
+  },
+  {
+    "name": "Albuterol",
+    "description": "Albuterol is a bronchodilator used to relieve asthma symptoms.",
+    "use0": "asthma",
+    "use1": "shortness of breath",
+    "use2": "wheezing",
+    "use3": "",
+    "use4": "",
+    "dosage": "Inhale 2 puffs every 4-6 hours as needed."
+  },
+  {
+    "name": "Levothyroxine",
+    "description": "Levothyroxine is used to treat hypothyroidism.",
+    "use0": "hypothyroidism",
+    "use1": "thyroid disorders",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily on an empty stomach."
+  },
+  {
+    "name": "Clonazepam",
+    "description": "Clonazepam is used to treat anxiety and panic disorders.",
+    "use0": "anxiety",
+    "use1": "panic disorder",
+    "use2": "seizures",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet at bedtime."
+  },
+  {
+    "name": "Gabapentin",
+    "description": "Gabapentin is used to relieve nerve pain.",
+    "use0": "nerve pain",
+    "use1": "shingles",
+    "use2": "fibromyalgia",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule three times daily."
+  },
+  {
+    "name": "Ciprofloxacin",
+    "description": "Ciprofloxacin is an antibiotic used to treat bacterial infections.",
+    "use0": "infection",
+    "use1": "urinary tract infection",
+    "use2": "respiratory tract infection",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet every 12 hours."
+  },
+  {
+    "name": "Sertraline",
+    "description": "Sertraline is used to treat depression and anxiety disorders.",
+    "use0": "depression",
+    "use1": "anxiety",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Hydrochlorothiazide",
+    "description": "Hydrochlorothiazide is used to treat high blood pressure and fluid retention.",
+    "use0": "hypertension",
+    "use1": "fluid retention",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Amlodipine",
+    "description": "Amlodipine is used to treat high blood pressure and chest pain.",
+    "use0": "hypertension",
+    "use1": "chest pain",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Furosemide",
+    "description": "Furosemide is a diuretic used to treat fluid retention and high blood pressure.",
+    "use0": "fluid retention",
+    "use1": "hypertension",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Zolpidem",
+    "description": "Zolpidem is used to treat insomnia.",
+    "use0": "insomnia",
+    "use1": "sleep disorder",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet at bedtime."
+  },
+  {
+    "name": "Montelukast",
+    "description": "Montelukast is used to prevent asthma attacks and relieve allergy symptoms.",
+    "use0": "asthma",
+    "use1": "allergy",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Tamsulosin",
+    "description": "Tamsulosin is used to treat benign prostatic hyperplasia (BPH).",
+    "use0": "BPH",
+    "use1": "urinary symptoms",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "Ranitidine",
+    "description": "Ranitidine is used to reduce stomach acid.",
+    "use0": "GERD",
+    "use1": "heartburn",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet before meals."
+  },
+  {
+    "name": "Lansoprazole",
+    "description": "Lansoprazole is used to treat gastroesophageal reflux disease (GERD).",
+    "use0": "GERD",
+    "use1": "stomach ulcers",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily before meals."
+  },
+  {
+    "name": "Dexamethasone",
+    "description": "Dexamethasone is a corticosteroid used to reduce inflammation.",
+    "use0": "inflammation",
+    "use1": "allergy",
+    "use2": "arthritis",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Naproxen",
+    "description": "Naproxen is a nonsteroidal anti-inflammatory drug (NSAID).",
+    "use0": "pain",
+    "use1": "inflammation",
+    "use2": "arthritis",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet every 12 hours."
+  },
+  {
+    "name": "Codeine",
+    "description": "Codeine is used to relieve pain.",
+    "use0": "pain",
+    "use1": "cough",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet every 4-6 hours as needed."
+  },
+  {
+    "name": "Loratadine",
+    "description": "Loratadine is an antihistamine used to relieve allergy symptoms.",
+    "use0": "allergy",
+    "use1": "hay fever",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Clarithromycin",
+    "description": "Clarithromycin is an antibiotic used to treat various infections.",
+    "use0": "infection",
+    "use1": "throat infection",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet every 12 hours."
+  },
+  {
+    "name": "Nitroglycerin",
+    "description": "Nitroglycerin is used to treat chest pain (angina).",
+    "use0": "angina",
+    "use1": "chest pain",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet as needed for chest pain."
+  },
+  {
+    "name": "Sildenafil",
+    "description": "Sildenafil is used to treat erectile dysfunction.",
+    "use0": "erectile dysfunction",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet as needed."
+  },
+  {
+    "name": "Propranolol",
+    "description": "Propranolol is used to treat high blood pressure and anxiety.",
+    "use0": "hypertension",
+    "use1": "anxiety",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Duloxetine",
+    "description": "Duloxetine is used to treat depression and anxiety.",
+    "use0": "depression",
+    "use1": "anxiety",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "Escitalopram",
+    "description": "Escitalopram is used to treat depression and anxiety.",
+    "use0": "depression",
+    "use1": "anxiety",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Bupropion",
+    "description": "Bupropion is used to treat depression and help with smoking cessation.",
+    "use0": "depression",
+    "use1": "smoking cessation",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Citalopram",
+    "description": "Citalopram is used to treat depression.",
+    "use0": "depression",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Venlafaxine",
+    "description": "Venlafaxine is used to treat depression and anxiety.",
+    "use0": "depression",
+    "use1": "anxiety",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "Buspirone",
+    "description": "Buspirone is used to treat anxiety.",
+    "use0": "anxiety",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet twice daily."
+  },
+  {
+    "name": "Fluoxetine",
+    "description": "Fluoxetine is used to treat depression, OCD, and anxiety.",
+    "use0": "depression",
+    "use1": "anxiety",
+    "use2": "OCD",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "Metoprolol",
+    "description": "Metoprolol is used to treat high blood pressure and heart problems.",
+    "use0": "hypertension",
+    "use1": "heart problems",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Simvastatin",
+    "description": "Simvastatin is used to lower cholesterol levels.",
+    "use0": "high cholesterol",
+    "use1": "heart disease",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Rosuvastatin",
+    "description": "Rosuvastatin is used to lower cholesterol levels.",
+    "use0": "high cholesterol",
+    "use1": "heart disease",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Atorvastatin",
+    "description": "Atorvastatin is used to lower cholesterol levels.",
+    "use0": "high cholesterol",
+    "use1": "heart disease",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Lisinopril",
+    "description": "Lisinopril is used to treat high blood pressure.",
+    "use0": "hypertension",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Diltiazem",
+    "description": "Diltiazem is used to treat high blood pressure and chest pain.",
+    "use0": "hypertension",
+    "use1": "angina",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Clonidine",
+    "description": "Clonidine is used to treat high blood pressure.",
+    "use0": "hypertension",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Trazodone",
+    "description": "Trazodone is used to treat depression and anxiety.",
+    "use0": "depression",
+    "use1": "anxiety",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Ketorolac",
+    "description": "Ketorolac is used for short-term relief of moderate to severe pain.",
+    "use0": "pain",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet every 4-6 hours as needed."
+  },
+  {
+    "name": "Tramadol",
+    "description": "Tramadol is used to relieve moderate to moderately severe pain.",
+    "use0": "pain",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet every 6 hours as needed."
+  },
+  {
+    "name": "Baclofen",
+    "description": "Baclofen is used to relieve muscle spasms.",
+    "use0": "muscle spasm",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet three times daily."
+  },
+  {
+    "name": "Cyclobenzaprine",
+    "description": "Cyclobenzaprine is used to relieve muscle spasms.",
+    "use0": "muscle spasm",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet three times daily."
+  },
+  {
+    "name": "Gabapentin",
+    "description": "Gabapentin is used to relieve nerve pain and seizures.",
+    "use0": "nerve pain",
+    "use1": "seizures",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule three times daily."
+  },
+  {
+    "name": "Sodium Valproate",
+    "description": "Sodium Valproate is used to treat epilepsy and bipolar disorder.",
+    "use0": "epilepsy",
+    "use1": "bipolar disorder",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet twice daily."
+  },
+  {
+    "name": "Topiramate",
+    "description": "Topiramate is used to treat epilepsy and prevent migraines.",
+    "use0": "epilepsy",
+    "use1": "migraine",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Levetiracetam",
+    "description": "Levetiracetam is used to treat epilepsy.",
+    "use0": "epilepsy",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet twice daily."
+  },
+  {
+    "name": "Lamotrigine",
+    "description": "Lamotrigine is used to treat epilepsy and bipolar disorder.",
+    "use0": "epilepsy",
+    "use1": "bipolar disorder",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Insulin",
+    "description": "Insulin is used to control blood sugar in diabetes.",
+    "use0": "diabetes",
+    "use1": "high blood sugar",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Administer as directed."
+  },
+  {
+    "name": "Glimepiride",
+    "description": "Glimepiride is used to control blood sugar levels in type 2 diabetes.",
+    "use0": "diabetes",
+    "use1": "high blood sugar",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Metformin",
+    "description": "Metformin is used to control blood sugar levels in type 2 diabetes.",
+    "use0": "diabetes",
+    "use1": "high blood sugar",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet with meals."
+  },
+  {
+    "name": "Acarbose",
+    "description": "Acarbose is used to manage blood sugar levels in diabetes.",
+    "use0": "diabetes",
+    "use1": "high blood sugar",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet with the first bite of each meal."
+  },
+  {
+    "name": "Pioglitazone",
+    "description": "Pioglitazone is used to improve blood sugar control in type 2 diabetes.",
+    "use0": "diabetes",
+    "use1": "high blood sugar",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Sitagliptin",
+    "description": "Sitagliptin is used to control blood sugar levels in type 2 diabetes.",
+    "use0": "diabetes",
+    "use1": "high blood sugar",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Roflumilast",
+    "description": "Roflumilast is used to reduce inflammation in chronic obstructive pulmonary disease (COPD).",
+    "use0": "COPD",
+    "use1": "chronic bronchitis",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Zafirlukast",
+    "description": "Zafirlukast is used to prevent asthma attacks.",
+    "use0": "asthma",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet twice daily."
+  },
+  {
+    "name": "Rofecoxib",
+    "description": "Rofecoxib is used to relieve pain and inflammation.",
+    "use0": "pain",
+    "use1": "arthritis",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Atenolol",
+    "description": "Atenolol is used to treat high blood pressure and chest pain.",
+    "use0": "hypertension",
+    "use1": "angina",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Dexlansoprazole",
+    "description": "Dexlansoprazole is used to treat gastroesophageal reflux disease (GERD).",
+    "use0": "GERD",
+    "use1": "heartburn",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily before meals."
+  },
+  {
+    "name": "Cefalexin",
+    "description": "Cefalexin is an antibiotic used to treat bacterial infections.",
+    "use0": "infection",
+    "use1": "skin infection",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule every 6 hours."
+  },
+  {
+    "name": "Chlorpheniramine",
+    "description": "Chlorpheniramine is an antihistamine used to relieve allergy symptoms.",
+    "use0": "allergy",
+    "use1": "hay fever",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet every 4-6 hours as needed."
+  },
+  {
+    "name": "Mometasone",
+    "description": "Mometasone is a corticosteroid used to treat allergies and skin conditions.",
+    "use0": "allergy",
+    "use1": "eczema",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Apply once daily."
+  },
+  {
+    "name": "Fexofenadine",
+    "description": "Fexofenadine is an antihistamine used to relieve allergy symptoms.",
+    "use0": "allergy",
+    "use1": "hay fever",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Beclomethasone",
+    "description": "Beclomethasone is a corticosteroid used to treat asthma.",
+    "use0": "asthma",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Inhale 2 puffs twice daily."
+  },
+  {
+    "name": "Risperidone",
+    "description": "Risperidone is used to treat schizophrenia and bipolar disorder.",
+    "use0": "schizophrenia",
+    "use1": "bipolar disorder",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Quetiapine",
+    "description": "Quetiapine is used to treat schizophrenia and bipolar disorder.",
+    "use0": "schizophrenia",
+    "use1": "bipolar disorder",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Aripiprazole",
+    "description": "Aripiprazole is used to treat schizophrenia and bipolar disorder.",
+    "use0": "schizophrenia",
+    "use1": "bipolar disorder",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Lithium",
+    "description": "Lithium is used to treat bipolar disorder.",
+    "use0": "bipolar disorder",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Lamotrigine",
+    "description": "Lamotrigine is used to treat epilepsy and bipolar disorder.",
+    "use0": "epilepsy",
+    "use1": "bipolar disorder",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Donepezil",
+    "description": "Donepezil is used to treat Alzheimer's disease.",
+    "use0": "Alzheimer's",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Rivastigmine",
+    "description": "Rivastigmine is used to treat Alzheimer's disease.",
+    "use0": "Alzheimer's",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Memantine",
+    "description": "Memantine is used to treat moderate to severe Alzheimer's disease.",
+    "use0": "Alzheimer's",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Carbidopa-Levodopa",
+    "description": "Carbidopa-Levodopa is used to treat Parkinson's disease.",
+    "use0": "Parkinson's disease",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Valproate",
+    "description": "Valproate is used to treat epilepsy and bipolar disorder.",
+    "use0": "epilepsy",
+    "use1": "bipolar disorder",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Busulfan",
+    "description": "Busulfan is used in cancer treatment.",
+    "use0": "cancer",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take as directed by your doctor."
+  },
+  {
+    "name": "Cyclophosphamide",
+    "description": "Cyclophosphamide is used in cancer treatment.",
+    "use0": "cancer",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take as directed by your doctor."
+  },
+  {
+    "name": "Methotrexate",
+    "description": "Methotrexate is used in cancer treatment and autoimmune diseases.",
+    "use0": "cancer",
+    "use1": "autoimmune diseases",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take as directed by your doctor."
+  },
+  {
+    "name": "Tamoxifen",
+    "description": "Tamoxifen is used to treat breast cancer.",
+    "use0": "breast cancer",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take as directed by your doctor."
+  },
+  {
+    "name": "Lapatinib",
+    "description": "Lapatinib is used to treat breast cancer.",
+    "use0": "breast cancer",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take as directed by your doctor."
+  },
+  {
+    "name": "Imatinib",
+    "description": "Imatinib is used to treat certain types of cancer.",
+    "use0": "cancer",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take as directed by your doctor."
+  },
+  {
+    "name": "Neratinib",
+    "description": "Neratinib is used to treat breast cancer.",
+    "use0": "breast cancer",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take as directed by your doctor."
+  },
+  {
+    "name": "Ado-Trastuzumab",
+    "description": "Ado-Trastuzumab is used to treat HER2-positive breast cancer.",
+    "use0": "breast cancer",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take as directed by your doctor."
+  },
+  {
+    "name": "Trastuzumab",
+    "description": "Trastuzumab is used to treat HER2-positive breast cancer.",
+    "use0": "breast cancer",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take as directed by your doctor."
+  },
+  {
+    "name": "Bevacizumab",
+    "description": "Bevacizumab is used to treat various types of cancer.",
+    "use0": "cancer",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take as directed by your doctor."
+  },
+  {
+    "name": "Rituximab",
+    "description": "Rituximab is used to treat certain types of cancer.",
+    "use0": "cancer",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take as directed by your doctor."
+  },
+  {
+    "name": "Erlotinib",
+    "description": "Erlotinib is used to treat non-small cell lung cancer.",
+    "use0": "lung cancer",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take as directed by your doctor."
+  },
+  {
+    "name": "Sunitinib",
+    "description": "Sunitinib is used to treat kidney cancer.",
+    "use0": "kidney cancer",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take as directed by your doctor."
+  },
+  {
+    "name": "Dasatinib",
+    "description": "Dasatinib is used to treat chronic myeloid leukemia.",
+    "use0": "leukemia",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take as directed by your doctor."
+  },
+  {
+    "name": "Blinatumomab",
+    "description": "Blinatumomab is used to treat acute lymphoblastic leukemia.",
+    "use0": "leukemia",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take as directed by your doctor."
+  },
+  {
+    "name": "Ruxolitinib",
+    "description": "Ruxolitinib is used to treat myelofibrosis.",
+    "use0": "myelofibrosis",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take as directed by your doctor."
+  },
+  {
+    "name": "Nivolumab",
+    "description": "Nivolumab is used to treat melanoma and other cancers.",
+    "use0": "melanoma",
+    "use1": "cancer",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take as directed by your doctor."
+  },
+  {
+    "name": "Pembrolizumab",
+    "description": "Pembrolizumab is used to treat melanoma and other cancers.",
+    "use0": "melanoma",
+    "use1": "cancer",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take as directed by your doctor."
+  },
+  {
+    "name": "Atezolizumab",
+    "description": "Atezolizumab is used to treat bladder cancer.",
+    "use0": "bladder cancer",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take as directed by your doctor."
+  },
+  {
+    "name": "Trametinib",
+    "description": "Trametinib is used to treat melanoma.",
+    "use0": "melanoma",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take as directed by your doctor."
+  },
+  {
+    "name": "Dabrafenib",
+    "description": "Dabrafenib is used to treat melanoma.",
+    "use0": "melanoma",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take as directed by your doctor."
+  },
+  {
+    "name": "Sonidegib",
+    "description": "Sonidegib is used to treat basal cell carcinoma.",
+    "use0": "skin cancer",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take as directed by your doctor."
+  },
+  {
+    "name": "Vismodegib",
+    "description": "Vismodegib is used to treat basal cell carcinoma.",
+    "use0": "skin cancer",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take as directed by your doctor."
+  },
+  {
+    "name": "Pazopanib",
+    "description": "Pazopanib is used to treat renal cell carcinoma.",
+    "use0": "kidney cancer",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take as directed by your doctor."
+  },
+  {
+    "name": "Olaparib",
+    "description": "Olaparib is used to treat ovarian cancer.",
+    "use0": "ovarian cancer",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take as directed by your doctor."
+  },
+  {
+    "name": "Talazoparib",
+    "description": "Talazoparib is used to treat breast cancer.",
+    "use0": "breast cancer",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take as directed by your doctor."
+  },
+  {
+    "name": "Bendamustine",
+    "description": "Bendamustine is used to treat chronic lymphocytic leukemia.",
+    "use0": "leukemia",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take as directed by your doctor."
+  },
+  {
+    "name": "Aldosterone",
+    "description": "Aldosterone is used to treat adrenal insufficiency.",
+    "use0": "adrenal insufficiency",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take as directed by your doctor."
+  },
+  {
+    "name": "Cortisol",
+    "description": "Cortisol is used to treat adrenal insufficiency.",
+    "use0": "adrenal insufficiency",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take as directed by your doctor."
+  },
+  {
+    "name": "Fludrocortisone",
+    "description": "Fludrocortisone is used to treat adrenal insufficiency.",
+    "use0": "adrenal insufficiency",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take as directed by your doctor."
+  },
+  {
+    "name": "Somatropin",
+    "description": "Somatropin is used to treat growth hormone deficiency.",
+    "use0": "growth hormone deficiency",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take as directed by your doctor."
+  },
+  {
+    "name": "Desmopressin",
+    "description": "Desmopressin is used to treat diabetes insipidus.",
+    "use0": "diabetes insipidus",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take as directed by your doctor."
+  },
+  {
+    "name": "Levothyroxine",
+    "description": "Levothyroxine is used to treat hypothyroidism.",
+    "use0": "hypothyroidism",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take as directed by your doctor."
+  },
+  {
+    "name": "Thyroid extract",
+    "description": "Thyroid extract is used to treat hypothyroidism.",
+    "use0": "hypothyroidism",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take as directed by your doctor."
+  },
+  {
+    "name": "Insulin glargine",
+    "description": "Insulin glargine is a long-acting insulin used to control blood sugar.",
+    "use0": "diabetes",
+    "use1": "high blood sugar",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Administer as directed."
+  },
+  {
+    "name": "Insulin lispro",
+    "description": "Insulin lispro is a fast-acting insulin used to control blood sugar.",
+    "use0": "diabetes",
+    "use1": "high blood sugar",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Administer as directed."
+  },
+  {
+    "name": "Nateglinide",
+    "description": "Nateglinide is used to control blood sugar levels in type 2 diabetes.",
+    "use0": "diabetes",
+    "use1": "high blood sugar",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet before meals."
+  },
+  {
+    "name": "Repaglinide",
+    "description": "Repaglinide is used to control blood sugar levels in type 2 diabetes.",
+    "use0": "diabetes",
+    "use1": "high blood sugar",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet before meals."
+  },
+  {
+    "name": "Gliclazide",
+    "description": "Gliclazide is used to control blood sugar levels in type 2 diabetes.",
+    "use0": "diabetes",
+    "use1": "high blood sugar",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Glyburide",
+    "description": "Glyburide is used to control blood sugar levels in type 2 diabetes.",
+    "use0": "diabetes",
+    "use1": "high blood sugar",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Acarbose",
+    "description": "Acarbose is used to manage blood sugar levels in diabetes.",
+    "use0": "diabetes",
+    "use1": "high blood sugar",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet with the first bite of each meal."
+  },
+  {
+    "name": "Saxagliptin",
+    "description": "Saxagliptin is used to control blood sugar levels in type 2 diabetes.",
+    "use0": "diabetes",
+    "use1": "high blood sugar",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Linagliptin",
+    "description": "Linagliptin is used to control blood sugar levels in type 2 diabetes.",
+    "use0": "diabetes",
+    "use1": "high blood sugar",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Dapagliflozin",
+    "description": "Dapagliflozin is used to control blood sugar levels in type 2 diabetes.",
+    "use0": "diabetes",
+    "use1": "high blood sugar",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Canagliflozin",
+    "description": "Canagliflozin is used to control blood sugar levels in type 2 diabetes.",
+    "use0": "diabetes",
+    "use1": "high blood sugar",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Empagliflozin",
+    "description": "Empagliflozin is used to control blood sugar levels in type 2 diabetes.",
+    "use0": "diabetes",
+    "use1": "high blood sugar",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Telmisartan",
+    "description": "Telmisartan is used to treat high blood pressure.",
+    "use0": "hypertension",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Irbesartan",
+    "description": "Irbesartan is used to treat high blood pressure.",
+    "use0": "hypertension",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Losartan",
+    "description": "Losartan is used to treat high blood pressure.",
+    "use0": "hypertension",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Bisoprolol",
+    "description": "Bisoprolol is used to treat high blood pressure and heart problems.",
+    "use0": "hypertension",
+    "use1": "heart problems",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Fosinopril",
+    "description": "Fosinopril is used to treat high blood pressure.",
+    "use0": "hypertension",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Quinapril",
+    "description": "Quinapril is used to treat high blood pressure.",
+    "use0": "hypertension",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Benazepril",
+    "description": "Benazepril is used to treat high blood pressure.",
+    "use0": "hypertension",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Doxazosin",
+    "description": "Doxazosin is used to treat high blood pressure and benign prostatic hyperplasia.",
+    "use0": "hypertension",
+    "use1": "BPH",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Prazosin",
+    "description": "Prazosin is used to treat high blood pressure and anxiety.",
+    "use0": "hypertension",
+    "use1": "anxiety",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Trazodone",
+    "description": "Trazodone is used to treat depression and insomnia.",
+    "use0": "depression",
+    "use1": "insomnia",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Phenobarbital",
+    "description": "Phenobarbital is used to treat seizures.",
+    "use0": "seizures",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take as directed by your doctor."
+  },
+  {
+    "name": "Hydroxyzine",
+    "description": "Hydroxyzine is used to treat anxiety and allergies.",
+    "use0": "anxiety",
+    "use1": "allergy",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet as needed."
+  },
+  {
+    "name": "Diphenhydramine",
+    "description": "Diphenhydramine is used to relieve allergy symptoms.",
+    "use0": "allergy",
+    "use1": "insomnia",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet as needed."
+  },
+  {
+    "name": "Amlodipine",
+    "description": "Amlodipine is used to treat high blood pressure.",
+    "use0": "hypertension",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Metoprolol",
+    "description": "Metoprolol is used to treat high blood pressure and chest pain.",
+    "use0": "hypertension",
+    "use1": "chest pain",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Fluticasone",
+    "description": "Fluticasone is a corticosteroid used to treat asthma.",
+    "use0": "asthma",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Inhale 2 puffs twice daily."
+  },
+  {
+    "name": "Budenoside",
+    "description": "Budenoside is a corticosteroid used to treat inflammatory bowel diseases.",
+    "use0": "IBD",
+    "use1": "Crohn's disease",
+    "use2": "ulcerative colitis",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take as directed by your doctor."
+  },
+  {
+    "name": "Montelukast",
+    "description": "Montelukast is used to prevent asthma attacks.",
+    "use0": "asthma",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Beclometasone",
+    "description": "Beclometasone is a corticosteroid used to treat asthma.",
+    "use0": "asthma",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Inhale 2 puffs twice daily."
+  },
+  {
+    "name": "Brompheniramine",
+    "description": "Brompheniramine is an antihistamine used to relieve allergy symptoms.",
+    "use0": "allergy",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet every 4-6 hours."
+  },
+  {
+    "name": "Terbutaline",
+    "description": "Terbutaline is used to relieve bronchospasm in asthma.",
+    "use0": "asthma",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Inhale 2 puffs as needed."
+  },
+  {
+    "name": "Ipratropium",
+    "description": "Ipratropium is used to relieve bronchospasm.",
+    "use0": "bronchospasm",
+    "use1": "COPD",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Inhale 2 puffs four times a day."
+  },
+  {
+    "name": "Theophylline",
+    "description": "Theophylline is used to treat asthma and COPD.",
+    "use0": "asthma",
+    "use1": "COPD",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take as directed by your doctor."
+  },
+  {
+    "name": "Methylprednisolone",
+    "description": "Methylprednisolone is a corticosteroid used to reduce inflammation.",
+    "use0": "inflammation",
+    "use1": "allergy",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take as directed by your doctor."
+  },
+  {
+    "name": "Dexketoprofen",
+    "description": "Dexketoprofen is a nonsteroidal anti-inflammatory drug (NSAID).",
+    "use0": "pain",
+    "use1": "inflammation",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet every 8 hours."
+  },
+  {
+    "name": "Oxcarbazepine",
+    "description": "Oxcarbazepine is used to treat epilepsy and bipolar disorder.",
+    "use0": "epilepsy",
+    "use1": "bipolar disorder",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet twice daily."
+  },
+  {
+    "name": "Nabumetone",
+    "description": "Nabumetone is a nonsteroidal anti-inflammatory drug (NSAID).",
+    "use0": "pain",
+    "use1": "arthritis",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet once daily."
+  },
+  {
+    "name": "Celecoxib",
+    "description": "Celecoxib is a nonsteroidal anti-inflammatory drug (NSAID).",
+    "use0": "pain",
+    "use1": "arthritis",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet twice daily."
+  },
+  {
+    "name": "Etoricoxib",
+    "description": "Etoricoxib is a nonsteroidal anti-inflammatory drug (NSAID).",
+    "use0": "pain",
+    "use1": "arthritis",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet once daily."
+  },
+  {
+    "name": "Ibuprofen",
+    "description": "Ibuprofen is a nonsteroidal anti-inflammatory drug (NSAID).",
+    "use0": "pain",
+    "use1": "inflammation",
+    "use2": "headache",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet every 6-8 hours."
+  },
+  {
+    "name": "Naproxen",
+    "description": "Naproxen is a nonsteroidal anti-inflammatory drug (NSAID).",
+    "use0": "pain",
+    "use1": "inflammation",
+    "use2": "arthritis",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet every 12 hours."
+  },
+  {
+    "name": "Piroxicam",
+    "description": "Piroxicam is a nonsteroidal anti-inflammatory drug (NSAID).",
+    "use0": "pain",
+    "use1": "arthritis",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Sodium Bicarbonate",
+    "description": "Sodium bicarbonate is used to treat acid indigestion.",
+    "use0": "indigestion",
+    "use1": "heartburn",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet as needed."
+  },
+  {
+    "name": "Diphenhydramine",
+    "description": "Diphenhydramine is used to relieve allergy symptoms.",
+    "use0": "allergy",
+    "use1": "insomnia",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet as needed."
+  },
+  {
+    "name": "Omeprazole",
+    "description": "Omeprazole is used to treat gastroesophageal reflux disease (GERD).",
+    "use0": "GERD",
+    "use1": "stomach ulcers",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily before meals."
+  },
+  {
+    "name": "Bismuth Subsalicylate",
+    "description": "Bismuth subsalicylate is used to treat upset stomach and diarrhea.",
+    "use0": "diarrhea",
+    "use1": "stomach upset",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet every 30 minutes as needed."
+  },
+  {
+    "name": "Loperamide",
+    "description": "Loperamide is used to treat diarrhea.",
+    "use0": "diarrhea",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule after each loose stool."
+  },
+  {
+    "name": "Prochlorperazine",
+    "description": "Prochlorperazine is used to treat nausea and vomiting.",
+    "use0": "nausea",
+    "use1": "vomiting",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet every 6-8 hours as needed."
+  },
+  {
+    "name": "Ondansetron",
+    "description": "Ondansetron is used to prevent nausea and vomiting.",
+    "use0": "nausea",
+    "use1": "vomiting",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet before chemotherapy."
+  },
+  {
+    "name": "Dicyclomine",
+    "description": "Dicyclomine is used to relieve symptoms of irritable bowel syndrome.",
+    "use0": "IBS",
+    "use1": "abdominal cramps",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet three times daily."
+  },
+  {
+    "name": "Simethicone",
+    "description": "Simethicone is used to relieve gas and bloating.",
+    "use0": "gas",
+    "use1": "bloating",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet as needed."
+  },
+  {
+    "name": "Fluconazole",
+    "description": "Fluconazole is used to treat fungal infections.",
+    "use0": "fungal infection",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Metronidazole",
+    "description": "Metronidazole is used to treat bacterial and parasitic infections.",
+    "use0": "infection",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet every 8 hours."
+  },
+  {
+    "name": "Amoxicillin-Clavulanate",
+    "description": "Amoxicillin-Clavulanate is used to treat bacterial infections.",
+    "use0": "infection",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet every 12 hours."
+  },
+  {
+    "name": "Ceftriaxone",
+    "description": "Ceftriaxone is used to treat bacterial infections.",
+    "use0": "infection",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take as directed by your doctor."
+  },
+  {
+    "name": "Vancomycin",
+    "description": "Vancomycin is used to treat severe bacterial infections.",
+    "use0": "infection",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take as directed by your doctor."
+  },
+  {
+    "name": "Doxycycline",
+    "description": "Doxycycline is used to treat bacterial infections.",
+    "use0": "infection",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet every 12 hours."
+  },
+  {
+    "name": "Levofloxacin",
+    "description": "Levofloxacin is used to treat bacterial infections.",
+    "use0": "infection",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Gatifloxacin",
+    "description": "Gatifloxacin is used to treat bacterial infections.",
+    "use0": "infection",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Ofloxacin",
+    "description": "Ofloxacin is used to treat bacterial infections.",
+    "use0": "infection",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Nitrofurantoin",
+    "description": "Nitrofurantoin is used to treat urinary tract infections.",
+    "use0": "urinary tract infection",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule every 6 hours."
+  },
+  {
+    "name": "Rifampin",
+    "description": "Rifampin is used to treat bacterial infections and tuberculosis.",
+    "use0": "infection",
+    "use1": "tuberculosis",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Clofazimine",
+    "description": "Clofazimine is used to treat leprosy.",
+    "use0": "leprosy",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take as directed by your doctor."
+  },
+  {
+    "name": "Dapsone",
+    "description": "Dapsone is used to treat leprosy and dermatitis.",
+    "use0": "leprosy",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take as directed by your doctor."
+  },
+  {
+    "name": "Zinc sulfate",
+    "description": "Zinc sulfate is used as a dietary supplement.",
+    "use0": "deficiency",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Vitamin D",
+    "description": "Vitamin D is important for bone health.",
+    "use0": "deficiency",
+    "use1": "osteoporosis",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Folic acid",
+    "description": "Folic acid is used to prevent folate deficiency.",
+    "use0": "deficiency",
+    "use1": "anemia",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Calcium",
+    "description": "Calcium is important for bone health.",
+    "use0": "deficiency",
+    "use1": "osteoporosis",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Iron",
+    "description": "Iron is used to treat iron deficiency anemia.",
+    "use0": "anemia",
+    "use1": "deficiency",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Potassium",
+    "description": "Potassium is important for muscle function.",
+    "use0": "deficiency",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take as directed by your doctor."
+  },
+  {
+    "name": "Magnesium",
+    "description": "Magnesium is important for muscle and nerve function.",
+    "use0": "deficiency",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Sodium",
+    "description": "Sodium is important for maintaining fluid balance.",
+    "use0": "deficiency",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take as directed by your doctor."
+  },
+  {
+    "name": "Cholecalciferol",
+    "description": "Cholecalciferol is used to treat vitamin D deficiency.",
+    "use0": "deficiency",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Thiamine",
+    "description": "Thiamine is important for carbohydrate metabolism.",
+    "use0": "deficiency",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Riboflavin",
+    "description": "Riboflavin is important for energy production.",
+    "use0": "deficiency",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Niacin",
+    "description": "Niacin is important for energy metabolism.",
+    "use0": "deficiency",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Pyridoxine",
+    "description": "Pyridoxine is important for amino acid metabolism.",
+    "use0": "deficiency",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Cyanocobalamin",
+    "description": "Cyanocobalamin is used to treat vitamin B12 deficiency.",
+    "use0": "deficiency",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Lactase",
+    "description": "Lactase is used to help digest lactose.",
+    "use0": "lactose intolerance",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet before consuming dairy."
+  },
+  {
+    "name": "Probiotics",
+    "description": "Probiotics are used to support digestive health.",
+    "use0": "digestive health",
+    "use1": "gut health",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "Dandelion",
+    "description": "Dandelion is used to support liver health.",
+    "use0": "liver health",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Milk Thistle",
+    "description": "Milk thistle is used to support liver health.",
+    "use0": "liver health",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "Ginger",
+    "description": "Ginger is used to relieve nausea and digestive issues.",
+    "use0": "nausea",
+    "use1": "indigestion",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet as needed."
+  },
+  {
+    "name": "Garlic",
+    "description": "Garlic is used to support cardiovascular health.",
+    "use0": "heart health",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Turmeric",
+    "description": "Turmeric is used to reduce inflammation.",
+    "use0": "inflammation",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "Coenzyme Q10",
+    "description": "Coenzyme Q10 is used to support heart health.",
+    "use0": "heart health",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "Omega-3 Fatty Acids",
+    "description": "Omega-3 fatty acids are used to support heart and brain health.",
+    "use0": "heart health",
+    "use1": "brain health",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "Green Tea Extract",
+    "description": "Green tea extract is used to support metabolism.",
+    "use0": "weight loss",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "Chromium",
+    "description": "Chromium is used to support weight loss and blood sugar control.",
+    "use0": "weight loss",
+    "use1": "diabetes",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "L-Carnitine",
+    "description": "L-Carnitine is used to support weight loss.",
+    "use0": "weight loss",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Acai Berry",
+    "description": "Acai berry is used to support weight loss.",
+    "use0": "weight loss",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "Apple Cider Vinegar",
+    "description": "Apple cider vinegar is used to support weight loss.",
+    "use0": "weight loss",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablespoon daily."
+  },
+  {
+    "name": "Resveratrol",
+    "description": "Resveratrol is used to support heart health.",
+    "use0": "heart health",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "Prostate Health",
+    "description": "Prostate health supplements are used to support prostate health.",
+    "use0": "prostate health",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "Men's Multivitamin",
+    "description": "Men's multivitamins are used to support overall health.",
+    "use0": "general health",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Women's Multivitamin",
+    "description": "Women's multivitamins are used to support overall health.",
+    "use0": "general health",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Zinc",
+    "description": "Zinc is important for immune function.",
+    "use0": "immune support",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Magnesium",
+    "description": "Magnesium is important for muscle and nerve function.",
+    "use0": "muscle cramps",
+    "use1": "nerve function",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Potassium",
+    "description": "Potassium is important for muscle function.",
+    "use0": "muscle cramps",
+    "use1": "heart health",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Calcium",
+    "description": "Calcium is important for bone health.",
+    "use0": "bone health",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Vitamin C",
+    "description": "Vitamin C is important for immune function.",
+    "use0": "immune support",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Vitamin B6",
+    "description": "Vitamin B6 is important for protein metabolism.",
+    "use0": "deficiency",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Vitamin B12",
+    "description": "Vitamin B12 is important for red blood cell formation.",
+    "use0": "deficiency",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Citrus Bioflavonoids",
+    "description": "Citrus bioflavonoids are used to support blood circulation.",
+    "use0": "blood circulation",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "CoQ10",
+    "description": "CoQ10 is used to support heart health.",
+    "use0": "heart health",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "Melatonin",
+    "description": "Melatonin is used to regulate sleep cycles.",
+    "use0": "insomnia",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet before bedtime."
+  },
+  {
+    "name": "5-HTP",
+    "description": "5-HTP is used to improve mood and sleep.",
+    "use0": "mood disorders",
+    "use1": "insomnia",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "Saffron",
+    "description": "Saffron is used to support mood and emotional well-being.",
+    "use0": "mood disorders",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "Ginkgo Biloba",
+    "description": "Ginkgo biloba is used to improve memory and cognitive function.",
+    "use0": "memory",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Ginseng",
+    "description": "Ginseng is used to boost energy and reduce fatigue.",
+    "use0": "fatigue",
+    "use1": "energy",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "L-Theanine",
+    "description": "L-Theanine is used to promote relaxation and reduce stress.",
+    "use0": "stress",
+    "use1": "anxiety",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "Valerian Root",
+    "description": "Valerian root is used to promote relaxation and sleep.",
+    "use0": "insomnia",
+    "use1": "anxiety",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "Kava",
+    "description": "Kava is used to promote relaxation and reduce anxiety.",
+    "use0": "anxiety",
+    "use1": "stress",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "Rhodiola Rosea",
+    "description": "Rhodiola Rosea is used to reduce fatigue and improve mood.",
+    "use0": "fatigue",
+    "use1": "mood disorders",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "Echinacea",
+    "description": "Echinacea is used to support immune function.",
+    "use0": "immune support",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "Elderberry",
+    "description": "Elderberry is used to support immune function.",
+    "use0": "immune support",
+    "use1": "cold",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "Garlic",
+    "description": "Garlic is used to support cardiovascular health.",
+    "use0": "heart health",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Hibiscus",
+    "description": "Hibiscus is used to support heart health.",
+    "use0": "heart health",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Cinnamon",
+    "description": "Cinnamon is used to support blood sugar control.",
+    "use0": "diabetes",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Ginger",
+    "description": "Ginger is used to relieve nausea and digestive issues.",
+    "use0": "nausea",
+    "use1": "indigestion",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet as needed."
+  },
+  {
+    "name": "Turmeric",
+    "description": "Turmeric is used to reduce inflammation.",
+    "use0": "inflammation",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "Cayenne Pepper",
+    "description": "Cayenne pepper is used to support weight loss.",
+    "use0": "weight loss",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "Glucomannan",
+    "description": "Glucomannan is used to support weight loss.",
+    "use0": "weight loss",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "Psyllium",
+    "description": "Psyllium is used to relieve constipation.",
+    "use0": "constipation",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "Lactulose",
+    "description": "Lactulose is used to relieve constipation.",
+    "use0": "constipation",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take as directed by your doctor."
+  },
+  {
+    "name": "Senna",
+    "description": "Senna is used to relieve constipation.",
+    "use0": "constipation",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Aloe Vera",
+    "description": "Aloe vera is used to relieve constipation and support skin health.",
+    "use0": "constipation",
+    "use1": "skin health",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "Chamomile",
+    "description": "Chamomile is used to promote relaxation and sleep.",
+    "use0": "insomnia",
+    "use1": "anxiety",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "Valerian",
+    "description": "Valerian is used to promote relaxation and sleep.",
+    "use0": "insomnia",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "Lemon Balm",
+    "description": "Lemon balm is used to reduce anxiety and promote sleep.",
+    "use0": "anxiety",
+    "use1": "insomnia",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "Holy Basil",
+    "description": "Holy basil is used to reduce stress and promote well-being.",
+    "use0": "stress",
+    "use1": "anxiety",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "Ashwagandha",
+    "description": "Ashwagandha is used to reduce stress and anxiety.",
+    "use0": "stress",
+    "use1": "anxiety",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "Rhodiola",
+    "description": "Rhodiola is used to enhance energy and reduce fatigue.",
+    "use0": "fatigue",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "Milk Thistle",
+    "description": "Milk thistle is used to support liver health.",
+    "use0": "liver health",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "Silymarin",
+    "description": "Silymarin is used to support liver health.",
+    "use0": "liver health",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "Berberine",
+    "description": "Berberine is used to support metabolic health.",
+    "use0": "metabolic health",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "Resveratrol",
+    "description": "Resveratrol is used to support cardiovascular health.",
+    "use0": "heart health",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "Quercetin",
+    "description": "Quercetin is used to support immune function.",
+    "use0": "immune support",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "Beta Glucan",
+    "description": "Beta glucan is used to support immune function.",
+    "use0": "immune support",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "Chlorella",
+    "description": "Chlorella is used to support detoxification and immune function.",
+    "use0": "detoxification",
+    "use1": "immune support",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Spirulina",
+    "description": "Spirulina is used to support energy and immune function.",
+    "use0": "energy",
+    "use1": "immune support",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Flaxseed Oil",
+    "description": "Flaxseed oil is used to support heart health.",
+    "use0": "heart health",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablespoon daily."
+  },
+  {
+    "name": "Krill Oil",
+    "description": "Krill oil is used to support heart and joint health.",
+    "use0": "heart health",
+    "use1": "joint health",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "Fish Oil",
+    "description": "Fish oil is used to support heart and brain health.",
+    "use0": "heart health",
+    "use1": "brain health",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "Vitamin E",
+    "description": "Vitamin E is an antioxidant that supports skin health.",
+    "use0": "skin health",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "Vitamin A",
+    "description": "Vitamin A is important for vision and immune function.",
+    "use0": "vision",
+    "use1": "immune support",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Vitamin K",
+    "description": "Vitamin K is important for blood clotting.",
+    "use0": "blood clotting",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Folic Acid",
+    "description": "Folic acid is important for cell division and DNA synthesis.",
+    "use0": "pregnancy",
+    "use1": "anemia",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Alpha Lipoic Acid",
+    "description": "Alpha Lipoic Acid is an antioxidant used to support metabolic health.",
+    "use0": "metabolic health",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "L-Citrulline",
+    "description": "L-Citrulline is used to support cardiovascular health.",
+    "use0": "heart health",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "L-Arginine",
+    "description": "L-Arginine is used to support cardiovascular health.",
+    "use0": "heart health",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "Beetroot",
+    "description": "Beetroot is used to support cardiovascular health.",
+    "use0": "heart health",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Bromelain",
+    "description": "Bromelain is used to reduce inflammation.",
+    "use0": "inflammation",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Dandelion Root",
+    "description": "Dandelion root is used to support liver health.",
+    "use0": "liver health",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "Cranberry",
+    "description": "Cranberry is used to support urinary tract health.",
+    "use0": "urinary tract health",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "Peppermint",
+    "description": "Peppermint is used to relieve digestive issues.",
+    "use0": "indigestion",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet as needed."
+  },
+  {
+    "name": "Nettle Leaf",
+    "description": "Nettle leaf is used to support urinary health.",
+    "use0": "urinary health",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "Artichoke",
+    "description": "Artichoke is used to support digestive health.",
+    "use0": "digestive health",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Ginger Root",
+    "description": "Ginger root is used to relieve nausea and digestive issues.",
+    "use0": "nausea",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet as needed."
+  },
+  {
+    "name": "Ginseng Root",
+    "description": "Ginseng root is used to improve energy and reduce fatigue.",
+    "use0": "fatigue",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "Hawthorn",
+    "description": "Hawthorn is used to support heart health.",
+    "use0": "heart health",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "Olive Leaf",
+    "description": "Olive leaf is used to support heart health.",
+    "use0": "heart health",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "Chicory Root",
+    "description": "Chicory root is used to support digestive health.",
+    "use0": "digestive health",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "Chia Seeds",
+    "description": "Chia seeds are used to support digestive health.",
+    "use0": "digestive health",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablespoon daily."
+  },
+  {
+    "name": "Flaxseeds",
+    "description": "Flaxseeds are used to support digestive health.",
+    "use0": "digestive health",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablespoon daily."
+  },
+  {
+    "name": "Cocoa Extract",
+    "description": "Cocoa extract is used to support heart health.",
+    "use0": "heart health",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "L-Glutamine",
+    "description": "L-Glutamine is used to support gut health.",
+    "use0": "gut health",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "L-Arginine",
+    "description": "L-Arginine is used to support blood flow.",
+    "use0": "blood flow",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "Calcium Citrate",
+    "description": "Calcium citrate is used to support bone health.",
+    "use0": "bone health",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Calcium Carbonate",
+    "description": "Calcium carbonate is used to support bone health.",
+    "use0": "bone health",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Vitamin K2",
+    "description": "Vitamin K2 is important for bone health.",
+    "use0": "bone health",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Folate",
+    "description": "Folate is important for cell division.",
+    "use0": "deficiency",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Vitamin B9",
+    "description": "Vitamin B9 is important for cell division.",
+    "use0": "deficiency",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Vitamin B8",
+    "description": "Vitamin B8 is important for fat metabolism.",
+    "use0": "deficiency",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Cobalt",
+    "description": "Cobalt is important for red blood cell production.",
+    "use0": "deficiency",
+    "use1": "anemia",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Potassium Iodide",
+    "description": "Potassium iodide is used to prevent iodine deficiency.",
+    "use0": "iodine deficiency",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Selenium",
+    "description": "Selenium is an antioxidant that supports immune function.",
+    "use0": "immune support",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Manganese",
+    "description": "Manganese is important for bone health.",
+    "use0": "bone health",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Chromium Picolinate",
+    "description": "Chromium picolinate is used to support blood sugar control.",
+    "use0": "blood sugar control",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Vanadyl Sulfate",
+    "description": "Vanadyl sulfate is used to support blood sugar control.",
+    "use0": "blood sugar control",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Boron",
+    "description": "Boron is important for bone health.",
+    "use0": "bone health",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Silicon",
+    "description": "Silicon is important for connective tissue health.",
+    "use0": "connective tissue health",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Copper",
+    "description": "Copper is important for iron absorption.",
+    "use0": "iron absorption",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Zinc Gluconate",
+    "description": "Zinc gluconate is used to support immune function.",
+    "use0": "immune support",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Zinc Acetate",
+    "description": "Zinc acetate is used to support immune function.",
+    "use0": "immune support",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Zinc Orotate",
+    "description": "Zinc orotate is used to support immune function.",
+    "use0": "immune support",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablet daily."
+  },
+  {
+    "name": "Alpha-GPC",
+    "description": "Alpha-GPC is used to support cognitive function.",
+    "use0": "cognitive function",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "Huperzine A",
+    "description": "Huperzine A is used to support memory.",
+    "use0": "memory",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "Phosphatidylserine",
+    "description": "Phosphatidylserine is used to support memory and cognitive function.",
+    "use0": "memory",
+    "use1": "cognitive function",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "Bacopa Monnieri",
+    "description": "Bacopa monnieri is used to support memory and cognitive function.",
+    "use0": "memory",
+    "use1": "cognitive function",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "Acetyl L-Carnitine",
+    "description": "Acetyl L-Carnitine is used to support cognitive function.",
+    "use0": "cognitive function",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "Mucuna Pruriens",
+    "description": "Mucuna pruriens is used to support mood and cognitive function.",
+    "use0": "mood disorders",
+    "use1": "cognitive function",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "Ashwagandha Root",
+    "description": "Ashwagandha root is used to reduce stress and support mood.",
+    "use0": "stress",
+    "use1": "mood disorders",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "Saffron Extract",
+    "description": "Saffron extract is used to support mood.",
+    "use0": "mood disorders",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "Lemon Balm Extract",
+    "description": "Lemon balm extract is used to reduce stress and promote relaxation.",
+    "use0": "stress",
+    "use1": "anxiety",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "Cat's Claw",
+    "description": "Cat's claw is used to support immune function.",
+    "use0": "immune support",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "Eleuthero",
+    "description": "Eleuthero is used to support energy and reduce fatigue.",
+    "use0": "fatigue",
+    "use1": "energy",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "Gotu Kola",
+    "description": "Gotu kola is used to support cognitive function and memory.",
+    "use0": "memory",
+    "use1": "cognitive function",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "Kava Kava",
+    "description": "Kava kava is used to promote relaxation and reduce anxiety.",
+    "use0": "anxiety",
+    "use1": "stress",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "L-Theanine Extract",
+    "description": "L-theanine extract is used to promote relaxation.",
+    "use0": "stress",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "Pine Bark Extract",
+    "description": "Pine bark extract is used to support cardiovascular health.",
+    "use0": "heart health",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "Whey Protein",
+    "description": "Whey protein is used to support muscle growth and recovery.",
+    "use0": "muscle growth",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 scoop after workouts."
+  },
+  {
+    "name": "Casein Protein",
+    "description": "Casein protein is used to support muscle growth.",
+    "use0": "muscle growth",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 scoop before bed."
+  },
+  {
+    "name": "Soy Protein",
+    "description": "Soy protein is used to support muscle growth and recovery.",
+    "use0": "muscle growth",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 scoop after workouts."
+  },
+  {
+    "name": "Hemp Protein",
+    "description": "Hemp protein is used to support muscle growth.",
+    "use0": "muscle growth",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 scoop after workouts."
+  },
+  {
+    "name": "Pea Protein",
+    "description": "Pea protein is used to support muscle growth and recovery.",
+    "use0": "muscle growth",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 scoop after workouts."
+  },
+  {
+    "name": "Brown Rice Protein",
+    "description": "Brown rice protein is used to support muscle growth.",
+    "use0": "muscle growth",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 scoop after workouts."
+  },
+  {
+    "name": "Protein Bars",
+    "description": "Protein bars are used to support muscle growth and recovery.",
+    "use0": "muscle growth",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 bar as needed."
+  },
+  {
+    "name": "Electrolyte Powder",
+    "description": "Electrolyte powder is used to support hydration and recovery.",
+    "use0": "hydration",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Mix 1 scoop in water."
+  },
+  {
+    "name": "BCAA",
+    "description": "BCAA is used to support muscle recovery and growth.",
+    "use0": "muscle recovery",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 scoop after workouts."
+  },
+  {
+    "name": "Creatine",
+    "description": "Creatine is used to support muscle growth and performance.",
+    "use0": "muscle growth",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 scoop daily."
+  },
+  {
+    "name": "Beta-Alanine",
+    "description": "Beta-alanine is used to improve exercise performance.",
+    "use0": "exercise performance",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 scoop daily."
+  },
+  {
+    "name": "Caffeine",
+    "description": "Caffeine is used to improve focus and energy.",
+    "use0": "energy",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take as needed."
+  },
+  {
+    "name": "L-Carnitine Tartrate",
+    "description": "L-Carnitine tartrate is used to support exercise performance.",
+    "use0": "exercise performance",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 scoop daily."
+  },
+  {
+    "name": "MCT Oil",
+    "description": "MCT oil is used to support energy and weight loss.",
+    "use0": "energy",
+    "use1": "weight loss",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablespoon daily."
+  },
+  {
+    "name": "Carob Powder",
+    "description": "Carob powder is used as a cocoa alternative.",
+    "use0": "cocoa alternative",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Mix with beverages or baking."
+  },
+  {
+    "name": "Guarana",
+    "description": "Guarana is used to boost energy and focus.",
+    "use0": "energy",
+    "use1": "focus",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take as needed."
+  },
+  {
+    "name": "Yerba Mate",
+    "description": "Yerba mate is used to boost energy and focus.",
+    "use0": "energy",
+    "use1": "focus",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take as needed."
+  },
+  {
+    "name": "Matcha Green Tea",
+    "description": "Matcha green tea is used to support energy and focus.",
+    "use0": "energy",
+    "use1": "focus",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Mix with beverages."
+  },
+  {
+    "name": "Chlorophyll",
+    "description": "Chlorophyll is used to support detoxification.",
+    "use0": "detoxification",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 tablespoon daily."
+  },
+  {
+    "name": "Spirulina Powder",
+    "description": "Spirulina powder is used to support energy and nutrition.",
+    "use0": "energy",
+    "use1": "nutrition",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Mix with beverages."
+  },
+  {
+    "name": "Barley Grass Powder",
+    "description": "Barley grass powder is used to support overall health.",
+    "use0": "overall health",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Mix with beverages."
+  },
+  {
+    "name": "Wheatgrass Powder",
+    "description": "Wheatgrass powder is used to support overall health.",
+    "use0": "overall health",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Mix with beverages."
+  },
+  {
+    "name": "Kale Powder",
+    "description": "Kale powder is used to support overall health.",
+    "use0": "overall health",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Mix with beverages."
+  },
+  {
+    "name": "Beet Juice Powder",
+    "description": "Beet juice powder is used to support cardiovascular health.",
+    "use0": "heart health",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Mix with beverages."
+  },
+  {
+    "name": "Acai Berry Powder",
+    "description": "Acai berry powder is used to support overall health.",
+    "use0": "overall health",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Mix with beverages."
+  },
+  {
+    "name": "Papaya Enzyme",
+    "description": "Papaya enzyme is used to support digestion.",
+    "use0": "digestion",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "Pineapple Enzyme",
+    "description": "Pineapple enzyme is used to support digestion.",
+    "use0": "digestion",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "Lactobacillus",
+    "description": "Lactobacillus is used to support gut health.",
+    "use0": "gut health",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "Bifidobacterium",
+    "description": "Bifidobacterium is used to support gut health.",
+    "use0": "gut health",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "Saccharomyces Boulardii",
+    "description": "Saccharomyces boulardii is used to support gut health.",
+    "use0": "gut health",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "Prebiotics",
+    "description": "Prebiotics are used to support gut health.",
+    "use0": "gut health",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 capsule daily."
+  },
+  {
+    "name": "Vegan Protein Powder",
+    "description": "Vegan protein powder is used to support muscle growth.",
+    "use0": "muscle growth",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take 1 scoop after workouts."
+  },
+  {
+    "name": "Protein Snacks",
+    "description": "Protein snacks are used to support muscle growth and recovery.",
+    "use0": "muscle growth",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take as needed."
+  },
+  {
+    "name": "Protein Shakes",
+    "description": "Protein shakes are used to support muscle growth and recovery.",
+    "use0": "muscle growth",
+    "use1": "",
+    "use2": "",
+    "use3": "",
+    "use4": "",
+    "dosage": "Take as needed."
+  }
+]

@@ -1,6 +1,16 @@
-/* Add this to your Chatbot.css */
+/* Loading message styles */
 .loading-message {
   animation: blink 1s infinite; /* Blinking effect */
+}
+
+/* Thinking message styles */
+.thinking-message {
+  animation: blink 1s infinite; /* Blinking effect for thinking */
+}
+
+/* Dots animation styles */
+.dots {
+  animation: blink 1s infinite; /* Blinking effect for dots */
 }
 
 @keyframes blink {
@@ -8,6 +18,7 @@
   50% { opacity: 0; }
   100% { opacity: 1; }
 }
+
 
 /* Existing CSS for the chatbot icon and window (keep as it is) */
 .chatbot-icon {
@@ -62,8 +73,9 @@
   position: fixed;
   bottom: 80px;
   right: 20px;
-  width: 300px;
-  max-height: 400px;
+  width: 500px;
+  height: 600px;
+  max-height: 600px;
   background-color: white;
   border: 1px solid #ddd;
   border-radius: 5px;
@@ -99,6 +111,46 @@
   padding: 10px;
   flex: 1;
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Styles for messages */
+.message {
+  clear: both;
+  margin: 5px 0;
+  max-width: 80%; /* Limit message width */
+  word-wrap: break-word;
+}
+
+/* User message styles */
+.user {
+  align-self: flex-end; /* Align user messages to the right */
+}
+
+/* Bot response styles */
+.bot {
+  align-self: flex-start; /* Align bot messages to the left */
+}
+
+/* User response styles */
+.user-response {
+  background-color: #269f10; /* Green background for user messages */
+  color: white;
+  border-radius: 10px;
+  padding: 10px;
+  display: inline-block; /* Make sure it only takes up necessary space */
+  border: 1px solid #269f10; /* Border for user messages */
+}
+
+/* Bot response styles */
+.bot-response {
+  background-color: #f1f1f1; /* Light gray background for bot responses */
+  color: black;
+  border-radius: 10px;
+  padding: 10px;
+  display: inline-block; /* Make sure it only takes up necessary space */
+  border: 1px solid #ccc; /* Border around bot responses */
 }
 
 .chatbot-input {

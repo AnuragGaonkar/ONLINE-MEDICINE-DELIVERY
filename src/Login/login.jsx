@@ -1,15 +1,11 @@
 import React, { useState } from 'react';
-import axios from 'axios';
-import { useCookies } from 'react-cookie';
-import { useNavigate } from 'react-router-dom';
-import './login.css'
+import './login.css';
 
 const LoginSignup = () => {
   const [isSignUp, setIsSignUp] = useState(false);
   const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [_, setCookies] = useCookies(['access_token']);
-  const navigate = useNavigate();
 
   const toggleMode = () => {
     setIsSignUp(!isSignUp);
@@ -17,25 +13,9 @@ const LoginSignup = () => {
     setPassword('');
   };
 
-  // Function to handle login or signup
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    try {
-      const api = isSignUp
-        ? 'http://localhost:5000/auth/register'
-        : 'http://localhost:5000/auth/login';
-
-      const payload = { username, password };
-
-      const res = await axios.post(api, payload);
-
-      // Save access token in cookies and userID in local storage on successful login/signup
-      setCookies('access_token', res.data.token);
-      window.localStorage.setItem('userID', res.data.userID);
-      alert("User Logged IN")
-    } catch (error) {
-      console.error('Error:', error.response ? error.response.data : error.message);
-    }
+    alert(`Form Submitted. Username: ${username}, Password: ${password}`);
   };
 
   return (
@@ -50,7 +30,14 @@ const LoginSignup = () => {
           onChange={(e) => setUsername(e.target.value)}
           required
         />
-
+        <input
+          type="text"
+          className="input"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
         <input
           type="password"
           className="input"

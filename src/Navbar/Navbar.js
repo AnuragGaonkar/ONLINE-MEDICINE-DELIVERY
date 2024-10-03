@@ -1,39 +1,29 @@
-import { Link, useNavigate } from 'react-router-dom';
-import React, { useState, useEffect } from 'react';
-import { useCookies } from 'react-cookie'; // Import react-cookie hook
+import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
 import { ShoppingCart } from 'lucide-react';
 import Login from '../Login/login';
 
 const Navbar = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [cookies, _, removeCookie] = useCookies(['access_token']); // useCookies to handle userID cookie
-    const navigate = useNavigate();
-    console.log(cookies)
+
     const openModal = () => setIsModalOpen(true);
     const closeModal = () => setIsModalOpen(false);
     const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
-    // Handle logout
-    const handleLogout = () => {
-        removeCookie('access_token'); // Clear the userID from cookies
-        alert("User Logged OUT")
-        navigate('/'); // Redirect to home page
-    };
-
     return (
         <nav className="bg-white shadow-sm">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex justify-between items-center h-20"> {/* Increased height */}
+                <div className="flex justify-between items-center h-20">
                     {/* Logo */}
                     <div className="flex items-center">
-                        <Link to="/" className="text-3xl font-bold text-green-600"> {/* Increased font size */}
+                        <Link to="/" className="text-3xl font-bold text-green-600">
                             MediQuick
                         </Link>
                     </div>
 
                     {/* Search Bar (visible on all sizes) */}
-                    <div className="flex-grow px-4 lg:ml-6">
+                    <div className="hidden sm:block flex-grow px-4 lg:ml-6">
                         <div className="relative max-w-lg w-full">
                             <input
                                 id="search"
@@ -55,20 +45,9 @@ const Navbar = () => {
 
                     {/* Menu Items (hidden on mobile) */}
                     <div className="hidden sm:flex items-center space-x-6">
-                        {cookies.access_token ? (
-                            // If user is logged in, show logout button
-                            <button
-                                onClick={handleLogout}
-                                className="text-gray-700 hover:text-red-500 px-4 py-2 rounded-md text-lg font-medium"
-                            >
-                                Logout
-                            </button>
-                        ) : (
-                            // If user is not logged in, show login button
-                            <Link onClick={openModal} className="text-gray-700 hover:text-green-500 px-4 py-2 rounded-md text-lg font-medium">
-                                Login
-                            </Link>
-                        )}
+                        <Link onClick={openModal} className="text-gray-700 hover:text-green-500 px-4 py-2 rounded-md text-lg font-medium">
+                            Login
+                        </Link>
                         <Link to="/offers" className="text-gray-700 hover:text-green-500 px-4 py-2 rounded-md text-lg font-medium">
                             Offers
                         </Link>
@@ -92,6 +71,14 @@ const Navbar = () => {
                 </div>
             </div>
 
+            {/* Mobile Search Box */}
+            <div className="block sm:hidden search-box">
+                <input type="text" placeholder="Search anything" className="search-input" />
+                <a href="#" className="search-btn">
+                    <i className="fas fa-search"></i>
+                </a>
+            </div>
+
             {/* Mobile Menu (Slider) */}
             {isMenuOpen && (
                 <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-end">
@@ -101,15 +88,9 @@ const Navbar = () => {
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
                             </svg>
                         </button>
-                        {cookies.access_token ? (
-                            <button onClick={handleLogout} className="text-gray-700 hover:text-red-500 text-lg font-medium">
-                                Logout
-                            </button>
-                        ) : (
-                            <Link onClick={openModal} className="text-gray-700 hover:text-green-500 text-lg font-medium">
-                                Login
-                            </Link>
-                        )}
+                        <Link onClick={openModal} className="text-gray-700 hover:text-green-500 text-lg font-medium">
+                            Login
+                        </Link>
                         <Link to="/offers" className="text-gray-700 hover:text-green-500 text-lg font-medium">
                             Offers
                         </Link>

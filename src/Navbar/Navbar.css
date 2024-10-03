@@ -1,0 +1,123 @@
+/* Base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body background for testing */
+body {
+    background: #101010;
+}
+
+/* Search Box - Initially hidden on large screens */
+.search-box {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    height: 60px;
+    background: #353535;
+    line-height: 40px;
+    padding: 10px;
+    border-radius: 60px;
+    display: none; /* Hidden by default on large screens */
+    transition: all 0.7s ease-in-out; /* Smooth transition */
+}
+
+/* Search input - Initially width is 0 */
+.search-input {
+    background: #353535;
+    color: #fff;
+    outline: none;
+    border: none;
+    line-height: 40px;
+    width: 0;
+    float: left;
+    font-size: 14px;
+    transition: width 0.7s ease; /* Only animating width for a smooth transition */
+    font-family: sans-serif;
+}
+
+/* Search button */
+.search-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    background: #353535;
+    padding: 12px;
+    border-radius: 50%;
+    float: right;
+    color: #ff5722;
+    transition: background 0.4s ease;
+}
+
+/* When the search box is hovered, the input expands */
+.search-box:hover > .search-input {
+    width: 240px;
+    margin: 0 8px;
+}
+
+/* When the search input is focused, it expands */
+.search-input:focus {
+    width: 240px;
+    margin: 0 8px;
+}
+
+/* Change the search button background when hovered or input focused */
+.search-box:hover > .search-btn,
+.search-input:focus + .search-btn {
+    background: #fff;
+    color: #ff5722;
+}
+
+/* Mobile specific styles */
+@media (max-width: 768px) {
+    .search-box {
+        display: block; /* Show the search box in mobile view */
+        transition: all 0.3s ease-in-out;
+        position: relative; /* Adjusted for navbar integration */
+        left: auto;
+        top: auto;
+        transform: none;
+        margin-right: 16px;
+    }
+}
+
+/* Hide the search box on larger screens */
+@media (min-width: 769px) {
+    .search-box {
+        display: none;
+    }
+}
+
+/* Optional navbar/menu styles */
+.navbar {
+    position: relative;
+}
+
+.menu {
+    position: absolute;
+    z-index: 999;
+    /* Ensure it overlaps other elements */
+}
+
+/* Animating the sliding menu */
+.sliding-menu {
+    transition: transform 0.5s ease;
+    transform: translateX(100%); /* Offscreen by default */
+}
+
+.sliding-menu.open {
+    transform: translateX(0); /* Slide into view */
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
