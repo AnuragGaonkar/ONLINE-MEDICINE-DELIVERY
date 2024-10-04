@@ -7,6 +7,8 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.7.7",
+    "concurrently": "^9.0.1",
+    "cors": "^2.8.5",
     "express": "^4.21.0",
     "lucide-react": "^0.446.0",
     "openai": "^4.63.0",
@@ -21,7 +23,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "both": "concurrently \"npm run start\" \"nodemon backend/index.js\""
   },
   "proxy": "http://127.0.0.1:5000",
   "eslintConfig": {

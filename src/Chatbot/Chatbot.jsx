@@ -61,7 +61,7 @@ const Chatbot = () => {
           setIsLoading(false); // Reset loading state
           setIsThinking(false); // Reset thinking state after showing response
         }
-      }, 1500); // Simulate a 2-second delay before processing the bot's response
+      }, 1500); // Simulate a 1.5-second delay before processing the bot's response
     }
   };
 
