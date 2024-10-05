@@ -1,0 +1,122 @@
+[
+  {
+    "name": "Dolo 650",
+    "category": "Pain Reliever",
+    "price": 30,
+    "stock": 100,
+    "prescriptionRequired": false,
+    "imageUrl": "https://www.medkart.in/_next/image?url=https%3A%2F%2Fd1s24u4ln0wd0i.cloudfront.net%2F3606_3&w=3840&q=75"
+  },
+  {
+    "name": "Ibuprofen 600mg",
+    "category": "Pain Reliever",
+    "price": 20,
+    "stock": 150,
+    "prescriptionRequired": false,
+    "imageUrl": "https://gpc.ge/_next/image?url=https%3A%2F%2Fs3-eu-central-1.amazonaws.com%2Fgpc.prod.storage%2Fuploads%2Fmedicament_image%2Fimage%2F38919%2Fimage.png&w=3840&q=100"
+  },
+  {
+    "name": "Vitamin C",
+    "category": "Vitamin Supplement",
+    "price": 15,
+    "stock": 200,
+    "prescriptionRequired": false,
+    "imageUrl": "https://www.medkart.in/_next/image?url=https%3A%2F%2Fd1s24u4ln0wd0i.cloudfront.net%2F7223_1&w=640&q=75"
+  },
+  {
+    "name": "Paracetamol 500mg",
+    "category": "Pain Reliever",
+    "price": 10,
+    "stock": 250,
+    "prescriptionRequired": false,
+    "imageUrl": "https://store.shaqexpress.com/_next/image?url=https%3A%2F%2Fvendor.shaqexpress.com%2Fstorage%2F9595%2Fconversions%2FAFulNFM3Lpdj2T4fTS52Dq3TkYVnUu-metaQ3Jlc2NlbnQgUGFyYUNldGFtb2wgVGFibGV0cy5qcGcucG5n--small.png&w=3840&q=75"
+  },
+  {
+    "name": "Aspirin 100mg",
+    "category": "Pain Reliever",
+    "price": 12,
+    "stock": 180,
+    "prescriptionRequired": false,
+    "imageUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQfy8fpmaVcEYCI5s-70WoEGBC4kKiU7-EhFg&s"
+  },
+  {
+    "name": "Azithromycin 500mg",
+    "category": "Antibiotic",
+    "price": 50,
+    "stock": 80,
+    "prescriptionRequired": true,
+    "imageUrl": "https://www.medkart.in/_next/image?url=https%3A%2F%2Fd1s24u4ln0wd0i.cloudfront.net%2F16800078816422e2c9b903e.png&w=3840&q=75"
+  },
+  {
+    "name": "Amoxicillin 500mg",
+    "category": "Antibiotic",
+    "price": 45,
+    "stock": 70,
+    "prescriptionRequired": true,
+    "imageUrl": "https://www.pharmacy2u.co.uk/_next/image?url=https%3A%2F%2Fcdn11.bigcommerce.com%2Fs-g585yu857h%2Fproducts%2F997%2Fimages%2F444%2Famoxicillin-500mg-caps_2__47489.1697015058.386.513__26258.1697109356.1280.1280.jpg%3Fc%3D1&w=1080&q=75"
+  },
+  {
+    "name": "Metformin 500mg",
+    "category": "Diabetes",
+    "price": 25,
+    "stock": 120,
+    "prescriptionRequired": true,
+    "imageUrl": "https://www.medpay.store/_next/image?url=https%3A%2F%2Fimages.medpay.in%2F_700%2Fmp242797_1.webp&w=1920&q=60"
+  },
+  {
+    "name": "Pantoprazole 40mg",
+    "category": "Gastrointestinal",
+    "price": 18,
+    "stock": 90,
+    "prescriptionRequired": false,
+    "imageUrl": "https://www.medkart.in/_next/image?url=https%3A%2F%2Fd1s24u4ln0wd0i.cloudfront.net%2F10194_3&w=3840&q=75"
+  },
+  {
+    "name": "Cetirizine 10mg",
+    "category": "Antihistamine",
+    "price": 8,
+    "stock": 220,
+    "prescriptionRequired": false,
+    "imageUrl": "https://pharmacy.shaqexpress.com/_next/image?url=https%3A%2F%2Fvendor.shaqexpress.com%2Fstorage%2F22265%2Fconversions%2FTafSR5OYYiyz8TxQeYUcQn0ftSDpvw-metaVEVWQS1DRVRSSVpJTkUtMTBtZy1UQUItMzBzLTEtc2NhbGVkLmpwZw%3D%3D--medium.png&w=3840&q=75"
+  },
+  {
+    "name": "Loratadine 10mg",
+    "category": "Antihistamine",
+    "price": 9,
+    "stock": 200,
+    "prescriptionRequired": false,
+    "imageUrl": "https://www.medkart.in/_next/image?url=https%3A%2F%2Fd1s24u4ln0wd0i.cloudfront.net%2F1686820879648ad80f60a44.png&w=640&q=75"
+  },
+  {
+    "name": "Calcium Carbonate 500mg",
+    "category": "Mineral Supplement",
+    "price": 5,
+    "stock": 300,
+    "prescriptionRequired": false,
+    "imageUrl": "https://www.medkart.in/_next/image?url=https%3A%2F%2Fd1s24u4ln0wd0i.cloudfront.net%2F1684931736646e049823837.png&w=256&q=75"
+  },
+  {
+    "name": "Iron + Folic Acid",
+    "category": "Nutritional Supplement",
+    "price": 12,
+    "stock": 150,
+    "prescriptionRequired": false,
+    "imageUrl": "https://chemistsmart.com/_next/image?url=https%3A%2F%2Fbackend.chemistsmart.com%2Fstorage%2Fproducts%2Fdrug_image_Mzg5MDA3.jpg&w=640&q=75"
+  },
+  {
+    "name": "Diclofenac 50mg",
+    "category": "Pain Reliever",
+    "price": 25,
+    "stock": 80,
+    "prescriptionRequired": true,
+    "imageUrl": "https://www.medpay.store/_next/image?url=https%3A%2F%2Fimages.medpay.in%2F_700%2Fmp164554_1.webp&w=1920&q=60"
+  },
+  {
+    "name": "Levocetirizine 5mg",
+    "category": "Antihistamine",
+    "price": 10,
+    "stock": 200,
+    "prescriptionRequired": false,
+    "imageUrl": "https://www.medkart.in/_next/image?url=https%3A%2F%2Fd1s24u4ln0wd0i.cloudfront.net%2F1678446032640b0dd0bc1d7.png&w=3840&q=75"
+  }
+]
