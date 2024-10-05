@@ -12,7 +12,7 @@ const Navbar = () => {
     const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
     return (
-        <nav className="bg-white shadow-sm">
+        <nav className=" shadow-sm">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center h-20">
                     {/* Logo */}
@@ -106,7 +106,7 @@ const Navbar = () => {
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
                     <div className="bg-white p-6 rounded-md relative">
                         <button
-                            className="absolute top-2 right-2 text-gray-600 hover:text-red-500 cursor-pointer"
+                            className="absolute top-1 right-3 text-gray-600 hover:text-red-500 cursor-pointer text-3xl font-bold"
                             onClick={closeModal}
                         >
                             &times;

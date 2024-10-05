@@ -28,7 +28,6 @@ const LoginSignup = () => {
       return false;
     }
 
-    // Simple email format validation
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailPattern.test(email)) {
       alert("Please enter a valid email address.");
@@ -44,7 +43,6 @@ const LoginSignup = () => {
       return false;
     }
 
-    // Simple email format validation
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailPattern.test(email)) {
       alert("Please enter a valid email address.");
@@ -54,13 +52,13 @@ const LoginSignup = () => {
     return true;
   };
 
-  const handleSubmit = async(e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (isSignUp) {
       if (!validateSignup()) return;
       try {
         const HOST = "http://localhost:5001";
-        const response = await fetch(`${HOST}/api/auth/createuser`, { // Adjust the URL according to your API setup
+        const response = await fetch(`${HOST}/api/auth/createuser`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -71,18 +69,18 @@ const LoginSignup = () => {
             password,
             contactNumber,
             address,
-            role: 'user', // Assuming a default role; you can modify as necessary
+            role: 'user',
           }),
         });
-  
+
         const data = await response.json();
-  
+
         if (!response.ok) {
-          console.log("Sign up failed")
+          console.log("Sign up failed");
         } else {
-          alert("Sign up successfull")
-          localStorage.setItem("authToken", data.authToken)
-          resetFields(); // Reset fields on successful signup
+          alert("Sign up successful");
+          localStorage.setItem("authToken", data.authToken);
+          resetFields();
         }
       } catch (error) {
         console.error("Error during sign-up:", error);
@@ -92,37 +90,33 @@ const LoginSignup = () => {
       const HOST = "http://localhost:5001";
       try {
         const url = `${HOST}/api/auth/login`;
-  
-        // Login credentials
+
         const loginData = {
           email,
           password,
         };
-  
-        // Send the form data to the backend (adjust the URL as needed)
+
         const response = await fetch(url, {
           method: "POST",
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
           },
           body: JSON.stringify(loginData),
         });
-  
+
         if (!response.ok) {
           throw new Error(`Response status: ${response.status}`);
         }
-  
+
         const data = await response.json();
-        // Assume the response contains an auth token
         if (data.authToken) {
           localStorage.setItem('authToken', data.authToken);
-          alert("Logged in successfully")
+          alert("Logged in successfully");
         } else {
           alert("Invalid Login Credentials");
         }
       } catch (error) {
-        // Handle error response
-        console.log("Could not login", error)
+        console.log("Could not login", error);
       }
     }
   };
