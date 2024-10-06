@@ -41,7 +41,14 @@ exports.addToCart = async (req, res) => {
       user.cart.items[itemIndex].quantity += quantity;
     } else {
       // Add new item to cart
-      user.cart.items.push({ medicineId, quantity });
+      user.cart.items.push({
+        medicineId,
+        name: medicine.name,
+        price: medicine.price,
+        imageUrl: medicine.imageUrl,
+        prescriptionRequired: medicine.prescriptionRequired,
+        quantity,
+      });
     }
 
     // Update total amount

@@ -15,6 +15,22 @@ const cartSchema = new Schema(
           ref: "Medicine",
           required: true,
         },
+        name: {
+          type: String,
+          required: true,
+        },
+        price: {
+          type: Number,
+          required: true,
+        },
+        imageUrl: {
+          type: String,
+          required: true,
+        },
+        prescriptionRequired: {
+          type: Boolean,
+          required: true,
+        },
         quantity: {
           type: Number,
           required: true,

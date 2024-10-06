@@ -39,11 +39,19 @@ const UserSchema = new Schema({
   cart: {
     items: [
       {
-        medicineId: { type: mongoose.Schema.Types.ObjectId, ref: 'Medicine' },
-        quantity: { type: Number, required: true, min: 1 }
-      }
+        medicineId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Medicine",
+          required: true,
+        },
+        name: { type: String, required: true },
+        price: { type: Number, required: true },
+        imageUrl: { type: String, required: true },
+        prescriptionRequired: { type: Boolean, required: true },
+        quantity: { type: Number, required: true, min: 1 },
+      },
     ],
-    totalAmount: { type: Number, default: 0 }
+    totalAmount: { type: Number, default: 0 },
   },
   date: {
     type: Date,

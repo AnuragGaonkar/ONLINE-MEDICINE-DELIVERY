@@ -74,7 +74,7 @@ const Navbar = () => {
             {/* Mobile Search Box */}
             <div className="block sm:hidden search-box">
                 <input type="text" placeholder="Search anything" className="search-input" />
-                <a href="#" className="search-btn">
+                <a href="/" className="search-btn">
                     <i className="fas fa-search"></i>
                 </a>
             </div>

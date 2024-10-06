@@ -8,10 +8,22 @@ const LoginSignup = () => {
   const [password, setPassword] = useState('');
   const [address, setAddress] = useState({ street: '', city: '', postalCode: '', country: '' });
   const [contactNumber, setContactNumber] = useState('');
+  const [alertMessage, setAlertMessage] = useState("");
 
   const toggleMode = () => {
     setIsSignUp(!isSignUp);
     resetFields();
+  };
+
+  const Alert = ({ message, onClose }) => {
+    return (
+      <div className="alert">
+        <span>{message}</span>
+        <button onClick={onClose} className="close-alert">
+          ×
+        </button>
+      </div>
+    );
   };
 
   const resetFields = () => {
@@ -78,7 +90,8 @@ const LoginSignup = () => {
         if (!response.ok) {
           console.log("Sign up failed");
         } else {
-          alert("Sign up successful");
+          setAlertMessage(`Account successfully created.`);
+          setTimeout(() => setAlertMessage(""), 3000); 
           localStorage.setItem("authToken", data.authToken);
           resetFields();
         }
@@ -111,9 +124,11 @@ const LoginSignup = () => {
         const data = await response.json();
         if (data.authToken) {
           localStorage.setItem('authToken', data.authToken);
-          alert("Logged in successfully");
+          setAlertMessage(`Successfully logged in.`);
+          setTimeout(() => setAlertMessage(""), 3000); 
         } else {
-          alert("Invalid Login Credentials");
+          setAlertMessage(`Failed to log in`);
+          setTimeout(() => setAlertMessage(""), 3000); 
         }
       } catch (error) {
         console.log("Could not login", error);
@@ -123,7 +138,7 @@ const LoginSignup = () => {
 
   return (
     <div className="form-container">
-      <p className="title">{isSignUp ? 'Create an account' : 'Welcome back'}</p>
+      <p className="title">{isSignUp ? "Create an account" : "Welcome back"}</p>
       <form className="form" onSubmit={handleSubmit}>
         {isSignUp && (
           <input
@@ -158,7 +173,9 @@ const LoginSignup = () => {
               className="input"
               placeholder="Street Address"
               value={address.street}
-              onChange={(e) => setAddress({ ...address, street: e.target.value })}
+              onChange={(e) =>
+                setAddress({ ...address, street: e.target.value })
+              }
               required
             />
             <input
@@ -174,7 +191,9 @@ const LoginSignup = () => {
               className="input"
               placeholder="Postal Code"
               value={address.postalCode}
-              onChange={(e) => setAddress({ ...address, postalCode: e.target.value })}
+              onChange={(e) =>
+                setAddress({ ...address, postalCode: e.target.value })
+              }
               required
             />
             <input
@@ -182,7 +201,9 @@ const LoginSignup = () => {
               className="input"
               placeholder="Country"
               value={address.country}
-              onChange={(e) => setAddress({ ...address, country: e.target.value })}
+              onChange={(e) =>
+                setAddress({ ...address, country: e.target.value })
+              }
               required
             />
             <input
@@ -196,15 +217,19 @@ const LoginSignup = () => {
           </>
         )}
         <button type="submit" className="form-btn">
-          {isSignUp ? 'Sign Up' : 'Log in'}
+          {isSignUp ? "Sign Up" : "Log in"}
         </button>
       </form>
       <p className="sign-up-label">
-        {isSignUp ? 'Already have an account?' : "Don't have an account?"}
+        {isSignUp ? "Already have an account?" : "Don't have an account?"}
         <span className="sign-up-link" onClick={toggleMode}>
-          {isSignUp ? 'Log in' : 'Sign up'}
+          {isSignUp ? "Log in" : "Sign up"}
         </span>
       </p>
+
+      {alertMessage && (
+        <Alert message={alertMessage} onClose={() => setAlertMessage("")} />
+      )}
     </div>
   );
 };
