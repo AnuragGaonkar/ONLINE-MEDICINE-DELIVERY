@@ -1,0 +1,146 @@
+.medicine-details-container {
+  font-family: Arial, sans-serif;
+  margin: 20px;
+}
+
+.medicine-details-container h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.medicine-info {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background-color: #f9f9f9;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.medicine-image {
+  width: 150px;
+  height: 150px;
+  margin-bottom: 20px;
+}
+
+.medicine-details {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.medicine-details p {
+  color: #555;
+  margin: 5px 0;
+}
+
+.old-price {
+  text-decoration: line-through;
+  color: #888;
+}
+
+.price {
+  font-size: 18px;
+  color: #333;
+}
+
+.price span {
+  color: #ff6f00;
+  font-size: 14px;
+}
+
+.add-to-cart-btn {
+  background-color: #00a862;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 20px;
+}
+
+.add-to-cart-btn:hover {
+  background-color: #007d46;
+}
+
+.cart-summary {
+  margin-top: 40px;
+  padding: 20px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+}
+
+.view-cart-btn {
+  background-color: #555;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+.view-cart-btn:hover {
+  background-color: #333;
+}
+
+.cart-info h4 {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.cart-info ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.cart-info ul li {
+  margin-bottom: 8px;
+  color: #555;
+}
+
+/* Similar Medicines Section */
+
+.similar-medicines-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-top: 40px;
+}
+
+.medicine-card {
+  background-color: #f9f9f9;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 20px;
+  width: 200px;
+  text-align: center;
+}
+
+.medicine-card img {
+  width: 100px;
+  height: 100px;
+  margin-bottom: 10px;
+}
+
+.medicine-card-details {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.medicine-card h4 {
+  font-size: 16px;
+  color: #333;
+}
+
+.medicine-card p {
+  color: #555;
+}
+
+.medicine-card .add-to-cart-btn {
+  margin-top: 10px;
+}
