@@ -3,7 +3,6 @@ from flask_cors import CORS
 from flask_pymongo import PyMongo
 import nltk
 from fuzzywuzzy import process  # For fuzzy matching
-import re
 
 app = Flask(__name__)
 CORS(app)
@@ -11,6 +10,10 @@ CORS(app)
 # MongoDB configuration
 app.config["MONGO_URI"] = "mongodb://localhost:27017/medicineDB"  # Adjust your MongoDB URI
 mongo = PyMongo(app)
+
+# Initialize a cache to store chat history and last mentioned medicine
+chat_history = []
+last_mentioned_medicine = None  # Track the last mentioned medicine globally
 
 # Tokenization function
 def tokenize(text):
@@ -48,7 +51,6 @@ def find_medicines(symptoms):
     return medicine_scores[:5]
 
 # Function to get medicine details based on user query
-# Function to get medicine details based on user query (can handle multiple queries)
 def get_medicine_details(medicine_name, queries):
     # Retrieve medicine details from MongoDB
     medicine = mongo.db.medicines.find_one({"name": {"$regex": medicine_name, "$options": "i"}})
@@ -82,6 +84,8 @@ def get_medicine_details(medicine_name, queries):
 
 # Function to handle default responses for common greetings or general queries
 def get_default_response(message):
+    global last_mentioned_medicine  # Access the last mentioned medicine
+
     greetings = ['hello', 'hi', 'hey', 'howdy', 'greetings']
     # Check if the message is a greeting
     if any(greeting in message.lower() for greeting in greetings):
@@ -103,18 +107,29 @@ def get_default_response(message):
     medicine_names = [med['name'] for med in mongo.db.medicines.find()]
     found_medicines = process.extract(message, medicine_names, limit=1)
 
-    if found_queries and found_medicines[0][1] > 80:  # Only consider if matching score is high
+    # If a new medicine is mentioned
+    if found_queries and found_medicines and found_medicines[0][1] > 80:  # Only consider if matching score is high
         medicine_name = found_medicines[0][0]
+        last_mentioned_medicine = medicine_name  # Update last mentioned medicine
         details_response = get_medicine_details(medicine_name, found_queries)
+        if details_response:
+            return details_response
+
+    # If the user asked about the last mentioned medicine and the current query does not specify a new medicine
+    if last_mentioned_medicine and found_queries:
+        details_response = get_medicine_details(last_mentioned_medicine, found_queries)
         if details_response:
             return details_response
 
     return None  # No default response, continue to find medicines
 
-
 @app.route('/chat', methods=['POST'])
 def chat():
     user_message = request.json.get('message')
+
+    # Store the user message in the chat history
+    global chat_history
+    chat_history.append(user_message)
 
     # Check for a default response first
     default_response = get_default_response(user_message)
@@ -126,6 +141,8 @@ def chat():
     medicines = find_medicines(tokens)
 
     if medicines:
+        global last_mentioned_medicine
+        last_mentioned_medicine = medicines[0]['name']  # Update last mentioned medicine
         response = {
             'message': "Here are the recommended medicines for your symptoms:",
             'medicines': medicines

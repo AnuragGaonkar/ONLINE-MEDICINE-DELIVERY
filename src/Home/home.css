@@ -1,153 +1,56 @@
-html, body {
-  height: 100%;
-  margin: 0;
-  overflow-x: hidden; 
-}
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap');
 
-.main {
-  display: flex;
-  flex-direction: column; 
-  min-height: 100vh;
-}
-
-main {
-  flex: 1; 
-}
-
-header {
-  background-color: rgba(255, 255, 255, 0.8); /* Added transparency to the header */
-  color: #4CAF50;
-  padding: 15px 20px;
+.wrapper {
   display: flex;
   justify-content: center;
-  align-items: center;
-  position: sticky;
-  z-index: 1000; 
+  margin: 20px 0;
 }
 
-header .logo {
-  font-size: 24px;
-  font-weight: bold;
-  margin-right: 140px;
-}
-
-header nav ul {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  gap: 20px;
-}
-
-header nav ul li {
-  display: inline;
-  margin: 0 20px;
-}
-
-header nav ul li a {
-  text-decoration: none;
-  font-size: 18px;
-  color: black;
-  padding-bottom: 3px;
-  cursor: pointer;
-}
-
-header nav ul li a:hover {
-  border-bottom: 1px solid #4CAF50;
-}
-
-header nav ul li a i {
-  padding-right: 5px;
-}
-
-.menu-toggle {
-  background: none;
-  border: none;
-  color: white;
-  font-size: 24px;
-  cursor: pointer;
-  display: none; /* Initially hidden, shown in mobile view */
-}
-
-.hero {
-  text-align: center;
-  padding: 50px 20px;
-  background-color: #f4f4f4;
-}
-
-.hero h1 {
-  font-size: 36px;
-  margin-bottom: 10px;
-}
-
-.hero p {
-  font-size: 18px;
-  margin-bottom: 20px;
-}
-
-.hero button {
-  padding: 10px 20px;
-  font-size: 16px;
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  cursor: pointer;
+.container {
+  width: 100%;
 }
 
 .search-container {
-  display: flex;
-  align-items: center;
-  width: 400px; /* Increased width */
-  height: 50px; /* Increased height */
-  border-radius: 25px; /* Adjusted border radius */
-  overflow: hidden;
-  background: rgba(125, 125, 125, 0); /* Transparent glass effect */
-  backdrop-filter: blur(15px); /* Enhanced glass effect */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   position: relative;
-  margin: 20px auto; 
-  z-index: 1; /* Changed to 1 to ensure visibility */
+  width: 100%;
+  top: -8%;
+  max-width: 500px;
+  padding: 10px;
+  background-color: #f1f1f1;
+  border-radius: 30px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  display: flex;
+  justify-content: center;
+  margin: 0 auto;
 }
 
 .search-input {
-  flex-grow: 1;
+  width: 100%;
+  padding: 12px 20px;
   border: none;
-  background: transparent;
-  padding: 10px 15px;
-  font-size: 16px;
-  color: #333;
+  border-radius: 30px;
+  font-size: 18px;
   outline: none;
-}
-
-.search-input::placeholder {
-  color: #999;
+  color: black; /* Ensure input text is visible */
 }
 
 .search-button {
-  background: rgb(255, 0, 0); /* Translucent green */
+  position: absolute;
+  height: 50px;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  padding: 10px;
   border: none;
+  background-color: #4CAF50;
+  color: white;
+  font-size: 16px;
   cursor: pointer;
-  padding: 0; /* Remove padding to fill button */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%; /* Make the button height fill the container */
+  border-radius: 50%;
 }
 
-.search-icon {
-  width: 24px; /* Adjusted size */
-  height: 24px; /* Adjusted size */
-  color: #666;
-  transition: color 0.3s ease;
-}
-
-.search-container:hover {
-  background: rgba(255, 255, 255, 0.6); /* Slightly more opaque on hover */
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
-}
-
-.search-container:hover .search-icon {
-  color: #333;
+.search-button i {
+  margin-left: 5px;
 }
 
 .products {
@@ -174,8 +77,8 @@ header nav ul li a i {
 }
 
 .product-item:hover {
-  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3); /* Shadow effect on hover */
-  border-color: #388E3C; /* Slightly darker border on hover */
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
+  border-color: #388E3C;
 }
 
 .product-item img {
@@ -222,15 +125,15 @@ footer p {
 
 @media (max-width: 768px) {
   .search-container {
-    display: none; /* Ensures search container is on top */
+    display: none;
   }
 
   .main-nav {
-    display: none; /* Hide main navigation */
+    display: none;
   }
 
   .menu-toggle {
-    display: block; /* Show menu toggle button */
+    display: block;
   }
 
   .menu-toggle:hover {
@@ -284,8 +187,9 @@ footer p {
     padding: 8px;
   }
 
-  .search-form button .search-text {
-    display: none;
+  .search-form button {
+    font-size: 14px;
+    padding: 8px;
   }
 }
 
@@ -294,15 +198,15 @@ footer p {
   position: fixed;
   top: 20px;
   right: 20px;
-  background-color: #4CAF50; 
-  color: white; 
+  background-color: #4CAF50;
+  color: white;
   padding: 15px;
   border-radius: 5px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  z-index: 1000; 
-  animation: slide-in 0.3s forwards; 
+  z-index: 1001;
+  animation: slide-in 0.3s forwards;
 }
 
 .close-alert {
@@ -318,8 +222,75 @@ footer p {
     transform: translateY(100%);
     opacity: 0;
   }
+
   to {
     transform: translateY(0);
     opacity: 1;
   }
+}
+
+/* Slideshow CSS */
+.hero {
+  position: relative;
+  height: 500px;
+  text-align: center;
+  color: white;
+  overflow: hidden; /* Prevents content overflow */
+}
+
+.slideshow-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.slideshow-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  opacity: 0;
+  animation: fade 18s infinite; /* 4 seconds per image in a 16s loop */
+}
+
+.slideshow-image:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.slideshow-image:nth-child(2) {
+  animation-delay: 6s;
+}
+
+.slideshow-image:nth-child(3) {
+  animation-delay: 12s;
+}
+
+.slideshow-image:nth-child(4) {
+  animation-delay: 18s;
+}
+
+@keyframes fade {
+  0% {
+    opacity: 0;
+  }
+  25% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 1;
+  }
+  75% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+h1{
+  text-align: center;
+  font-size: 40px;
 }

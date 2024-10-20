@@ -1,3 +1,4 @@
+/* login.css */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -8,7 +9,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: 1501; /* Ensure it is on top */
 }
 
 .modal-content {
@@ -38,7 +39,6 @@
 .close:hover {
   color: #ff0000; /* Optional: Close button turns red when hovered */
 }
-
 
 .form-container {
   width: 100%;
@@ -124,8 +124,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  z-index: 1000;
-  animation: slide-in 0.3s forwards;
+  z-index: 1001; /* Ensure it is on top */
+  animation: slide-in 0.3s forwards; 
 }
 
 .close-alert {

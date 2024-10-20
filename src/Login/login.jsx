@@ -1,3 +1,4 @@
+// LoginSignup.jsx
 import React, { useState } from 'react';
 import './login.css';
 
@@ -17,7 +18,7 @@ const LoginSignup = () => {
 
   const Alert = ({ message, onClose }) => {
     return (
-      <div className="alert">
+      <div className="alert" style={{ zIndex: 1001 }}>
         <span>{message}</span>
         <button onClick={onClose} className="close-alert">
           ×

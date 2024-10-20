@@ -10,6 +10,72 @@ body {
     background: #101010;
 }
 
+/* Navbar Container */
+.navbar {
+    display: flex;
+    justify-content: space-between; /* Ensures left and right sections are spaced out */
+    align-items: center; /* Vertically centers the items */
+    padding: 0 20px;
+    height: 60px;
+    background-color: #fff; /* Adjust the navbar color as needed */
+}
+
+/* Flex container for right items */
+.navbar-right {
+    display: flex;
+    justify-content: flex-end; /* Pushes items to the right */
+    align-items: center;
+    gap: 20px; /* Adds space between Login, Offers, and Cart */
+}
+
+/* Menu Items */
+.navbar-right a,
+.navbar-right button {
+    color: #353535;
+    text-decoration: none;
+    font-size: 16px;
+    padding: 10px;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.navbar-right a:hover,
+.navbar-right button:hover {
+    color: #ff5722; /* Highlight color on hover */
+}
+
+.navbar-right .shopping-cart {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+.navbar-right .shopping-cart svg {
+    width: 24px;
+    height: 24px;
+    color: #353535;
+    transition: color 0.3s ease;
+}
+
+.navbar-right .shopping-cart:hover svg {
+    color: #ff5722;
+}
+
+/* Adjustments for mobile view */
+@media (max-width: 768px) {
+    .navbar {
+        padding: 0 10px;
+        height: 50px;
+    }
+
+    .navbar-right {
+        gap: 10px; /* Reduce gap on mobile */
+    }
+}
+
 /* Search Box - Initially hidden on large screens */
 .search-box {
     position: absolute;
@@ -93,14 +159,9 @@ body {
 }
 
 /* Optional navbar/menu styles */
-.navbar {
-    position: relative;
-}
-
 .menu {
     position: absolute;
     z-index: 999;
-    /* Ensure it overlaps other elements */
 }
 
 /* Animating the sliding menu */
@@ -120,4 +181,22 @@ body {
     to {
         opacity: 1;
     }
+}
+
+.modal-overlay {
+    position: fixed; /* Keep the overlay fixed */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
+    display: flex; /* Center the modal */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    z-index: 1000; /* Higher than any other content, but adjust as necessary */
+}
+
+/* Adjust z-index of the slideshow container if necessary */
+.hero {
+    z-index: 1; /* Ensure the hero section has a lower z-index than the modal */
 }

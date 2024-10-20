@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const mongoURI = "mongodb://localhost:27017/mediquick"; // Add your database name
+const mongoURI = "mongodb://localhost:27017/medicineDB"; // Add your database name
 
 const connectToMongo = async () => {
   try {

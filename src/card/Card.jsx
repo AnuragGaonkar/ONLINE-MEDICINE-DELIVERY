@@ -11,7 +11,7 @@ const Card = ({ medicine, handleAddToCart }) => {
       <p>{medicine.description}</p>
       <p>Price: ₹{medicine.price}</p>
       <p>Quantity: {medicine.quantity}</p>
-      <button onClick={() => handleAddToCart(medicine)}>Add to Cart</button>
+      <button onClick={() => handleAddToCart(medicine)}><i className="fas fa-cart-plus"></i> Add to Cart</button>
     </div>
   );
 };
