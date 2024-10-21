@@ -14,6 +14,9 @@ mongo = PyMongo(app)
 # Initialize a cache to store chat history and last mentioned medicine
 chat_history = []
 last_mentioned_medicine = None  # Track the last mentioned medicine globally
+awaiting_cart_confirmation = False  # Track if awaiting cart confirmation
+last_medicines_for_cart = []  # Store medicines to be added to cart
+quantities = {}  # Track quantities for each medicine to be added to cart
 
 # Tokenization function
 def tokenize(text):
@@ -21,7 +24,7 @@ def tokenize(text):
     words = [word for word in words if word.isalnum()]
     return words
 
-# Function to find relevant medicines
+# Function to find relevant medicines based on symptoms
 def find_medicines(symptoms):
     medicines = mongo.db.medicines.find()
     medicine_scores = []
@@ -76,7 +79,7 @@ def get_medicine_details(medicine_name, queries):
     if "delivery" in queries:
         response_parts.append(f"The delivery time for {medicine['name']} is {medicine['delivery_time']}.")
     if "uses" in queries or "how to use" in queries:
-        uses = [medicine[f'use{i}'] for i in range(5) if medicine.get(f'use{i}') ]
+        uses = [medicine[f'use{i}'] for i in range(5) if medicine.get(f'use{i}')]
         response_parts.append(f"The uses of {medicine['name']} include: {', '.join(uses)}.")
     
     # Join all the response parts into a single response string
@@ -123,13 +126,63 @@ def get_default_response(message):
 
     return None  # No default response, continue to find medicines
 
+# Function to handle cart-related operations
+def handle_cart(message):
+    global last_medicines_for_cart
+    global awaiting_cart_confirmation
+    global quantities
+
+    if "add to cart" in message.lower():
+        medicines = [med['name'] for med in mongo.db.medicines.find()]
+        found_medicines = process.extract(message, medicines, limit=5)
+        matched_medicines = [med[0] for med in found_medicines if med[1] > 80]
+
+        if matched_medicines:
+            last_medicines_for_cart = matched_medicines
+            awaiting_cart_confirmation = True
+            return f"Do you want to add {', '.join(last_medicines_for_cart)} to your cart? If so, please specify the quantities."
+
+        return "Please specify the medicines you want to add to the cart."
+
+    # Handle quantity input
+    if awaiting_cart_confirmation:
+        tokens = tokenize(message)
+        quantities_response = []
+        for med in last_medicines_for_cart:
+            for token in tokens:
+                if token.isdigit():
+                    quantities[med] = int(token)
+                    quantities_response.append(f"{med}: {token}")
+
+        # Check if all quantities are provided
+        if len(quantities_response) == len(last_medicines_for_cart):
+            # Save the medicines and quantities to the MongoDB cart collection
+            for med, qty in quantities.items():
+                mongo.db.cart.insert_one({
+                    "medicine": med,
+                    "quantity": qty
+                })
+
+            awaiting_cart_confirmation = False  # Reset confirmation status
+            return f"Added to cart: {', '.join(quantities_response)}. Would you like to proceed with the checkout?"
+
+        elif quantities_response:
+            return f"Added to cart: {', '.join(quantities_response)}. Please specify the quantities for the remaining medicines."
+
+    return None
+
+
 @app.route('/chat', methods=['POST'])
 def chat():
-    user_message = request.json.get('message')
+    global chat_history, awaiting_cart_confirmation, last_medicines_for_cart, quantities
 
-    # Store the user message in the chat history
-    global chat_history
+    user_message = request.json.get('message')
     chat_history.append(user_message)
+
+    # Handle cart-related queries
+    cart_response = handle_cart(user_message)
+    if cart_response:
+        return jsonify({'message': cart_response, 'medicines': last_medicines_for_cart, 'quantities': quantities})
 
     # Check for a default response first
     default_response = get_default_response(user_message)
@@ -154,6 +207,12 @@ def chat():
         }
 
     return jsonify(response)
+
+@app.route('/view_cart', methods=['GET'])
+def view_cart():
+    cart_items = mongo.db.cart.find()  # Fetch all items in the cart
+    cart_list = [{"medicine": item["medicine"], "quantity": item["quantity"]} for item in cart_items]
+    return jsonify(cart_list)
 
 if __name__ == '__main__':
     app.run(debug=True)

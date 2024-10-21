@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
 import "./home.css";
-import Chatbot from "../Chatbot/Chatbot";
 import { CartContext } from "../Cart/CartContext";
 import Card from "../card/Card";
 import { useNavigate } from "react-router-dom"; // Import useNavigate for navigation
@@ -17,6 +16,7 @@ const Home = () => {
   const [filteredSuggestions, setFilteredSuggestions] = useState([]); // Autocomplete suggestions
   const [showSuggestions, setShowSuggestions] = useState(false); // Toggle suggestion box
   const navigate = useNavigate(); // Navigation hook for redirection
+  const [quantity, setQuantity] = useState({}); // State for storing quantities of medicines
 
   // Function to fetch medicines from API
   const getMedicines = async () => {
@@ -40,8 +40,9 @@ const Home = () => {
 
   // Handle adding to cart and show alert
   const handleAddToCart = (medicine) => {
-    addToCart(medicine._id, 1);
-    setAlertMessage(`${medicine.name} has been added to your cart!`);
+    const qty = quantity[medicine._id] || 1; // Get quantity or default to 1
+    addToCart(medicine._id, qty);
+    setAlertMessage(`${medicine.name} (Quantity: ${qty}) has been added to your cart!`);
     setTimeout(() => setAlertMessage(""), 3000);
   };
 
@@ -67,6 +68,14 @@ const Home = () => {
     setSearchTerm(""); // Clear search term
     setShowSuggestions(false);
     navigate(`/medicine/${medicineId}`); // Navigate to medicine details page
+  };
+
+  // Handle quantity change for each medicine
+  const handleQuantityChange = (medicineId, value) => {
+    setQuantity((prev) => ({
+      ...prev,
+      [medicineId]: value >= 1 ? value : 1, // Ensure quantity is at least 1
+    }));
   };
 
   return (
@@ -118,16 +127,28 @@ const Home = () => {
           <div className="product-list">
             {/* Show all medicines, regardless of the search term */}
             {medicines.map((medicine) => (
-              <Card
-                key={medicine._id}
-                medicine={medicine}
-                handleAddToCart={handleAddToCart}
-              />
+              <div key={medicine._id} className="medicine-item">
+                <Card
+                  medicine={medicine}
+                  handleAddToCart={handleAddToCart}
+                />
+                <div className="quantity-container">
+                  <input
+                    type="number"
+                    min="1"
+                    value={quantity[medicine._id] || 1} // Default to 1
+                    onChange={(e) => handleQuantityChange(medicine._id, parseInt(e.target.value))}
+                    className="quantity-input"
+                  />
+                  <button onClick={() => handleAddToCart(medicine)}>
+                    Add to Cart
+                  </button>
+                </div>
+              </div>
             ))}
           </div>
         </section>
 
-        <Chatbot />
       </main>
 
       {alertMessage && (

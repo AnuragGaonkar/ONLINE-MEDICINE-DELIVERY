@@ -1,6 +1,7 @@
 import React, { useEffect, useContext, useCallback } from "react";
 import { CartContext } from "../Cart/CartContext"; // Adjust the import path as needed
 import { useNavigate } from "react-router-dom";
+import cart from './empty cart.png';
 import "./cart.css";
 
 const Cart = () => {
@@ -20,7 +21,6 @@ const Cart = () => {
   // Calculate total cart price
   const cartTotal = cartItems
     .reduce((total, item) => {
-      // Safely handle item.price and ensure it's a number
       const price = item.price || 0; // Assuming price is already a number
       return total + price * item.quantity; // Calculate total considering quantity
     }, 0)
@@ -29,7 +29,7 @@ const Cart = () => {
   return (
     <div className="main">
       <div className="breadcrumb">
-        <a onClick={() => navigate("/")}>Home</a> &gt; <span>Cart</span>
+        <button onClick={() => navigate("/")}>Home</button> &gt; <span>Cart</span>
       </div>
 
       <div className="cart-container">
@@ -37,12 +37,12 @@ const Cart = () => {
           <h2>{cartItems.length} Items in your Cart</h2>
           <div className="delivery-section">
             <span>Deliver to:</span>
-            <a>Select Pincode</a>
+            <button className="select-pincode-button">Select Pincode</button>
           </div>
 
           {cartItems.length === 0 ? (
             <div className="empty-cart">
-              <img src="/path-to-your-empty-cart-image.svg" alt="Empty cart" />
+              <img src={cart} alt="Empty cart" />
               <p>Your Medicine/Healthcare cart is empty!</p>
             </div>
           ) : (
@@ -51,7 +51,7 @@ const Cart = () => {
                 {cartItems.map((item, index) => (
                   <li key={index} className="cart-item">
                     <img
-                      src={item.imageUrl || "/path-to-fallback-image.jpg"} // Fallback image in case imageUrl is not available
+                      src={item.imageUrl} 
                       alt={item.name || "Medicine"}
                     />
                     <div className="item-details">

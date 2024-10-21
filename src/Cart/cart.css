@@ -329,3 +329,11 @@ header nav ul li a i {
 .clear-cart-button:hover {
   background-color: #0056b3;
 }
+
+.select-pincode-button {
+  background: none;
+  color: blue; /* Link color */
+  border: none;
+  text-decoration: underline; /* Underline to resemble a link */
+  cursor: pointer; /* Pointer cursor */
+}
