@@ -152,6 +152,7 @@
   border: 1px solid #ccc; /* Border around bot responses */
 }
 
+/* Chatbot input styles */
 .chatbot-input {
   display: flex;
   padding: 10px;
@@ -172,4 +173,21 @@
   padding: 10px 15px;
   border-radius: 4px;
   cursor: pointer;
+}
+
+/* Add to Cart button styles */
+.add-to-cart-button {
+  background-color: #ff5722; /* Orange background for the add to cart button */
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px; /* Space above button */
+  align-self: center; /* Center align the button */
+  transition: background-color 0.3s; /* Smooth transition for hover effect */
+}
+
+.add-to-cart-button:hover {
+  background-color: #e64a19; /* Darker orange on hover */
 }

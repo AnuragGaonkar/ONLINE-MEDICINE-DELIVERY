@@ -3,6 +3,7 @@ import { CartProvider } from './Cart/CartContext';
 import Home from './Home/home';
 import Cart from './Cart/Cart';
 import Navbar from './Navbar/Navbar';
+import Chatbot from './Chatbot/Chatbot';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import MedicineDetails from './MedicineDetails/MedicineDetails'; // Import your medicine details component
 
@@ -16,6 +17,7 @@ const App = () => {
           <Route path="/cart" element={<Cart />} />
           <Route path="/medicine/:medicineId" element={<MedicineDetails />} /> 
         </Routes>
+        <Chatbot/>
       </Router>
     </CartProvider>
   );

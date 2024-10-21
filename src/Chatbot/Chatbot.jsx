@@ -9,14 +9,15 @@ const Chatbot = ({ notifyCart }) => {
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isThinking, setIsThinking] = useState(false);
-  const [cartItems, setCartItems] = useState([]); // To track items for cart
-  const [isConfirming, setIsConfirming] = useState(false); // Track if bot is awaiting confirmation
-  const [medicineToConfirm, setMedicineToConfirm] = useState(null); // Store medicine to confirm
-  const [quantityToConfirm, setQuantityToConfirm] = useState(null); // Store quantity to confirm
+  const [cartItems, setCartItems] = useState([]);
+  const [isConfirming, setIsConfirming] = useState(false);
+  const [medicinesToConfirm, setMedicinesToConfirm] = useState([]);
+  const [quantitiesToConfirm, setQuantitiesToConfirm] = useState([]);
 
+  // Notify cart items change
   useEffect(() => {
     if (cartItems.length > 0) {
-      notifyCart(cartItems); // Notify Home/Cart component when cartItems are updated
+      notifyCart(cartItems);
     }
   }, [cartItems, notifyCart]);
 
@@ -36,16 +37,14 @@ const Chatbot = ({ notifyCart }) => {
       const userMessage = inputValue;
       setMessages((prevMessages) => [...prevMessages, { text: userMessage, from: 'user' }]);
       setInputValue('');
-      setIsLoading(true); // Set loading state
-      setIsThinking(true); // Set thinking state
+      setIsLoading(true);
+      setIsThinking(true);
 
-      // Handle final confirmation response if awaiting user input for confirmation
       if (isConfirming) {
         handleFinalConfirmation(userMessage);
         return;
       }
 
-      // Simulate a delay for the bot response
       setTimeout(async () => {
         try {
           const response = await fetch('http://127.0.0.1:5000/chat', {
@@ -61,18 +60,16 @@ const Chatbot = ({ notifyCart }) => {
           }
 
           const data = await response.json();
-          const botResponse = data.message; // Get the response message from backend
-          const medicines = data.medicines || []; // Medicines are returned as an array
+          const botResponse = data.message;
+          const medicines = data.medicines || [];
 
-          // Handle medicine selection process
-          if (userMessage.toLowerCase().includes('prescribe')) {
+          if (botResponse.includes('add to cart')) {
             handleMedicineSelection(userMessage, medicines);
           } else {
-            // Check if the bot response includes any medicine details
-            const medicineDetails = medicines.map(med => ({
+            const medicineDetails = medicines.map(med => (med.name ? {
               text: `Medicine: ${med.name} - ${med.description} - Dosage: ${med.dosage} - Price: ₹${med.price}`,
               from: 'bot'
-            }));
+            } : null)).filter(Boolean);
 
             setMessages((prevMessages) => [
               ...prevMessages,
@@ -85,68 +82,85 @@ const Chatbot = ({ notifyCart }) => {
           console.error('Error fetching data:', error);
           setMessages((prevMessages) => [...prevMessages, { text: "An error occurred while fetching data. Please try again.", from: 'bot' }]);
         } finally {
-          setIsLoading(false); // Reset loading state
-          setIsThinking(false); // Reset thinking state after showing response
+          setIsLoading(false);
+          setIsThinking(false);
         }
-      }, 1500); // Simulate a 1.5-second delay before processing the bot's response
+      }, 1500);
     }
   };
 
   const handleMedicineSelection = (message, medicines) => {
-    // Parse quantity if mentioned in the message
-    const quantityMatch = message.match(/(\d+)\s*(units?|pills?|tablets?)/);
-    const quantity = quantityMatch ? parseInt(quantityMatch[1], 10) : null;
+    const quantities = [];
+    const selectedMedicines = [];
 
-    const selectedMedicine = medicines.length > 0 ? medicines[0] : null; // Assuming the first match
-    if (selectedMedicine) {
-      const medicineName = selectedMedicine.name;
-
-      if (quantity) {
-        // If the user provided quantity, ask for final confirmation
-        askForFinalConfirmation(medicineName, quantity);
-      } else {
-        // Ask for quantity if not provided
-        setMessages((prevMessages) => [
-          ...prevMessages,
-          { text: `How many units of ${medicineName} would you like to add to the cart?`, from: 'bot' }
-        ]);
+    medicines.forEach(med => {
+      const quantityMatch = message.match(new RegExp(`(${med.name})\\s*(\\d+)`, 'i'));
+      if (quantityMatch) {
+        selectedMedicines.push(med.name);
+        quantities.push(parseInt(quantityMatch[2], 10));
       }
+    });
+
+    if (selectedMedicines.length > 0) {
+      setMedicinesToConfirm(selectedMedicines);
+      setQuantitiesToConfirm(quantities);
+      askForFinalConfirmation(selectedMedicines, quantities);
     } else {
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { text: `Sorry, I couldn't find any medicine matching your request.`, from: 'bot' }
-      ]);
+      promptForMedicineSelection();
     }
   };
 
-  const askForFinalConfirmation = (medicineName, quantity) => {
+  const promptForMedicineSelection = () => {
     setMessages((prevMessages) => [
       ...prevMessages,
-      { text: `You've selected ${quantity} units of ${medicineName}. Should I add it to your cart?`, from: 'bot' }
+      { text: `It seems you haven't specified the medicine(s) clearly. Please mention the name of the medicine(s) you'd like to add to your cart.`, from: 'bot' }
     ]);
-    setMedicineToConfirm(medicineName); // Store the selected medicine
-    setQuantityToConfirm(quantity); // Store the quantity
-    setIsConfirming(true); // Set confirmation state
+  };
+
+  const askForFinalConfirmation = (medicineNames, quantities) => {
+    const confirmationMessages = medicineNames.map((name, index) => `${quantities[index] || '?'} units of ${name}`).join(', ');
+    setMessages((prevMessages) => [
+      ...prevMessages,
+      { text: `You've selected ${confirmationMessages}. Please confirm the quantity or let me know if you'd like to add them to your cart.`, from: 'bot' }
+    ]);
+    setIsConfirming(true);
   };
 
   const handleFinalConfirmation = (responseMessage) => {
+    const confirmedQuantities = quantitiesToConfirm.map(q => q || 1);
+
     if (responseMessage.toLowerCase() === 'yes') {
-      // Add selected medicines to cart and notify cart
+      const confirmedItems = medicinesToConfirm.map((name, index) => ({
+        name,
+        quantity: confirmedQuantities[index]
+      }));
+
+      confirmedItems.forEach(item => {
+        setCartItems(prevItems => {
+          const existingItem = prevItems.find(cartItem => cartItem.name === item.name);
+          if (existingItem) {
+            return prevItems.map(cartItem =>
+              cartItem.name === item.name ? { ...cartItem, quantity: cartItem.quantity + item.quantity } : cartItem
+            );
+          }
+          return [...prevItems, { name: item.name, quantity: item.quantity }];
+        });
+      });
+
       setMessages((prevMessages) => [
         ...prevMessages,
         { text: `The items have been added to your cart.`, from: 'bot' }
       ]);
-      // Add the confirmed item to the cart
-      setCartItems(prevItems => [...prevItems, { name: medicineToConfirm, quantity: quantityToConfirm }]);
     } else {
       setMessages((prevMessages) => [
         ...prevMessages,
         { text: `Okay, feel free to explore more medicines.`, from: 'bot' }
       ]);
     }
-    setIsConfirming(false); // Reset confirmation state
-    setMedicineToConfirm(null); // Reset stored medicine
-    setQuantityToConfirm(null); // Reset stored quantity
+
+    setIsConfirming(false);
+    setMedicinesToConfirm([]);
+    setQuantitiesToConfirm([]);
   };
 
   const handleKeyDown = (e) => {
@@ -186,6 +200,14 @@ const Chatbot = ({ notifyCart }) => {
             />
             <button onClick={handleSendMessage} disabled={isLoading}>Send</button>
           </div>
+          {isConfirming && (
+            <div className="confirm-add-to-cart">
+              <button onClick={() => handleFinalConfirmation('yes')}>
+                <i className="fas fa-cart-plus"></i> Add to Cart
+              </button>
+              <button onClick={() => handleFinalConfirmation('no')}>Cancel</button>
+            </div>
+          )}
         </div>
       )}
     </>
