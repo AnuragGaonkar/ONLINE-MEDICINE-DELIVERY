@@ -4,7 +4,10 @@ const {
   createUser,
   loginUser,
   getUserDetails,
+  getUserProfile,
+  updateUserProfile,
 } = require("../controllers/authController");
+
 const getUser = require("../middleware/getUser");
 const router = express.Router();
 
@@ -44,5 +47,12 @@ router.post(
 
 // ROUTE-3: Get user details
 router.get("/getuser", getUser, getUserDetails);
+
+// ROUTE-4: Get profile data for logged in user
+router.get("/user/profile", getUser, getUserProfile);
+
+// ROUTE-5: Update profile data for logged in user
+router.put("/user/profile", getUser, updateUserProfile);
+
 
 module.exports = router;

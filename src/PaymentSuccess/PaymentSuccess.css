@@ -1,0 +1,143 @@
+/* src/PaymentSuccess/PaymentSuccess.css */
+
+.payment-success-page {
+  min-height: calc(100vh - 80px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: radial-gradient(circle at top left, #e8f5e9 0, #ffffff 45%);
+  padding: 24px;
+}
+
+.payment-card {
+  max-width: 520px;
+  width: 100%;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 14px 45px rgba(0, 0, 0, 0.08);
+  padding: 32px 28px 28px;
+  text-align: center;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+.payment-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  margin: 0 auto 16px;
+  background: #e8f5e9;
+  color: #2e7d32;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  font-weight: 700;
+}
+
+.payment-card h1 {
+  font-size: 26px;
+  margin-bottom: 8px;
+  color: #1b5e20;
+}
+
+.payment-text {
+  font-size: 15px;
+  color: #555;
+  margin-bottom: 20px;
+}
+
+.payment-text.error-text {
+  color: #b91c1c;
+}
+
+.highlight {
+  font-weight: 600;
+  color: #0f766e;
+}
+
+.summary-box {
+  text-align: left;
+  background: #f9fafb;
+  border-radius: 12px;
+  padding: 16px 18px;
+  margin-bottom: 24px;
+  border: 1px solid #e5e7eb;
+}
+
+.summary-box h2 {
+  font-size: 16px;
+  margin-bottom: 10px;
+  color: #111827;
+}
+
+.summary-line {
+  font-size: 14px;
+  color: #374151;
+  margin: 2px 0;
+}
+
+.summary-list {
+  list-style: none;
+  padding: 8px 0 0;
+  margin: 8px 0 0;
+  border-top: 1px solid #e5e7eb;
+}
+
+.summary-list li {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  padding: 4px 0;
+  color: #4b5563;
+}
+
+.button-row {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.primary-btn,
+.secondary-btn {
+  min-width: 140px;
+  padding: 10px 16px;
+  border-radius: 999px;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.08s ease, box-shadow 0.08s ease,
+    background-color 0.12s ease, color 0.12s ease;
+}
+
+.primary-btn {
+  background-color: #10b981;
+  color: #ffffff;
+  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.35);
+}
+
+.primary-btn:hover {
+  background-color: #059669;
+  transform: translateY(-1px);
+  box-shadow: 0 10px 25px rgba(5, 150, 105, 0.4);
+}
+
+.secondary-btn {
+  background-color: #f3f4f6;
+  color: #111827;
+}
+
+.secondary-btn:hover {
+  background-color: #e5e7eb;
+  transform: translateY(-1px);
+}
+
+@media (max-width: 640px) {
+  .payment-card {
+    padding: 24px 18px 20px;
+  }
+  .button-row {
+    flex-direction: column;
+  }
+}

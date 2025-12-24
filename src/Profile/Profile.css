@@ -1,0 +1,153 @@
+.profile-page {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 20px;
+}
+
+.profile-page h1 {
+  margin-bottom: 20px;
+}
+
+.profile-tabs {
+  display: flex;
+  border-bottom: 1px solid #e0e0e0;
+  margin-bottom: 20px;
+}
+
+.tab {
+  padding: 10px 20px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-weight: 500;
+  border-bottom: 2px solid transparent;
+}
+
+.tab.active {
+  border-bottom-color: #4caf50;
+  color: #4caf50;
+}
+
+.tab-content {
+  margin-top: 10px;
+}
+
+.profile-form {
+  max-width: 600px;
+}
+
+.form-row {
+  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-row label {
+  margin-bottom: 4px;
+  font-size: 14px;
+  color: #555;
+}
+
+.form-row input {
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.form-row.two-cols {
+  flex-direction: row;
+  gap: 16px;
+}
+
+.save-btn {
+  margin-top: 10px;
+  padding: 10px 20px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.save-btn:disabled {
+  background-color: #bdbdbd;
+  cursor: not-allowed;
+}
+
+.orders-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.order-card {
+  border: 1px solid #eee;
+  border-radius: 8px;
+  padding: 12px 16px;
+  background-color: #fafafa;
+}
+
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.order-id {
+  font-weight: 600;
+}
+
+.order-meta {
+  display: flex;
+  gap: 16px;
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+.order-items {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 13px;
+}
+
+.order-items li {
+  display: flex;
+  justify-content: space-between;
+}
+
+.profile-top-bar {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 12px;
+}
+
+.back-home-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid #d1d5db;
+  background: linear-gradient(135deg, #f9fafb, #e5f9f0);
+  color: #047857;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    background 0.15s ease;
+}
+
+.back-home-btn:hover {
+  background: linear-gradient(135deg, #ecfdf5, #bbf7d0);
+  box-shadow: 0 6px 12px rgba(16, 185, 129, 0.25);
+  transform: translateY(-1px);
+}
+
+.back-home-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 3px 6px rgba(16, 185, 129, 0.2);
+}

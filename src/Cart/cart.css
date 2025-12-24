@@ -246,10 +246,10 @@ header nav ul li a i {
 .cart-total button {
   width: 100%;
   padding: 10px;
-  background-color: #d1d1d1;
   border: none;
   border-radius: 5px;
-  cursor: not-allowed;
+  font-weight: 600;
+  cursor: pointer;
 }
 
 .breadcrumb {
@@ -330,10 +330,171 @@ header nav ul li a i {
   background-color: #0056b3;
 }
 
-.select-pincode-button {
-  background: none;
-  color: blue; /* Link color */
+.checkout-button {
+  width: 100%;
+  padding: 10px;
   border: none;
-  text-decoration: underline; /* Underline to resemble a link */
-  cursor: pointer; /* Pointer cursor */
+  border-radius: 5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* disabled */
+.checkout-button:disabled {
+  background-color: #d1d1d1;
+  color: #888;
+  cursor: not-allowed;
+}
+
+/* enabled */
+.checkout-button:not(:disabled) {
+  background-color: #4caf50;
+  color: white;
+}
+
+/* quantity controls */
+.quantity-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.quantity-controls button {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid #4caf50;
+  background-color: white;
+  color: #4caf50;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.quantity-controls button:hover {
+  background-color: #4caf50;
+  color: white;
+}
+
+.quantity-controls span {
+  min-width: 20px;
+  text-align: center;
+}
+
+.cart-summary {
+  padding: 20px;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  background-color: #fafafa;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+.cart-summary h3 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  font-size: 18px;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.summary-total {
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.free-delivery {
+  color: #2e7d32;
+  font-weight: 600;
+}
+
+.summary-note {
+  font-size: 12px;
+  color: #388e3c;
+  margin: 8px 0 12px;
+}
+
+/* === Dark mode for cart page === */
+
+html.dark .cart-container {
+  background-color: #020617;
+  color: #e5e7eb;
+}
+
+/* Left item list */
+html.dark .cart-item {
+  background-color: #020617;
+  border-color: #1f2937;
+}
+
+html.dark .item-name {
+  color: #f9fafb;
+}
+
+html.dark .item-price {
+  color: #9ca3af;
+}
+
+html.dark .quantity-controls button {
+  background-color: #020617;
+  border-color: #22c55e;
+  color: #22c55e;
+}
+
+html.dark .quantity-controls button:hover {
+  background-color: #22c55e;
+  color: #022c22;
+}
+
+html.dark .clear-cart-button {
+  background-color: #2563eb;
+}
+
+html.dark .clear-cart-button:hover {
+  background-color: #1d4ed8;
+}
+
+/* Right summary card */
+html.dark .cart-summary {
+  background: radial-gradient(circle at top left, #0b1120, #020617);
+  border-color: #1f2937;
+  box-shadow: 0 16px 38px rgba(0, 0, 0, 0.85);
+}
+
+html.dark .cart-summary h3 {
+  color: #f9fafb;
+}
+
+html.dark .summary-row {
+  color: #e5e7eb;
+}
+
+html.dark .summary-total {
+  color: #f97316; /* subtle accent for amount payable */
+}
+
+html.dark .free-delivery {
+  color: #4ade80;
+}
+
+html.dark .summary-note {
+  color: #bbf7d0;
+}
+
+/* Checkout button stays strong in dark mode */
+html.dark .checkout-button:not(:disabled) {
+  background-color: #22c55e;
+  color: #022c22;
+}
+
+/* Breadcrumb + links */
+html.dark .breadcrumb span {
+  color: #9ca3af;
+}
+
+html.dark .breadcrumb a {
+  color: #60a5fa;
 }

@@ -5,6 +5,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 ## Available Scripts
 
 In the project directory, you can run:
+stripe listen --forward-to localhost:5001/api/payment/webhook
 
 ### `npm start`
 

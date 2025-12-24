@@ -1,202 +1,240 @@
 /* Base styles */
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 /* Body background for testing */
 body {
-    background: #101010;
+  background: #101010;
 }
 
 /* Navbar Container */
 .navbar {
-    display: flex;
-    justify-content: space-between; /* Ensures left and right sections are spaced out */
-    align-items: center; /* Vertically centers the items */
-    padding: 0 20px;
-    height: 60px;
-    background-color: #fff; /* Adjust the navbar color as needed */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  height: 60px;
+  background-color: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 50;
 }
 
 /* Flex container for right items */
 .navbar-right {
-    display: flex;
-    justify-content: flex-end; /* Pushes items to the right */
-    align-items: center;
-    gap: 20px; /* Adds space between Login, Offers, and Cart */
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 20px;
 }
 
 /* Menu Items */
 .navbar-right a,
 .navbar-right button {
-    color: #353535;
-    text-decoration: none;
-    font-size: 16px;
-    padding: 10px;
-    cursor: pointer;
-    transition: color 0.3s ease;
+  color: #353535;
+  text-decoration: none;
+  font-size: 16px;
+  padding: 10px;
+  cursor: pointer;
+  transition: color 0.3s ease;
 }
 
 .navbar-right a:hover,
 .navbar-right button:hover {
-    color: #ff5722; /* Highlight color on hover */
+  color: #ff5722;
 }
 
 .navbar-right .shopping-cart {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
 }
 
 .navbar-right .shopping-cart svg {
-    width: 24px;
-    height: 24px;
-    color: #353535;
-    transition: color 0.3s ease;
+  width: 24px;
+  height: 24px;
+  color: #353535;
+  transition: color 0.3s ease;
 }
 
 .navbar-right .shopping-cart:hover svg {
-    color: #ff5722;
+  color: #ff5722;
 }
 
 /* Adjustments for mobile view */
 @media (max-width: 768px) {
-    .navbar {
-        padding: 0 10px;
-        height: 50px;
-    }
+  .navbar {
+    padding: 0 10px;
+    height: 50px;
+  }
 
-    .navbar-right {
-        gap: 10px; /* Reduce gap on mobile */
-    }
-}
+  .navbar-right {
+    gap: 10px;
+  }
 
-/* Search Box - Initially hidden on large screens */
-.search-box {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    height: 60px;
-    background: #353535;
-    line-height: 40px;
-    padding: 10px;
-    border-radius: 60px;
-    display: none; /* Hidden by default on large screens */
-    transition: all 0.7s ease-in-out; /* Smooth transition */
-}
+  .mobile-menu-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+  }
 
-/* Search input - Initially width is 0 */
-.search-input {
-    background: #353535;
-    color: #fff;
-    outline: none;
-    border: none;
-    line-height: 40px;
-    width: 0;
-    float: left;
-    font-size: 14px;
-    transition: width 0.7s ease; /* Only animating width for a smooth transition */
-    font-family: sans-serif;
-}
-
-/* Search button */
-.search-btn {
-    display: flex;
-    justify-content: center;
+  .mobile-menu-panel {
     align-items: center;
-    text-decoration: none;
-    background: #353535;
-    padding: 12px;
-    border-radius: 50%;
-    float: right;
-    color: #ff5722;
-    transition: background 0.4s ease;
+  }
 }
 
-/* When the search box is hovered, the input expands */
+/* Search Box - initially hidden on large screens */
+.search-box {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 60px;
+  background: #353535;
+  line-height: 40px;
+  padding: 10px;
+  border-radius: 60px;
+  display: none;
+  transition: all 0.7s ease-in-out;
+}
+
+.search-input {
+  background: #353535;
+  color: #fff;
+  outline: none;
+  border: none;
+  line-height: 40px;
+  width: 0;
+  float: left;
+  font-size: 14px;
+  transition: width 0.7s ease;
+  font-family: sans-serif;
+}
+
+.search-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  background: #353535;
+  padding: 12px;
+  border-radius: 50%;
+  float: right;
+  color: #ff5722;
+  transition: background 0.4s ease;
+}
+
 .search-box:hover > .search-input {
-    width: 240px;
-    margin: 0 8px;
+  width: 240px;
+  margin: 0 8px;
 }
 
-/* When the search input is focused, it expands */
 .search-input:focus {
-    width: 240px;
-    margin: 0 8px;
+  width: 240px;
+  margin: 0 8px;
 }
 
-/* Change the search button background when hovered or input focused */
 .search-box:hover > .search-btn,
 .search-input:focus + .search-btn {
-    background: #fff;
-    color: #ff5722;
+  background: #fff;
+  color: #ff5722;
 }
 
-/* Mobile specific styles */
 @media (max-width: 768px) {
-    .search-box {
-        display: block; /* Show the search box in mobile view */
-        transition: all 0.3s ease-in-out;
-        position: relative; /* Adjusted for navbar integration */
-        left: auto;
-        top: auto;
-        transform: none;
-        margin-right: 16px;
-    }
+  .search-box {
+    display: block;
+    transition: all 0.3s ease-in-out;
+    position: relative;
+    left: auto;
+    top: auto;
+    transform: none;
+    margin-right: 16px;
+  }
 }
 
-/* Hide the search box on larger screens */
 @media (min-width: 769px) {
-    .search-box {
-        display: none;
-    }
+  .search-box {
+    display: none;
+  }
 }
 
-/* Optional navbar/menu styles */
 .menu {
-    position: absolute;
-    z-index: 999;
+  position: absolute;
+  z-index: 999;
 }
 
-/* Animating the sliding menu */
 .sliding-menu {
-    transition: transform 0.5s ease;
-    transform: translateX(100%); /* Offscreen by default */
+  transition: transform 0.5s ease;
+  transform: translateX(100%);
 }
 
 .sliding-menu.open {
-    transform: translateX(0); /* Slide into view */
+  transform: translateX(0);
+}
+
+.sliding-menu,
+.sliding-menu.open {
+  background-color: #ffffff;
 }
 
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .modal-overlay {
-    position: fixed; /* Keep the overlay fixed */
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
-    display: flex; /* Center the modal */
-    justify-content: center; /* Center horizontally */
-    align-items: center; /* Center vertically */
-    z-index: 1000; /* Higher than any other content, but adjust as necessary */
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
 }
 
-/* Adjust z-index of the slideshow container if necessary */
+/* ensure hero is below navbar & overlays */
 .hero {
-    z-index: 1; /* Ensure the hero section has a lower z-index than the modal */
+  z-index: 1;
+}
+
+.profile-dropdown {
+  position: absolute;
+  right: 0;
+  margin-top: 0.5rem;
+  width: 10rem;
+
+  /* animation state */
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(-4px) scale(0.96);
+  transition:
+    opacity 150ms ease-out,
+    transform 150ms ease-out;
+}
+
+.profile-dropdown-inner {
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.375rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.profile-dropdown-open {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
 }

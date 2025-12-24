@@ -1,14 +1,15 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import "./home.css";
 import { CartContext } from "../Cart/CartContext";
 import Card from "../card/Card";
-import { useNavigate } from "react-router-dom"; // Import useNavigate for navigation
 import one from './comp_india_covered.jpg';
 import two from './comp_cod.jpg';
 import three from './safe.jpg';
 import four from './del.png';
+import { useNavigate, useLocation } from "react-router-dom";
 
 const Home = () => {
+  const location = useLocation();
   const { addToCart } = useContext(CartContext);
   const [alertMessage, setAlertMessage] = useState("");
   const [medicines, setMedicines] = useState([]); // State to store medicines
@@ -16,7 +17,8 @@ const Home = () => {
   const [filteredSuggestions, setFilteredSuggestions] = useState([]); // Autocomplete suggestions
   const [showSuggestions, setShowSuggestions] = useState(false); // Toggle suggestion box
   const navigate = useNavigate(); // Navigation hook for redirection
-  const [quantity, setQuantity] = useState({}); // State for storing quantities of medicines
+  const [quantity] = useState({}); // currently not changed anywhere
+  const searchWrapperRef = useRef(null);
 
   // Function to fetch medicines from API
   const getMedicines = async () => {
@@ -32,6 +34,30 @@ const Home = () => {
       console.log("Internal Server error.");
     }
   };
+  
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (
+        searchWrapperRef.current &&
+        !searchWrapperRef.current.contains(e.target)
+      ) {
+        setShowSuggestions(false);
+      }
+    };
+
+    const handleEsc = (e) => {
+      if (e.key === "Escape") {
+        setShowSuggestions(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleEsc);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleEsc);
+    };
+  }, []);
 
   // Fetch medicines on component mount
   useEffect(() => {
@@ -40,9 +66,30 @@ const Home = () => {
 
   // Handle adding to cart and show alert
   const handleAddToCart = (medicine) => {
-    const qty = quantity[medicine._id] || 1; // Get quantity or default to 1
+    const isLoggedIn = !!localStorage.getItem("auth-token"); // FIXED KEY
+    const qty = quantity[medicine._id] || 1;
+
+    if (!isLoggedIn) {
+      // Remember what user tried to add
+      window.history.replaceState(
+        {
+          ...(window.history.state || {}),
+          usr: {
+            from: location.pathname,
+            productToAdd: { medicineId: medicine._id, qty },
+          },
+        },
+        ""
+      );
+      // Ask Navbar to open login modal via custom event
+      window.dispatchEvent(new Event("open-login-modal"));
+      return;
+    }
+
     addToCart(medicine._id, qty);
-    setAlertMessage(`${medicine.name} (Quantity: ${qty}) has been added to your cart!`);
+    setAlertMessage(
+      `${medicine.name} (Quantity: ${qty}) has been added to your cart!`
+    );
     setTimeout(() => setAlertMessage(""), 3000);
   };
 
@@ -70,14 +117,6 @@ const Home = () => {
     navigate(`/medicine/${medicineId}`); // Navigate to medicine details page
   };
 
-  // Handle quantity change for each medicine
-  const handleQuantityChange = (medicineId, value) => {
-    setQuantity((prev) => ({
-      ...prev,
-      [medicineId]: value >= 1 ? value : 1, // Ensure quantity is at least 1
-    }));
-  };
-
   return (
     <div className="main">
       <h1>Welcome to Online Medicine Delivery</h1>
@@ -98,7 +137,6 @@ const Home = () => {
               value={searchTerm}
               onChange={handleSearchInputChange}
               onFocus={() => setShowSuggestions(true)}
-              style={{ color: "black" }} // Ensure text is black
             />
             <button className="search-button">
               <i className="fas fa-search"></i>
@@ -112,7 +150,7 @@ const Home = () => {
                     key={medicine._id}
                     onClick={() => selectSuggestion(medicine._id)} // Redirect on suggestion click
                     className="suggestion-item"
-                    style={{ color: "black", textAlign: "left" }} // Change the text color of suggestions
+                    style={{ textAlign: "left" }} // Change the text color of suggestions
                   >
                     {medicine.name}
                   </li>
@@ -121,6 +159,38 @@ const Home = () => {
             )}
           </div>
         </section>
+
+        <div className="mobile-search">
+          <div className="search-container">
+            <input
+              type="text"
+              className="search-input"
+              placeholder="Search for medicines..."
+              value={searchTerm}
+              onChange={handleSearchInputChange}
+              onFocus={() => setShowSuggestions(true)}
+              style={{ color: "black" }}
+            />
+            <button className="search-button">
+              <i className="fas fa-search"></i>
+            </button>
+
+            {showSuggestions && filteredSuggestions.length > 0 && (
+              <ul className="resultBox">
+                {filteredSuggestions.map((medicine) => (
+                  <li
+                    key={medicine._id}
+                    onClick={() => selectSuggestion(medicine._id)}
+                    className="suggestion-item"
+                    style={{ color: "black", textAlign: "left" }}
+                  >
+                    {medicine.name}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </div>
 
         <section className="products">
           <h2>Popular Products</h2>
@@ -132,23 +202,10 @@ const Home = () => {
                   medicine={medicine}
                   handleAddToCart={handleAddToCart}
                 />
-                <div className="quantity-container">
-                  <input
-                    type="number"
-                    min="1"
-                    value={quantity[medicine._id] || 1} // Default to 1
-                    onChange={(e) => handleQuantityChange(medicine._id, parseInt(e.target.value))}
-                    className="quantity-input"
-                  />
-                  <button onClick={() => handleAddToCart(medicine)}>
-                    Add to Cart
-                  </button>
-                </div>
               </div>
             ))}
           </div>
         </section>
-
       </main>
 
       {alertMessage && (

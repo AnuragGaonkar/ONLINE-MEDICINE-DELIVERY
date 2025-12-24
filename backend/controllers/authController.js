@@ -79,3 +79,59 @@ exports.getUserDetails = async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 };
+
+// Controller: get logged-in user's profile (used by Profile.jsx)
+exports.getUserProfile = async (req, res) => {
+  try {
+    const userId = req.user.id; // set by getUser middleware
+    const user = await User.findById(userId).select("-password");
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.json(user);
+  } catch (error) {
+    console.error("Error fetching profile:", error.message);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
+// Controller: update logged-in user's profile
+exports.updateUserProfile = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const {
+      name,
+      contactNumber,
+      street,
+      city,
+      postalCode,
+      country,
+    } = req.body;
+
+    const updates = {
+      name,
+      contactNumber,
+      address: {
+        street,
+        city,
+        postalCode,
+        country,
+      },
+    };
+
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { $set: updates },
+      { new: true, runValidators: true }
+    ).select("-password");
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json(user);
+  } catch (error) {
+    console.error("Error updating profile:", error.message);
+    res.status(500).send("Internal Server Error");
+  }
+};

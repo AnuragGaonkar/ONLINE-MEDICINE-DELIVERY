@@ -1,0 +1,403 @@
+.med-details-page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px 16px 40px;
+  color: #111827;
+}
+
+.med-details-header {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 16px;
+}
+
+.back-btn {
+  border: none;
+  background: transparent;
+  color: #2563eb;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.back-btn:hover {
+  background-color: rgba(37, 99, 235, 0.08);
+}
+
+/* main top card */
+.med-details-main-card {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: 24px;
+  padding: 20px;
+  border-radius: 16px;
+  background-color: #ffffff;
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.06);
+  margin-bottom: 24px;
+}
+
+.med-details-left {
+  display: flex;
+  gap: 16px;
+}
+
+.med-image-placeholder {
+  width: 140px;
+  height: 140px;
+  border-radius: 16px;
+  background: radial-gradient(circle at top left, #e0f2fe, #e5e7eb);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 42px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.med-basic-info {
+  flex: 1;
+}
+
+.med-name {
+  font-size: 24px;
+  margin: 0 0 4px;
+}
+
+.med-category {
+  font-size: 14px;
+  color: #6b7280;
+  margin-bottom: 2px;
+}
+
+.med-manufacturer {
+  font-size: 13px;
+  color: #6b7280;
+  margin-bottom: 10px;
+}
+
+.med-price-rating-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.med-price {
+  font-weight: 600;
+  font-size: 18px;
+  color: #111827;
+}
+
+.med-rating-pill {
+  padding: 4px 10px;
+  border-radius: 999px;
+  background-color: #fef3c7;
+  color: #92400e;
+  font-size: 13px;
+}
+
+.med-availability-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.tag {
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+
+.in-stock-tag {
+  background-color: #ecfdf3;
+  color: #166534;
+}
+
+.rx-tag {
+  background-color: #fef2f2;
+  color: #b91c1c;
+}
+
+.otc-tag {
+  background-color: #eff6ff;
+  color: #1d4ed8;
+}
+
+.med-delivery {
+  font-size: 13px;
+  color: #6b7280;
+  margin-bottom: 12px;
+}
+
+.med-cta-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+
+
+.primary-add-cart-btn {
+  border: none;
+  padding: 10px 22px;
+  border-radius: 999px;
+  background-color: #22c55e;
+  color: #022c22;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.primary-add-cart-btn:disabled {
+  background-color: #e5e7eb;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+/* right panel */
+.med-details-right {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.med-quick-box {
+  border-radius: 14px;
+  border: 1px dashed #e5e7eb;
+  padding: 12px 14px;
+  background: #f9fafb;
+  width: 100%;
+}
+
+.med-quick-box h3 {
+  margin: 0 0 8px;
+  font-size: 16px;
+}
+
+.section-label {
+  margin-top: 8px;
+  margin-bottom: 4px;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+/* generic sections */
+.med-section {
+  margin-top: 24px;
+  padding: 18px 20px;
+  border-radius: 16px;
+  background-color: #ffffff;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.04);
+}
+
+.med-section h2 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 20px;
+}
+
+.med-dosage-main {
+  margin-bottom: 12px;
+}
+
+/* dosage cards */
+.dosage-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+}
+
+.dosage-card {
+  background-color: #f9fafb;
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+
+.dosage-card h4 {
+  margin: 0 0 6px;
+  font-size: 14px;
+}
+
+/* chips */
+.chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.chip {
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  background-color: #dcfce7;
+  color: #166534;
+}
+
+.ghost-chip {
+  background-color: #eef2ff;
+  color: #3730a3;
+}
+
+/* 3-column info section */
+.med-3col {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.med-column-card {
+  background-color: #f9fafb;
+  border-radius: 14px;
+  padding: 12px 14px;
+}
+
+.med-column-card h3 {
+  margin-top: 0;
+  margin-bottom: 8px;
+  font-size: 16px;
+}
+
+.med-column-card ul {
+  margin: 0;
+  padding-left: 16px;
+  font-size: 14px;
+}
+
+/* states */
+.med-details-loading,
+.med-details-error {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 40px 16px;
+  text-align: center;
+}
+
+/* dark mode */
+html.dark .med-details-page {
+  color: #e5e7eb;
+}
+
+html.dark .med-details-main-card,
+html.dark .med-section {
+  background-color: #020617;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.85);
+}
+
+html.dark .med-column-card,
+html.dark .dosage-card,
+html.dark .med-quick-box {
+  background-color: #020617;
+  border-color: #1f2937;
+}
+
+html.dark .med-image-placeholder {
+  background: radial-gradient(circle at top left, #0ea5e9, #020617);
+  color: #f9fafb;
+}
+
+html.dark .med-price {
+  color: #f9fafb;
+}
+
+html.dark .med-delivery,
+html.dark .med-manufacturer,
+html.dark .med-category {
+  color: #9ca3af;
+}
+
+html.dark .chip {
+  background-color: #16a34a;
+  color: #022c22;
+}
+
+html.dark .ghost-chip {
+  background-color: #1d4ed8;
+  color: #e5e7eb;
+}
+
+html.dark .back-btn:hover {
+  background-color: rgba(37, 99, 235, 0.18);
+}
+
+/* alert.css */
+.alert {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: #4caf50;
+  color: white;
+  padding: 15px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1001;
+  animation: slide-in 0.3s forwards;
+}
+
+.close-alert {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+@keyframes slide-in {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.med-image-wrapper {
+  width: 140px;
+  height: 140px;
+  border-radius: 24px;
+  overflow: hidden;
+  background: radial-gradient(circle at top left, #1f2937, #020617);
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.7);
+  flex-shrink: 0;
+}
+
+.med-main-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* quantity pill */
+.quantity-select {
+  display: inline-flex;
+  align-items: center;
+  background: #020617;
+  border-radius: 999px;
+  overflow: hidden;
+  border: 1px solid #1f2937;
+}
+
+.quantity-select button {
+  background: transparent;
+  color: #e5e7eb;
+  border: none;
+  padding: 4px 10px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.quantity-select span {
+  min-width: 32px;
+  text-align: center;
+  font-weight: 600;
+  color: #a7f3d0;      /* softer mint instead of harsh white */
+  background: #020617;
+}

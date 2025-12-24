@@ -11,7 +11,119 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+/* Light mode (default) */
+body {
+  background: #f3f4f6;
+  color: #111827;
+}
+
+/* Dark mode root switch */
+html.dark body {
+  background: #020617;
+  color: #e5e7eb;
+}
+
+/* Navbar dark mode */
+html.dark .navbar {
+  background-color: #020617;
+  border-bottom: 1px solid #1f2937;
+}
+
+html.dark .navbar a,
+html.dark .navbar button {
+  color: #e5e7eb;
+}
+
+html.dark .navbar a:hover,
+html.dark .navbar button:hover {
+  color: #4ade80;
+}
+
+/* Light mode defaults */
+body {
+  background-color: #f3f4f6;
+  color: #111827;
+}
+
+/* Global dark mode */
+html.dark body {
+  background-color: #020617;  /* near-black */
+  color: #e5e7eb;
+}
+
+/* Navbar dark mode */
+html.dark .navbar {
+  background-color: #020617;
+  border-bottom: 1px solid #1f2937;
+}
+
+html.dark .navbar a,
+html.dark .navbar button {
+  color: #e5e7eb;
+}
+
+html.dark .navbar a:hover,
+html.dark .navbar button:hover {
+  color: #4ade80;
+}
+
+/* Theme toggle button */
+.theme-toggle-btn {
+  background: #ffffff;
+}
+
+html.dark .theme-toggle-btn {
+  background: #111827;
+  border-color: #374151;
+}
+
+/* Search box dark */
+html.dark input[type="search"] {
+  background-color: #0b1120;
+  border-color: #1f2937;
+  color: #e5e7eb;
+}
+
+html.dark input[type="search"]::placeholder {
+  color: #6b7280;
+}
+
+/* Suggestions dropdown */
+html.dark .shadow-lg,
+html.dark .orders-list,
+html.dark .order-card {
+  background-color: #020617;
+  color: #e5e7eb;
+}
+
+/* Mobile panel */
+html.dark .mobile-menu-panel {
+  background-color: #020617;
+}
+
+/* Profile page (if using .profile-page wrapper) */
+html.dark .profile-page {
+  background-color: #020617;
+  color: #e5e7eb;
+}
+
+/* Search bar dark mode */
+html.dark .navbar input[type="search"] {
+  background-color: #020617;
+  border-color: #1f2937;
+  color: #e5e7eb;
+}
+
+html.dark .navbar input[type="search"]::placeholder {
+  color: #6b7280;
+}
+
+html.dark .navbar button[type="submit"] {
+  background-color: #22c55e;
+  color: #022c22;
+}
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+

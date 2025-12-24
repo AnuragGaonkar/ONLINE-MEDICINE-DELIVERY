@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap");
 
 .wrapper {
   display: flex;
@@ -10,6 +10,12 @@
   width: 100%;
 }
 
+/* wrapper used in App.jsx */
+.home-main-wrapper {
+  padding-top: 0;
+}
+
+/* search / hero / products */
 .search-container {
   position: relative;
   width: 100%;
@@ -31,7 +37,7 @@
   border-radius: 30px;
   font-size: 18px;
   outline: none;
-  color: black; /* Ensure input text is visible */
+  color: black;
 }
 
 .search-button {
@@ -42,7 +48,7 @@
   transform: translateY(-50%);
   padding: 10px;
   border: none;
-  background-color: #4CAF50;
+  background-color: #4caf50;
   color: white;
   font-size: 16px;
   cursor: pointer;
@@ -62,11 +68,19 @@
   margin-bottom: 20px;
 }
 
+/* grid layout for cards */
 .product-list {
-  display: flex;
-  justify-content: space-around;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 320px));
+  justify-content: center;
+  justify-items: center;
   gap: 20px;
+}
+
+.medicine-item {
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
 
 .product-item {
@@ -78,7 +92,7 @@
 
 .product-item:hover {
   box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
-  border-color: #388E3C;
+  border-color: #388e3c;
 }
 
 .product-item img {
@@ -94,15 +108,15 @@
 .product-item button {
   font-size: 16px;
   background-color: white;
-  color: #4CAF50;
-  border: 1px solid #4CAF50;
+  color: #4caf50;
+  border: 1px solid #4caf50;
   cursor: pointer;
   padding: 7px;
   border-radius: 5px;
 }
 
 .product-item button:hover {
-  background-color: #4CAF50;
+  background-color: #4caf50;
   color: white;
 }
 
@@ -111,7 +125,7 @@
 }
 
 footer {
-  background-color: #4CAF50;
+  background-color: #4caf50;
   color: white;
   text-align: center;
   padding: 20px;
@@ -123,51 +137,53 @@ footer p {
   font-size: 14px;
 }
 
-@media (max-width: 768px) {
-  .search-container {
-    display: none;
-  }
-
-  .main-nav {
-    display: none;
-  }
-
-  .menu-toggle {
-    display: block;
-  }
-
-  .menu-toggle:hover {
-    border: 1px solid #4CAF50;
-    border-radius: 8px;
-    background-color: #4CAF50;
-    color: white;
-  }
-
-  .hero h1 {
-    font-size: 28px;
-  }
-
-  .hero p {
-    font-size: 16px;
-  }
-
-  .product-item {
-    width: 45%;
+/* desktop and up: adjust columns */
+@media (min-width: 600px) {
+  .product-list {
+    grid-template-columns: repeat(2, minmax(0, 260px));
   }
 }
 
+@media (min-width: 1024px) {
+  .product-list {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* phones & small tablets: hero hidden, mobile search shown */
+@media (max-width: 768px) {
+  .hero {
+    display: none;
+  }
+
+  .mobile-search {
+    display: block;
+    padding: 0 16px;
+    margin-top: 16px;
+  }
+
+  .search-container {
+    display: flex;
+    position: static;
+    margin: 0 auto;
+    top: 0;
+    max-width: 100%;
+    border-radius: 16px;
+  }
+
+  .home-main-wrapper {
+    padding-top: 70px;
+  }
+}
+
+/* very small phones: keep search visible, single column cards */
 @media (max-width: 480px) {
-  .hero h1 {
-    font-size: 24px;
+  .mobile-search {
+    display: block;
   }
 
-  .hero p {
-    font-size: 14px;
-  }
-
-  .hero button {
-    padding: 8px 16px;
-    font-size: 14px;
+  .product-list {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
   }
 
   .product-item {
@@ -198,7 +214,7 @@ footer p {
   position: fixed;
   top: 20px;
   right: 20px;
-  background-color: #4CAF50;
+  background-color: #4caf50;
   color: white;
   padding: 15px;
   border-radius: 5px;
@@ -229,13 +245,18 @@ footer p {
   }
 }
 
-/* Slideshow CSS */
+/* Slideshow CSS (desktop) */
 .hero {
   position: relative;
   height: 500px;
   text-align: center;
   color: white;
-  overflow: hidden; /* Prevents content overflow */
+  overflow: hidden;
+}
+
+/* hidden on desktop unless under 768px (see media query) */
+.mobile-search {
+  display: none;
 }
 
 .slideshow-container {
@@ -253,7 +274,7 @@ footer p {
   object-fit: cover;
   position: absolute;
   opacity: 0;
-  animation: fade 18s infinite; /* 4 seconds per image in a 16s loop */
+  animation: fade 18s infinite;
 }
 
 .slideshow-image:nth-child(1) {
@@ -290,7 +311,7 @@ footer p {
   }
 }
 
-h1{
+h1 {
   text-align: center;
   font-size: 40px;
 }
@@ -318,4 +339,77 @@ h1{
 
 .suggestion-item:hover {
   background-color: #0c870c;
+}
+
+/* === Dark mode: Home search + hero === */
+
+html.dark .main {
+  background-color: #020617;
+  color: #e5e7eb;
+}
+
+html.dark h1 {
+  color: #f9fafb;
+}
+
+/* Search container on hero and mobile */
+html.dark .search-container {
+  background-color: #020617;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.85);
+  border-radius: 999px;
+}
+
+/* Text field */
+html.dark .search-input {
+  background-color: transparent;
+  color: #e5e7eb;
+}
+
+html.dark .search-input::placeholder {
+  color: #6b7280;
+}
+
+/* Search button */
+html.dark .search-button {
+  background-color: #22c55e;
+  color: #022c22;
+}
+
+html.dark .search-button:hover {
+  background-color: #16a34a;
+}
+
+/* Suggestions dropdown */
+html.dark .resultBox {
+  background-color: #020617;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.9);
+  border: 1px solid #1f2937;
+}
+
+html.dark .suggestion-item {
+  color: #e5e7eb;
+}
+
+html.dark .suggestion-item:hover {
+  background-color: #16a34a;
+  color: #022c22;
+}
+
+/* Products section background to blend with dark cards */
+html.dark .products {
+  background: radial-gradient(circle at top, #020617 0, #020617 40%, #020617 100%);
+}
+
+html.dark .products h2 {
+  color: #f9fafb;
+}
+
+/* Footer on dark */
+html.dark footer {
+  background-color: #020617;
+  border-top: 1px solid #1f2937;
+}
+
+html.dark footer p {
+  color: #9ca3af;
 }

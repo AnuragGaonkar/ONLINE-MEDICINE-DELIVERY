@@ -191,3 +191,77 @@
 .add-to-cart-button:hover {
   background-color: #e64a19; /* Darker orange on hover */
 }
+
+/* === Dark mode for chatbot (uses html.dark from Navbar) === */
+
+html.dark .chatbot-window {
+  background-color: #020617;
+  border-color: #1f2937;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.8);
+}
+
+html.dark .chatbot-header {
+  background-color: #16a34a; /* slightly softer green on dark */
+  color: #f9fafb;
+}
+
+html.dark .close-chat {
+  color: #f9fafb;
+}
+
+html.dark .chatbot-messages {
+  background-color: #020617;
+}
+
+/* User and bot bubbles on dark */
+html.dark .user-response {
+  background-color: #22c55e;
+  border-color: #16a34a;
+  color: #022c22;
+}
+
+html.dark .bot-response {
+  background-color: #0b1120;
+  border-color: #1f2937;
+  color: #e5e7eb;
+}
+
+/* Thinking text */
+html.dark .thinking-message {
+  color: #9ca3af;
+}
+
+/* Input area */
+html.dark .chatbot-input {
+  background-color: #020617;
+}
+
+html.dark .chatbot-input input {
+  background-color: #020617;
+  border-color: #1f2937;
+  color: #e5e7eb;
+}
+
+html.dark .chatbot-input input::placeholder {
+  color: #6b7280;
+}
+
+html.dark .chatbot-input button {
+  background-color: #22c55e;
+  color: #022c22;
+}
+
+/* Confirm buttons */
+html.dark .confirm-add-to-cart {
+  background-color: #020617;
+}
+
+html.dark .confirm-add-to-cart button {
+  background-color: #22c55e;
+  color: #022c22;
+}
+
+html.dark .confirm-add-to-cart button:last-child {
+  background-color: #111827;
+  color: #e5e7eb;
+}

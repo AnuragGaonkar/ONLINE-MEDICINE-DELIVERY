@@ -1,17 +1,25 @@
 const jwt = require("jsonwebtoken");
+
 const JWT_SECRET = process.env.JWT_SECRET;
+
 const getUser = (req, res, next) => {
-  //get user from JWTtoken and add id to req object
   try {
     const token = req.header("auth-token");
     if (!token) {
-      res.status(401).send({ message: "Use proper token for authentication." });
+      return res
+        .status(401)
+        .send({ message: "Authentication token missing. Please log in again." });
     }
+
     const data = jwt.verify(token, JWT_SECRET);
     req.user = data.user;
     next();
   } catch (error) {
-    res.status(401).send({ message: "Use proper token for authentication." });
+    console.error("JWT verification failed:", error.message);
+    return res
+      .status(401)
+      .send({ message: "Invalid or expired token. Please log in again." });
   }
 };
+
 module.exports = getUser;
