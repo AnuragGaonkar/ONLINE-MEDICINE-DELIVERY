@@ -4,3 +4,5 @@ flask-pymongo
 nltk
 fuzzywuzzy[speedup]
 gunicorn
+pymongo
+python-Levenshtein
