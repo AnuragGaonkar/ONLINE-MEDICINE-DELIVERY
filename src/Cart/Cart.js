@@ -19,7 +19,9 @@ const Cart = () => {
     updateCart,
   } = useContext(CartContext);
   const navigate = useNavigate();
-  const HOST = "http://localhost:5001";
+
+  // Deployed Node backend URL
+  const HOST = "https://mediquick-backend-yizx.onrender.com";
 
   // ---- USER ADDRESS STATE ----
   const [userAddress, setUserAddress] = useState(null);

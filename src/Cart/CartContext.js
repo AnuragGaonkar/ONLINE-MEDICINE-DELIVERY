@@ -5,7 +5,9 @@ export const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
-  const HOST = "http://localhost:5001";
+
+  // Deployed Node backend URL
+  const HOST = "https://mediquick-backend-yizx.onrender.com";
 
   const fetchCartItems = async () => {
     try {
@@ -64,7 +66,6 @@ export const CartProvider = ({ children }) => {
   const updateCart = async (medicineId, quantity) => {
     try {
       if (quantity <= 0) {
-        // if quantity becomes 0 or less, remove item instead
         return removeFromCart(medicineId);
       }
 
@@ -130,7 +131,7 @@ export const CartProvider = ({ children }) => {
 
       const data = await response.json();
       if (response.ok) {
-        setCartItems([]); // backend cart already empty
+        setCartItems([]);
       } else {
         console.error(data.message);
       }

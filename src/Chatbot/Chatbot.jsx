@@ -2,6 +2,10 @@ import React, { useState, useEffect, useRef } from "react";
 import chatbot from "./chatbot.png";
 import "./Chatbot.css";
 
+// Backend base URLs
+const API_HOST = "https://mediquick-backend-yizx.onrender.com";
+const CHATBOT_HOST = "https://mediquick-chatbot.onrender.com";
+
 const Chatbot = ({ notifyCart }) => {
   const [hasToken, setHasToken] = useState(
     !!localStorage.getItem("auth-token")
@@ -64,11 +68,14 @@ const Chatbot = ({ notifyCart }) => {
 
       if (!token) {
         setSessionId(null);
-        setMessages([{ text: "Hello! How can I help you today?", from: "bot" }]);
+        setMessages([
+          { text: "Hello! How can I help you today?", from: "bot" },
+        ]);
       }
     };
     window.addEventListener("auth-changed", handleAuthChange);
-    return () => window.removeEventListener("auth-changed", handleAuthChange);
+    return () =>
+      window.removeEventListener("auth-changed", handleAuthChange);
   }, []);
 
   // ---- LOCAL CACHE LOAD (fallback until backend arrives) ----
@@ -80,7 +87,11 @@ const Chatbot = ({ notifyCart }) => {
         if (Array.isArray(parsed) && parsed.length > 0) {
           // ensure greeting is always first even from cache
           const withoutGreeting = parsed.filter(
-            (m) => !(m.from === "bot" && m.text.startsWith("Hello! How can I help you today?"))
+            (m) =>
+              !(
+                m.from === "bot" &&
+                m.text.startsWith("Hello! How can I help you today?")
+              )
           );
           const withGreeting = [
             { text: "Hello! How can I help you today?", from: "bot" },
@@ -109,7 +120,7 @@ const Chatbot = ({ notifyCart }) => {
 
     const fetchBackendHistory = async () => {
       try {
-        const res = await fetch("http://127.0.0.1:5000/chat_history", {
+        const res = await fetch(`${CHATBOT_HOST}/chat_history`, {
           headers: {
             Authorization: `Bearer ${token}`,
             "X-Session-Id": sessionId,
@@ -132,7 +143,10 @@ const Chatbot = ({ notifyCart }) => {
         ];
 
         setMessages(withGreeting);
-        localStorage.setItem("chatbot-messages", JSON.stringify(withGreeting));
+        localStorage.setItem(
+          "chatbot-messages",
+          JSON.stringify(withGreeting)
+        );
       } catch (err) {
         console.warn("Backend history fetch failed, using local cache");
       }
@@ -184,7 +198,7 @@ const Chatbot = ({ notifyCart }) => {
     }
 
     try {
-      const response = await fetch("http://127.0.0.1:5000/chat", {
+      const response = await fetch(`${CHATBOT_HOST}/chat`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -215,6 +229,7 @@ const Chatbot = ({ notifyCart }) => {
         ...prev,
         { text: "The items have been added to your cart.", from: "bot" },
       ]);
+      // if later you want to actually hit the Node cart API, you’ll use API_HOST here
     } else {
       setMessages((prev) => [
         ...prev,
