@@ -5,6 +5,16 @@ import nltk
 from fuzzywuzzy import process
 from datetime import datetime
 
+try:
+    nltk.data.find("tokenizers/punkt")
+except LookupError:
+    nltk.download("punkt", quiet=True)
+
+try:
+    nltk.data.find("tokenizers/punkt_tab")
+except LookupError:
+    nltk.download("punkt_tab", quiet=True)
+    
 app = Flask(__name__)
 
 # ---------- CONFIG ----------
