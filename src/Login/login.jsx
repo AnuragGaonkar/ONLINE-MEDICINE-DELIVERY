@@ -16,7 +16,7 @@ const LoginSignup = ({ onLoginSuccess }) => {
   const [contactNumber, setContactNumber] = useState("");
   const [alertMessage, setAlertMessage] = useState("");
 
-  const HOST = "http://localhost:5001";
+  const HOST = "https://mediquick-backend-yizx.onrender.com";
 
   const toggleMode = () => {
     setIsSignUp(!isSignUp);

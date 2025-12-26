@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./Profile.css";
 
-const HOST = "http://localhost:5001";
+const HOST = "https://mediquick-backend-yizx.onrender.com";
 
 const Profile = () => {
   const [activeTab, setActiveTab] = useState("info"); // "info" | "orders"

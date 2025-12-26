@@ -6,10 +6,18 @@ from fuzzywuzzy import process
 from datetime import datetime
 
 app = Flask(__name__)
-CORS(app, origins=["http://localhost:3000"])
 
-# MongoDB configuration
-app.config["MONGO_URI"] = "mongodb://localhost:27017/medicineDB"
+# ---------- HARD-CODED CONFIG FOR NOW ----------
+
+# Frontend URL on Render (change if your actual URL is different)
+FRONTEND_URL = "https://mediquick-frontend.onrender.com"
+
+# Mongo Atlas URI – use the SAME one your Node backend uses
+# REPLACE this string with your real Atlas connection string if needed
+MONGO_URI = "mongodb+srv://mediquick_user:peCbDdnm3ZC1EpHv@mediquick-cluster.sdrfhkz.mongodb.net/?appName=mediquick-cluster"
+
+CORS(app, origins=[FRONTEND_URL])
+app.config["MONGO_URI"] = MONGO_URI
 mongo = PyMongo(app)
 
 # ----------------- SESSION UTILITIES -----------------
@@ -29,6 +37,7 @@ def get_session_id():
 
     return "anonymous"
 
+
 def get_or_create_session(session_id):
     session = mongo.db.sessions.find_one({"session_id": session_id})
     if not session:
@@ -42,6 +51,7 @@ def get_or_create_session(session_id):
         mongo.db.sessions.insert_one(session)
     return session
 
+
 def update_session(session_id, updates):
     mongo.db.sessions.update_one(
         {"session_id": session_id},
@@ -54,6 +64,7 @@ def update_session(session_id, updates):
 def tokenize(text):
     words = nltk.word_tokenize(text.lower())
     return [w for w in words if w.isalnum()]
+
 
 def detect_intent(message):
     msg = message.lower()
@@ -123,6 +134,7 @@ def find_medicines(symptoms):
     results.sort(key=lambda x: x["score"], reverse=True)
     return results[:5]
 
+
 def build_overview(med):
     uses = [med.get(f"use{i}") for i in range(5) if med.get(f"use{i}")]
     return (
@@ -131,6 +143,7 @@ def build_overview(med):
         f"It costs ₹{med['price']}. "
         f"The delivery time is {med['delivery_time']}."
     )
+
 
 def get_medicine_details(med_name, intent):
     med = mongo.db.medicines.find_one(
@@ -301,8 +314,3 @@ def history():
         .sort("timestamp", 1)
     )
     return jsonify(list(chats))
-
-# ----------------- RUN -----------------
-
-if __name__ == "__main__":
-    app.run(debug=True)

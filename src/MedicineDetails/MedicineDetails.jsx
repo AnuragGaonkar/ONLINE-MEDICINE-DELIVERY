@@ -4,6 +4,9 @@ import { useParams, useNavigate } from "react-router-dom";
 import "./MedicineDetails.css";
 import { CartContext } from "../Cart/CartContext";
 
+// Deployed backend base URL
+const HOST = "https://mediquick-backend-yizx.onrender.com";
+
 const MedicineDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -18,9 +21,7 @@ const MedicineDetails = () => {
   useEffect(() => {
     const fetchMedicine = async () => {
       try {
-        const res = await fetch(
-          `http://localhost:5001/api/combined-medicines/${id}`
-        );
+        const res = await fetch(`${HOST}/api/combined-medicines/${id}`);
         if (!res.ok) {
           throw new Error("Failed to fetch medicine details");
         }

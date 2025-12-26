@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { ShoppingCart, Moon, Sun } from "lucide-react";
 import Login from "../Login/login";
-import MobileSearch from "./MobileSearch"; 
+import MobileSearch from "./MobileSearch";
 import Box from "@mui/material/Box";
 import Avatar from "@mui/material/Avatar";
 import Menu from "@mui/material/Menu";
@@ -13,6 +13,8 @@ import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import LogoutIcon from "@mui/icons-material/Logout";
 
+// Central backend base URL
+const HOST = "https://mediquick-backend-yizx.onrender.com";
 
 const Navbar = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -88,7 +90,7 @@ const Navbar = () => {
 
     const fetchUser = async () => {
       try {
-        const res = await fetch("http://localhost:5001/api/auth/getuser", {
+        const res = await fetch(`${HOST}/api/auth/getuser`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -127,7 +129,7 @@ const Navbar = () => {
   // fetch medicines
   useEffect(() => {
     const getMedicines = async () => {
-      const URL = "http://localhost:5001/api/medicines";
+      const URL = `${HOST}/api/medicines`;
       try {
         const response = await fetch(URL);
         if (!response.ok) {
@@ -200,7 +202,7 @@ const Navbar = () => {
       if (t) {
         (async () => {
           try {
-            const res = await fetch("http://localhost:5001/api/auth/getuser", {
+            const res = await fetch(`${HOST}/api/auth/getuser`, {
               method: "GET",
               headers: {
                 "Content-Type": "application/json",
@@ -330,7 +332,7 @@ const Navbar = () => {
                   <ShoppingCart className="h-7 w-7" />
                 </Link>
 
-                                <Box
+                <Box
                   sx={{
                     display: "flex",
                     alignItems: "center",
@@ -350,7 +352,7 @@ const Navbar = () => {
                         sx={{
                           width: 40,
                           height: 40,
-                          bgcolor: "#16a34a", // Tailwind green-600
+                          bgcolor: "#16a34a",
                           fontWeight: 600,
                         }}
                       >
@@ -421,7 +423,6 @@ const Navbar = () => {
                     </MenuItem>
                   </Menu>
                 </Box>
-
               </>
             )}
 
