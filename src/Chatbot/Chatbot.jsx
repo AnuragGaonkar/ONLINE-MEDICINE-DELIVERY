@@ -4,7 +4,7 @@ import "./Chatbot.css";
 
 // Backend base URLs
 const API_HOST = "https://mediquick-backend-yizx.onrender.com";
-const CHATBOT_HOST = "https://mediquick-pqv7.onrender.com";
+const CHATBOT_HOST = "https://mediquick-chatbot.onrender.com";
 
 const Chatbot = ({ notifyCart }) => {
   const [hasToken, setHasToken] = useState(

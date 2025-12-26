@@ -7,18 +7,30 @@ from datetime import datetime
 
 app = Flask(__name__)
 
-# ---------- HARD-CODED CONFIG FOR NOW ----------
+# ---------- CONFIG ----------
 
-# Frontend URL on Render (change if your actual URL is different)
-FRONTEND_URL = "https://mediquick-frontend.onrender.com"
+FRONTEND_URLS = [
+    "http://localhost:3000",
+    "https://mediquick-pqv7.onrender.com",   # deployed React frontend
+]
 
-# Mongo Atlas URI – use the SAME one your Node backend uses
-# REPLACE this string with your real Atlas connection string if needed
-MONGO_URI = "mongodb+srv://mediquick_user:peCbDdnm3ZC1EpHv@mediquick-cluster.sdrfhkz.mongodb.net/?appName=mediquick-cluster"
+MONGO_URI = (
+    "mongodb+srv://mediquick_user:peCbDdnm3ZC1EpHv@mediquick-cluster.sdrfhkz.mongodb.net/"
+    "?appName=mediquick-cluster"
+)
 
-CORS(app, origins=[FRONTEND_URL])
 app.config["MONGO_URI"] = MONGO_URI
 mongo = PyMongo(app)
+
+# Allow both local and deployed frontend
+CORS(app, origins=FRONTEND_URLS)
+
+# ---------- HEALTH CHECK ----------
+
+@app.route("/", methods=["GET"])
+def health():
+    return jsonify({"status": "ok"}), 200
+
 
 # ----------------- SESSION UTILITIES -----------------
 
@@ -59,6 +71,7 @@ def update_session(session_id, updates):
         upsert=True,
     )
 
+
 # ----------------- NLP UTILITIES -----------------
 
 def tokenize(text):
@@ -95,6 +108,7 @@ def detect_intent(message):
 
     return "UNKNOWN"
 
+
 # ----------------- CHAT LOGGING -----------------
 
 def save_chat_turn(session_id, user_message, bot_message, medicines=None, quantities=None):
@@ -108,6 +122,7 @@ def save_chat_turn(session_id, user_message, bot_message, medicines=None, quanti
             "timestamp": datetime.utcnow(),
         }
     )
+
 
 # ----------------- MEDICINE LOGIC -----------------
 
@@ -173,6 +188,7 @@ def get_medicine_details(med_name, intent):
 
     return None
 
+
 # ----------------- CART HANDLING -----------------
 
 def handle_cart(session, message):
@@ -216,6 +232,7 @@ def handle_cart(session, message):
             return "Items added to cart successfully."
 
     return None
+
 
 # ----------------- MAIN CHAT ROUTE -----------------
 
@@ -262,7 +279,6 @@ def chat():
     if meds:
         update_session(session_id, {"last_mentioned_medicine": meds[0]["name"]})
 
-        # build full formatted text including medicines
         numbered = []
         for idx, med in enumerate(meds, start=1):
             numbered.append(
@@ -294,6 +310,7 @@ Delivery: {med['delivery_time']}"""
     save_chat_turn(session_id, user_message, fallback)
     return jsonify({"message": fallback, "medicines": []})
 
+
 # ----------------- VIEW CART -----------------
 
 @app.route("/view_cart", methods=["GET"])
@@ -303,6 +320,7 @@ def view_cart():
     return jsonify(
         [{"medicine": i["medicine"], "quantity": i["quantity"]} for i in items]
     )
+
 
 # ----------------- HISTORY -----------------
 
