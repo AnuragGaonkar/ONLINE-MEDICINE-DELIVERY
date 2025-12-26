@@ -18,6 +18,7 @@
     "bootstrap": "^5.3.3",
     "concurrently": "^9.0.1",
     "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
     "express": "^4.21.0",
     "lucide-react": "^0.446.0",
     "openai": "^4.63.0",
