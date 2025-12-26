@@ -26,7 +26,6 @@ FRONTEND_URLS = [
 
 MONGO_URI = (
     "mongodb+srv://mediquick_user:peCbDdnm3ZC1EpHv@mediquick-cluster.sdrfhkz.mongodb.net/"
-    "?appName=mediquick-cluster"
 )
 
 app.config["MONGO_URI"] = MONGO_URI
