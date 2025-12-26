@@ -12,15 +12,11 @@ body {
 
 /* Navbar Container */
 .navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 20px;
-  height: 60px;
-  background-color: #ffffff;
+  /* Let Tailwind handle flex, padding, height. */
   position: sticky;
   top: 0;
   z-index: 1000;
+  background-color: #ffffff;
 }
 
 /* Right side (desktop) */
@@ -171,7 +167,6 @@ body {
 @media (max-width: 768px) {
   .navbar {
     padding: 0 12px;
-    height: 54px;
   }
 
   .mobile-menu-panel > button.text-gray-700.hover\:text-green-500.text-lg.font-medium:last-of-type {
@@ -311,6 +306,7 @@ body {
   opacity: 0;
   transform: translateY(-4px) scale(0.96);
   transition: opacity 150ms ease-out, transform 150ms ease-out;
+  z-index: 1010;
 }
 
 .profile-dropdown-inner {

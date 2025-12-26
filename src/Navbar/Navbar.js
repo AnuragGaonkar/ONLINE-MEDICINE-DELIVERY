@@ -2,7 +2,17 @@ import React, { useState, useEffect, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { ShoppingCart, Moon, Sun } from "lucide-react";
 import Login from "../Login/login";
-import MobileSearch from "./MobileSearch"; // adjust path if needed
+import MobileSearch from "./MobileSearch"; 
+import Box from "@mui/material/Box";
+import Avatar from "@mui/material/Avatar";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import Divider from "@mui/material/Divider";
+import IconButton from "@mui/material/IconButton";
+import Tooltip from "@mui/material/Tooltip";
+import LogoutIcon from "@mui/icons-material/Logout";
+
 
 const Navbar = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -14,6 +24,8 @@ const Navbar = () => {
   const [theme, setTheme] = useState("light");
   const [user, setUser] = useState(null);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const openAccountMenu = Boolean(anchorEl);
 
   const location = useLocation();
   const isHomePage = location.pathname === "/";
@@ -23,6 +35,24 @@ const Navbar = () => {
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
   const toggleMenu = () => setIsMenuOpen((prev) => !prev);
+
+  const handleAvatarClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleAccountMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleAccountProfileClick = () => {
+    setAnchorEl(null);
+    handleProfileClick();
+  };
+
+  const handleAccountLogoutClick = () => {
+    setAnchorEl(null);
+    handleLogout();
+  };
 
   // THEME INIT
   useEffect(() => {
@@ -300,33 +330,98 @@ const Navbar = () => {
                   <ShoppingCart className="h-7 w-7" />
                 </Link>
 
-                <div className="relative" ref={avatarRef}>
-                  <div
-                    onClick={() => setShowDropdown((p) => !p)}
-                    className="w-10 h-10 rounded-full bg-green-600 text-white flex items-center justify-center cursor-pointer"
+                                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    textAlign: "center",
+                  }}
+                >
+                  <Tooltip title="Account settings">
+                    <IconButton
+                      onClick={handleAvatarClick}
+                      size="small"
+                      sx={{ ml: 1 }}
+                      aria-controls={openAccountMenu ? "account-menu" : undefined}
+                      aria-haspopup="true"
+                      aria-expanded={openAccountMenu ? "true" : undefined}
+                    >
+                      <Avatar
+                        sx={{
+                          width: 40,
+                          height: 40,
+                          bgcolor: "#16a34a", // Tailwind green-600
+                          fontWeight: 600,
+                        }}
+                      >
+                        {user.name?.charAt(0).toUpperCase() || "U"}
+                      </Avatar>
+                    </IconButton>
+                  </Tooltip>
+
+                  <Menu
+                    anchorEl={anchorEl}
+                    id="account-menu"
+                    open={openAccountMenu}
+                    onClose={handleAccountMenuClose}
+                    onClick={handleAccountMenuClose}
+                    slotProps={{
+                      paper: {
+                        elevation: 0,
+                        sx: {
+                          overflow: "visible",
+                          filter:
+                            "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+                          mt: 1.5,
+                          "& .MuiAvatar-root": {
+                            width: 32,
+                            height: 32,
+                            ml: -0.5,
+                            mr: 1,
+                          },
+                          "&::before": {
+                            content: '""',
+                            display: "block",
+                            position: "absolute",
+                            top: 0,
+                            right: 14,
+                            width: 10,
+                            height: 10,
+                            bgcolor: "background.paper",
+                            transform:
+                              "translateY(-50%) rotate(45deg)",
+                            zIndex: 0,
+                          },
+                        },
+                      },
+                    }}
+                    transformOrigin={{
+                      horizontal: "right",
+                      vertical: "top",
+                    }}
+                    anchorOrigin={{
+                      horizontal: "right",
+                      vertical: "bottom",
+                    }}
                   >
-                    {user.name?.charAt(0).toUpperCase() || "U"}
-                  </div>
-                  {showDropdown && (
-                    <div className="profile-dropdown profile-dropdown-open">
-                      <div className="profile-dropdown-inner">
-                        <button
-                          type="button"
-                          onClick={handleProfileClick}
-                          className="block w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100"
-                        >
-                          Profile
-                        </button>
-                        <button
-                          onClick={handleLogout}
-                          className="w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100"
-                        >
-                          Logout
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                </div>
+                    <MenuItem onClick={handleAccountProfileClick}>
+                      <Avatar sx={{ bgcolor: "#16a34a" }}>
+                        {user.name?.charAt(0).toUpperCase() || "U"}
+                      </Avatar>
+                      Profile
+                    </MenuItem>
+
+                    <Divider />
+
+                    <MenuItem onClick={handleAccountLogoutClick}>
+                      <ListItemIcon>
+                        <LogoutIcon fontSize="small" />
+                      </ListItemIcon>
+                      Logout
+                    </MenuItem>
+                  </Menu>
+                </Box>
+
               </>
             )}
 
