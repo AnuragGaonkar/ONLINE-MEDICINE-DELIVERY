@@ -3,3 +3,4 @@ flask-cors
 flask-pymongo
 nltk
 fuzzywuzzy[speedup]
+gunicorn
