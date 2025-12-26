@@ -1,17 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import chatbot from "./chatbot.png";
 import "./Chatbot.css";
 
 const Chatbot = ({ notifyCart }) => {
-  // track whether a token exists
   const [hasToken, setHasToken] = useState(
     !!localStorage.getItem("auth-token")
   );
 
+  const [sessionId, setSessionId] = useState(null);
+
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isNotificationVisible, setIsNotificationVisible] = useState(true);
 
-  // messages: try localStorage first (for instant UI), then backend history
+  // default greeting – used only when there is no history
   const [messages, setMessages] = useState([
     { text: "Hello! How can I help you today?", from: "bot" },
   ]);
@@ -24,23 +25,68 @@ const Chatbot = ({ notifyCart }) => {
   const [medicinesToConfirm, setMedicinesToConfirm] = useState([]);
   const [quantitiesToConfirm, setQuantitiesToConfirm] = useState([]);
 
-  // listen for global auth changes (login / logout)
+  const messagesEndRef = useRef(null);
+
+  // ---- derive stable sessionId from JWT once ----
+  useEffect(() => {
+    const token = localStorage.getItem("auth-token");
+    if (!token) return;
+
+    try {
+      // JWT is 3 parts; payload is the middle, base64url encoded
+      const payload = JSON.parse(
+        atob(token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/"))
+      );
+      // token shape: { user: { id: "<mongoId>" }, iat: ... }
+      const uid = payload?.user?.id;
+      if (uid) {
+        setSessionId(uid);
+      } else {
+        // fallback: use the token itself
+        setSessionId(token);
+      }
+    } catch (e) {
+      // on any parsing error, use token as sessionId
+      setSessionId(token);
+    }
+  }, []);
+
+  // auto scroll
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, isThinking]);
+
+  // listen for global auth changes
   useEffect(() => {
     const handleAuthChange = () => {
-      setHasToken(!!localStorage.getItem("auth-token"));
+      const token = localStorage.getItem("auth-token");
+      setHasToken(!!token);
+
+      if (!token) {
+        setSessionId(null);
+        setMessages([{ text: "Hello! How can I help you today?", from: "bot" }]);
+      }
     };
     window.addEventListener("auth-changed", handleAuthChange);
     return () => window.removeEventListener("auth-changed", handleAuthChange);
   }, []);
 
-  // 1) Load from localStorage immediately on mount
+  // ---- LOCAL CACHE LOAD (fallback until backend arrives) ----
   useEffect(() => {
     try {
       const savedMessages = localStorage.getItem("chatbot-messages");
       if (savedMessages) {
         const parsed = JSON.parse(savedMessages);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          setMessages(parsed);
+          // ensure greeting is always first even from cache
+          const withoutGreeting = parsed.filter(
+            (m) => !(m.from === "bot" && m.text.startsWith("Hello! How can I help you today?"))
+          );
+          const withGreeting = [
+            { text: "Hello! How can I help you today?", from: "bot" },
+            ...withoutGreeting,
+          ];
+          setMessages(withGreeting);
         }
       }
 
@@ -56,60 +102,56 @@ const Chatbot = ({ notifyCart }) => {
     }
   }, []);
 
-  // 2) Load full history from backend (MongoDB) once, AFTER token is available
+  // ---- LOAD HISTORY FROM BACKEND ONCE sessionId IS READY ----
   useEffect(() => {
-    const fetchHistory = async () => {
-      const token = localStorage.getItem("auth-token");
-      if (!token) return;
+    const token = localStorage.getItem("auth-token");
+    if (!token || !sessionId) return;
 
+    const fetchBackendHistory = async () => {
       try {
-        const res = await fetch(
-          "http://127.0.0.1:5001/api/chat/history",
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`, // or "auth-token": token if your backend expects that
-            },
-          }
-        );
+        const res = await fetch("http://127.0.0.1:5000/chat_history", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "X-Session-Id": sessionId,
+          },
+        });
 
-        if (!res.ok) {
-          console.error("Failed to fetch chat history:", res.status);
-          return;
-        }
+        if (!res.ok) return;
 
-        const data = await res.json();
-        // Expecting data.history as an array of { text, from }
-        if (Array.isArray(data.history) && data.history.length > 0) {
-          setMessages(data.history);
-        }
+        const data = await res.json(); // list of { user_message, bot_message, ... }
+
+        const historyMessages = data.flatMap((d) => [
+          { text: d.user_message, from: "user" },
+          { text: d.bot_message, from: "bot" },
+        ]);
+
+        // always keep greeting at the very top
+        const withGreeting = [
+          { text: "Hello! How can I help you today?", from: "bot" },
+          ...historyMessages,
+        ];
+
+        setMessages(withGreeting);
+        localStorage.setItem("chatbot-messages", JSON.stringify(withGreeting));
       } catch (err) {
-        console.error("Error fetching chat history:", err);
+        console.warn("Backend history fetch failed, using local cache");
       }
     };
 
-    fetchHistory();
-  }, []);
+    fetchBackendHistory();
+  }, [sessionId]);
 
-  // 3) Persist messages and cart items to localStorage whenever they change
+  // persist messages
   useEffect(() => {
-    try {
-      localStorage.setItem("chatbot-messages", JSON.stringify(messages));
-    } catch (err) {
-      console.error("Error saving chatbot messages to localStorage:", err);
-    }
+    localStorage.setItem("chatbot-messages", JSON.stringify(messages));
   }, [messages]);
 
+  // persist cart
   useEffect(() => {
-    try {
-      localStorage.setItem("chatbot-cart-items", JSON.stringify(cartItems));
-    } catch (err) {
-      console.error("Error saving chatbot cart items to localStorage:", err);
-    }
+    localStorage.setItem("chatbot-cart-items", JSON.stringify(cartItems));
   }, [cartItems]);
 
-  // 4) Notify parent when cartItems change (only if logged in)
+  // notify parent cart
   useEffect(() => {
     const token = localStorage.getItem("auth-token");
     if (!token) return;
@@ -117,10 +159,6 @@ const Chatbot = ({ notifyCart }) => {
       notifyCart(cartItems);
     }
   }, [cartItems, notifyCart]);
-
-  const handleInputChange = (e) => {
-    setInputValue(e.target.value);
-  };
 
   const toggleChat = () => {
     setIsChatOpen(!isChatOpen);
@@ -130,7 +168,7 @@ const Chatbot = ({ notifyCart }) => {
   };
 
   const handleSendMessage = async () => {
-    if (!inputValue.trim()) return;
+    if (!inputValue.trim() || !sessionId) return;
 
     const userMessage = inputValue;
     setMessages((prev) => [...prev, { text: userMessage, from: "user" }]);
@@ -138,169 +176,48 @@ const Chatbot = ({ notifyCart }) => {
     setIsLoading(true);
     setIsThinking(true);
 
-    // if waiting for "yes/no" confirmation, handle that instead of new API call
     if (isConfirming) {
       handleFinalConfirmation(userMessage);
+      setIsLoading(false);
+      setIsThinking(false);
       return;
     }
 
-    setTimeout(async () => {
-      try {
-        const token = localStorage.getItem("auth-token");
-        const response = await fetch("http://127.0.0.1:5001/api/chat", {
-          // if your chat backend is Node route: change to /api/chat
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`, // include if your backend ties chats to user
-          },
-          body: JSON.stringify({ message: userMessage }),
-        });
+    try {
+      const response = await fetch("http://127.0.0.1:5000/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("auth-token")}`,
+          "X-Session-Id": sessionId,
+        },
+        body: JSON.stringify({ message: userMessage }),
+      });
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
+      const data = await response.json();
+      const botText = data.message; // already includes medicines if any
 
-        const data = await response.json();
-        const botResponse = data.message;
-        const medicines = data.medicines || [];
-
-        // ---- SAVE EXCHANGE TO /api/chat ----
-        try {
-          await fetch("http://127.0.0.1:5001/api/chat", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({
-              user_message: userMessage,
-              bot_message: botResponse,
-              medicines: medicines.map((m) => m.name || m),
-              quantities: {}, // you can fill real quantities later if needed
-            }),
-          });
-        } catch (saveErr) {
-          console.error("Error saving chat history:", saveErr);
-        }
-        // ------------------------------------
-
-        if (botResponse && botResponse.toLowerCase().includes("add to cart")) {
-          handleMedicineSelection(userMessage, medicines);
-        } else {
-          const medicineDetails = medicines
-            .map((med) =>
-              med.name
-                ? {
-                    text: `Medicine: ${med.name} : ${med.description} - Dosage: ${med.dosage} - Price: ${med.price}`,
-                    from: "bot",
-                  }
-                : null
-            )
-            .filter(Boolean);
-
-          setMessages((prevMessages) => [
-            ...prevMessages,
-            { text: botResponse, from: "bot" },
-            ...medicineDetails,
-          ]);
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        setMessages((prevMessages) => [
-          ...prevMessages,
-          {
-            text: "An error occurred while fetching data. Please try again.",
-            from: "bot",
-          },
-        ]);
-      } finally {
-        setIsLoading(false);
-        setIsThinking(false);
-      }
-    }, 1500);
-  };
-
-  const handleMedicineSelection = (message, medicines) => {
-    const quantities = [];
-    const selectedMedicines = [];
-
-    medicines.forEach((med) => {
-      const quantityMatch = message.match(
-        new RegExp(`(${med.name})\\s*(\\d+)`, "i")
-      );
-      if (quantityMatch) {
-        selectedMedicines.push(med.name);
-        quantities.push(parseInt(quantityMatch[2], 10));
-      }
-    });
-
-    if (selectedMedicines.length > 0) {
-      setMedicinesToConfirm(selectedMedicines);
-      setQuantitiesToConfirm(quantities);
-      askForFinalConfirmation(selectedMedicines, quantities);
-    } else {
-      promptForMedicineSelection();
+      setMessages((prev) => [...prev, { text: botText, from: "bot" }]);
+    } catch (error) {
+      setMessages((prev) => [
+        ...prev,
+        { text: "An error occurred. Please try again.", from: "bot" },
+      ]);
+    } finally {
+      setIsLoading(false);
+      setIsThinking(false);
     }
   };
 
-  const promptForMedicineSelection = () => {
-    setMessages((prevMessages) => [
-      ...prevMessages,
-      {
-        text:
-          "It seems you haven't specified the medicine(s) clearly. Please mention the name of the medicine(s) you'd like to add to your cart.",
-        from: "bot",
-      },
-    ]);
-  };
-
-  const askForFinalConfirmation = (medicineNames, quantities) => {
-    const confirmationMessages = medicineNames
-      .map((name, index) => `${quantities[index] || "?"} units of ${name}`)
-      .join(", ");
-    setMessages((prevMessages) => [
-      ...prevMessages,
-      {
-        text: `You've selected ${confirmationMessages}. Please confirm the quantity or let me know if you'd like to add them to your cart.`,
-        from: "bot",
-      },
-    ]);
-    setIsConfirming(true);
-  };
-
   const handleFinalConfirmation = (responseMessage) => {
-    const confirmedQuantities = quantitiesToConfirm.map((q) => q || 1);
-
     if (responseMessage.toLowerCase() === "yes") {
-      const confirmedItems = medicinesToConfirm.map((name, index) => ({
-        name,
-        quantity: confirmedQuantities[index],
-      }));
-
-      confirmedItems.forEach((item) => {
-        setCartItems((prevItems) => {
-          const existingItem = prevItems.find(
-            (cartItem) => cartItem.name === item.name
-          );
-          if (existingItem) {
-            return prevItems.map((cartItem) =>
-              cartItem.name === item.name
-                ? { ...cartItem, quantity: cartItem.quantity + item.quantity }
-                : cartItem
-            );
-          }
-          return [...prevItems, { name: item.name, quantity: item.quantity }];
-        });
-      });
-
-      setMessages((prevMessages) => [
-        ...prevMessages,
+      setMessages((prev) => [
+        ...prev,
         { text: "The items have been added to your cart.", from: "bot" },
       ]);
     } else {
-      setMessages((prevMessages) => [
-        ...prevMessages,
+      setMessages((prev) => [
+        ...prev,
         { text: "Okay, feel free to explore more medicines.", from: "bot" },
       ]);
     }
@@ -310,16 +227,7 @@ const Chatbot = ({ notifyCart }) => {
     setQuantitiesToConfirm([]);
   };
 
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
-      handleSendMessage();
-    }
-  };
-
-  // If not logged in, don't render chatbot at all
-  if (!hasToken) {
-    return null;
-  }
+  if (!hasToken) return null;
 
   return (
     <>
@@ -329,6 +237,7 @@ const Chatbot = ({ notifyCart }) => {
           <div className="notification-bubble">1</div>
         )}
       </div>
+
       {isChatOpen && (
         <div className="chatbot-window">
           <div className="chatbot-header">
@@ -337,30 +246,31 @@ const Chatbot = ({ notifyCart }) => {
               ✖
             </button>
           </div>
+
           <div className="chatbot-messages">
             {messages.map((msg, index) => (
               <div key={index} className={`message ${msg.from}`}>
-                <p
+                <pre
                   className={
                     msg.from === "bot" ? "bot-response" : "user-response"
                   }
                 >
                   {msg.text}
-                </p>
+                </pre>
               </div>
             ))}
             {isThinking && (
-              <p className="thinking-message">
-                Bot is typing<span className="dots">...</span>
-              </p>
+              <p className="thinking-message">Bot is typing...</p>
             )}
+            <div ref={messagesEndRef} />
           </div>
+
           <div className="chatbot-input">
             <input
               type="text"
               value={inputValue}
-              onChange={handleInputChange}
-              onKeyDown={handleKeyDown}
+              onChange={(e) => setInputValue(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
               placeholder="Type a message..."
               disabled={isLoading}
             />
@@ -368,16 +278,6 @@ const Chatbot = ({ notifyCart }) => {
               Send
             </button>
           </div>
-          {isConfirming && (
-            <div className="confirm-add-to-cart">
-              <button onClick={() => handleFinalConfirmation("yes")}>
-                <i className="fas fa-cart-plus"></i> Add to Cart
-              </button>
-              <button onClick={() => handleFinalConfirmation("no")}>
-                Cancel
-              </button>
-            </div>
-          )}
         </div>
       )}
     </>

@@ -9,6 +9,7 @@ import MedicineDetails from "./MedicineDetails/MedicineDetails";
 import About from "./About/About"; 
 import PaymentSuccess from "./PaymentSuccess/PaymentSuccess";
 import Profile from "./Profile/Profile";
+import SearchNotFound from "./SearchNotFound.jsx";
 
 const App = () => {
   return (
@@ -23,6 +24,7 @@ const App = () => {
             <Route path="/about" element={<About />} />
             <Route path="/payment-success" element={<PaymentSuccess />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/search-not-found" element={<SearchNotFound />} />
           </Routes>
         </div>
         <Chatbot />

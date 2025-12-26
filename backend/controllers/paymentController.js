@@ -12,13 +12,14 @@ const User = require("../models/User");
 const Cart = require("../models/Cart");
 const nodemailer = require("nodemailer");
 
+// ---- helper to clean prices coming from DB/frontend ----
 const getNumericPrice = (rawPrice) => {
   if (typeof rawPrice === "number") return rawPrice;
   const num = parseFloat(String(rawPrice).replace(/[^\d.]/g, ""));
   return Number.isNaN(num) ? 0 : num;
 };
 
-// STEP 1: called from frontend to start Checkout
+// ===================== STEP 1: FRONTEND → CREATE SESSION =====================
 exports.paymentCheckout = async (req, res) => {
   try {
     console.log("Incoming Request Body:", req.body);
@@ -28,6 +29,7 @@ exports.paymentCheckout = async (req, res) => {
       return res.status(400).json({ message: "No items in the cart" });
     }
 
+    // 1) Build line items for real cart
     const lineItems = cartItems.map((item) => {
       const numericPrice = getNumericPrice(item.price);
       console.log("Line item to Stripe:", {
@@ -43,18 +45,43 @@ exports.paymentCheckout = async (req, res) => {
             name: item.name,
             images: item.imageUrl ? [item.imageUrl] : [],
           },
+          // rupees → paise
           unit_amount: Math.round(numericPrice * 100),
         },
         quantity: item.quantity,
       };
     });
 
-    const totalAmount = cartItems.reduce((sum, item) => {
+    // 2) Compute REAL total of cart in paise (no top‑up)
+    const realTotalPaise = cartItems.reduce((sum, item) => {
       const numericPrice = getNumericPrice(item.price);
       return sum + Math.round(numericPrice * 100) * item.quantity;
-    }, 0); // paise
+    }, 0);
 
-    // MUST be present because route uses getUser
+    // 3) If total is below Stripe minimum, add a HIDDEN top‑up line item
+    //    This exists ONLY in Stripe; we will not store or show it anywhere else.
+    const MIN_ORDER_PAISE = 50 * 100; // backend safety, e.g. ₹50
+    if (realTotalPaise < MIN_ORDER_PAISE) {
+      const topUpPaise = MIN_ORDER_PAISE - realTotalPaise;
+
+      console.log(
+        `Total below Stripe minimum. Adding hidden top-up of ${topUpPaise} paise`
+      );
+
+      lineItems.push({
+        price_data: {
+          currency: "inr",
+          product_data: {
+            // This name is visible on Stripe's hosted page ONLY.
+            name: "Stripe Minimum Top-up",
+          },
+          unit_amount: topUpPaise,
+        },
+        quantity: 1,
+      });
+    }
+
+    // 4) Verify authenticated user
     const userId = req.user && req.user.id;
     console.log("PAYMENT route req.user:", req.user);
     console.log("PAYMENT route userId:", userId);
@@ -63,23 +90,26 @@ exports.paymentCheckout = async (req, res) => {
       return res.status(401).json({ message: "User not authenticated" });
     }
 
+    // 5) Get customer email for Stripe + mail
     let customerEmail = null;
     const user = await User.findById(userId).select("email");
     if (user) customerEmail = user.email;
 
     const frontendUrl = process.env.FRONTEND_URL || "http://localhost:3000";
 
+    // 6) Create Checkout Session
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       line_items: lineItems,
       mode: "payment",
-      success_url: `${frontendUrl}/payment-success?amount=${totalAmount}&email=${encodeURIComponent(
+      success_url: `${frontendUrl}/payment-success?amount=${realTotalPaise}&email=${encodeURIComponent(
         customerEmail || ""
       )}`,
       cancel_url: `${frontendUrl}/payment-failure`,
       customer_email: customerEmail || undefined,
       metadata: {
-        userId: String(userId), // force non-empty string
+        userId: String(userId),
+        // store ONLY real cart data and real total
         cart: JSON.stringify(
           cartItems.map((item) => {
             const numericPrice = getNumericPrice(item.price);
@@ -87,11 +117,11 @@ exports.paymentCheckout = async (req, res) => {
               medicineId: item.medicineId || item._id,
               name: item.name,
               quantity: item.quantity,
-              price: numericPrice,
+              price: numericPrice, // rupees
             };
           })
         ),
-        totalAmount: String(totalAmount),
+        totalAmount: String(realTotalPaise), // paise (REAL total, no top‑up)
       },
     });
 
@@ -104,7 +134,7 @@ exports.paymentCheckout = async (req, res) => {
   }
 };
 
-// STEP 2: Stripe webhook to store order + clear cart + send email
+// ===================== STEP 2: STRIPE WEBHOOK =====================
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
 exports.handleStripeWebhook = async (req, res) => {
@@ -131,7 +161,7 @@ exports.handleStripeWebhook = async (req, res) => {
     try {
       const metadata = session.metadata || {};
       const cart = metadata.cart ? JSON.parse(metadata.cart) : [];
-      const totalAmount = Number(metadata.totalAmount || 0);
+      const totalAmountPaise = Number(metadata.totalAmount || 0); // REAL total in paise
       const userId = metadata.userId || null;
       const email =
         session.customer_details?.email || session.customer_email;
@@ -143,30 +173,30 @@ exports.handleStripeWebhook = async (req, res) => {
         console.error(
           "WEBHOOK ERROR: userId missing in metadata, cannot create Order."
         );
-        // Do NOT try to save Order if userId is missing
         return res.json({ received: true });
       }
 
+      // 1) Create Order using ONLY real total (no top‑up)
       const orderDoc = new Order({
         userId,
         medicines: cart.map((item) => ({
           medicineId: item.medicineId,
           quantity: item.quantity,
         })),
-        totalAmount: totalAmount / 100, // rupees
+        totalAmount: totalAmountPaise / 100, // rupees (real)
         paymentStatus: "Completed",
         deliveryStatus: "Processing",
       });
 
       await orderDoc.save();
 
+      // 2) Clear cart
       if (userId) {
         await Cart.deleteOne({ userId });
       }
 
-      // ---- UPDATED ETA: 3 hours instead of 2 days ----
-      const etaMinutes =
-      Math.floor(Math.random() * (120 - 30 + 1)) + 30;
+      // 3) Compute ETA
+      const etaMinutes = Math.floor(Math.random() * (120 - 30 + 1)) + 30;
       const eta = new Date();
       eta.setMinutes(eta.getMinutes() + etaMinutes);
       const etaString = eta.toLocaleString("en-IN", {
@@ -178,6 +208,7 @@ exports.handleStripeWebhook = async (req, res) => {
         minute: "2-digit",
       });
 
+      // 4) Send email with ONLY real cart prices and real total
       if (email && process.env.SMTP_HOST) {
         const transporter = nodemailer.createTransport({
           host: process.env.SMTP_HOST,
@@ -203,7 +234,7 @@ Hi,
 
 Your order ${orderDoc._id} has been placed successfully.
 
-Order total: ₹${(totalAmount / 100).toFixed(2)}
+Order total: ₹${(totalAmountPaise / 100).toFixed(2)}
 Estimated delivery: ${etaString}
 
 Items:
@@ -223,7 +254,6 @@ Thank you for ordering with MediQuick.
       }
     } catch (err) {
       console.error("Error handling checkout.session.completed:", err);
-      // Do not rethrow; Stripe will retry if non‑2xx, but we already respond below
     }
   }
 

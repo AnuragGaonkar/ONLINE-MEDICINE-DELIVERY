@@ -5,44 +5,13 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #f3f4f6; /* light mode */
+  color: #111827;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
-}
-/* Light mode (default) */
-body {
-  background: #f3f4f6;
-  color: #111827;
-}
-
-/* Dark mode root switch */
-html.dark body {
-  background: #020617;
-  color: #e5e7eb;
-}
-
-/* Navbar dark mode */
-html.dark .navbar {
-  background-color: #020617;
-  border-bottom: 1px solid #1f2937;
-}
-
-html.dark .navbar a,
-html.dark .navbar button {
-  color: #e5e7eb;
-}
-
-html.dark .navbar a:hover,
-html.dark .navbar button:hover {
-  color: #4ade80;
-}
-
-/* Light mode defaults */
-body {
-  background-color: #f3f4f6;
-  color: #111827;
 }
 
 /* Global dark mode */
@@ -101,13 +70,13 @@ html.dark .mobile-menu-panel {
   background-color: #020617;
 }
 
-/* Profile page (if using .profile-page wrapper) */
+/* Profile page */
 html.dark .profile-page {
   background-color: #020617;
   color: #e5e7eb;
 }
 
-/* Search bar dark mode */
+/* Search bar in navbar dark mode */
 html.dark .navbar input[type="search"] {
   background-color: #020617;
   border-color: #1f2937;
@@ -123,7 +92,7 @@ html.dark .navbar button[type="submit"] {
   color: #022c22;
 }
 
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-

@@ -28,7 +28,7 @@ const Card = ({ medicine, handleAddToCart }) => {
       <h3>{medicine.name}</h3>
       <p>{medicine.description}</p>
       <p>Price: ₹{medicine.price}</p>
-      <p>Quantity: {medicine.quantity}</p>
+      <p>Quantity: {medicine.stock}</p>
       <button onClick={onAddToCart}>
         <i className="fas fa-cart-plus"></i> Add to Cart
       </button>

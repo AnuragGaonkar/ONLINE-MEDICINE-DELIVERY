@@ -134,7 +134,7 @@ const MedicineDetails = () => {
             )}
 
             <div className="med-price-rating-row">
-              {price && <p className="med-price">₹{price}</p>}
+              {price && <p className="med-price">{price}</p>}
               {typeof rating === "number" && (
                 <div className="med-rating-pill">★ {rating.toFixed(1)}</div>
               )}

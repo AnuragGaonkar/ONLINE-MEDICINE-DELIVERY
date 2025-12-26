@@ -21,6 +21,10 @@ const Cart = () => {
   const navigate = useNavigate();
   const HOST = "http://localhost:5001";
 
+  // ---- USER ADDRESS STATE ----
+  const [userAddress, setUserAddress] = useState(null);
+  const [isAddressLoading, setIsAddressLoading] = useState(true);
+
   // ---- PRICE BREAKDOWN STATE (fix flicker) ----
   const [priceBreakdown, setPriceBreakdown] = useState({
     subtotal: 0,
@@ -44,6 +48,7 @@ const Cart = () => {
     fetchCartItems();
   }, [fetchCartItems]);
 
+  // ---- FETCH CART + ADDRESS (no flicker) ----
   useEffect(() => {
     const token = localStorage.getItem("auth-token");
     if (!token) {
@@ -51,7 +56,56 @@ const Cart = () => {
       navigate("/");
       return;
     }
+
+    // fetch cart items
     stableFetchCartItems();
+
+    // fetch user address only once
+    let isMounted = true;
+
+    const fetchUserAddress = async () => {
+      try {
+        if (!userAddress) {
+          setIsAddressLoading(true);
+        }
+
+        const res = await fetch(`${HOST}/api/auth/getuser`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "auth-token": token,
+          },
+        });
+
+        if (!res.ok) {
+          console.error("Failed to fetch user details");
+          if (isMounted) setUserAddress(null);
+          return;
+        }
+
+        const user = await res.json();
+        // user.address is: { street, city, postalCode, country }
+        if (isMounted) {
+          if (user && user.address) {
+            setUserAddress(user.address);
+          } else {
+            setUserAddress(null);
+          }
+        }
+      } catch (err) {
+        console.error("Error fetching user address:", err);
+        if (isMounted) setUserAddress(null);
+      } finally {
+        if (isMounted) setIsAddressLoading(false);
+      }
+    };
+
+    fetchUserAddress();
+
+    return () => {
+      isMounted = false;
+    };
+    // only depend on stableFetchCartItems so this runs once per mount
   }, [stableFetchCartItems, navigate]);
 
   // ----- recompute fees ONLY when cartItems change -----
@@ -86,7 +140,6 @@ const Cart = () => {
     });
   }, [cartItems, baseDeliveryFee]);
 
-
   const makePayment = async () => {
     const token = localStorage.getItem("auth-token");
     if (!token) {
@@ -112,6 +165,8 @@ const Cart = () => {
         gstAmount,
         totalPayable,
       },
+      // optional: send address too, if your backend needs it
+      shippingAddress: userAddress || null,
     };
 
     const headers = {
@@ -158,6 +213,21 @@ const Cart = () => {
     }
   };
 
+  // helper to format address nicely
+  const renderAddressLine = () => {
+    // only show "Loading" when we truly have no address yet
+    if (isAddressLoading && !userAddress) return "Loading address...";
+
+    if (userAddress) {
+      const { street, city, postalCode, country } = userAddress;
+      // keep it short for cart: street + city + pin
+      return `${street}, ${city} - ${postalCode}, ${country}`;
+    }
+
+    // not loading but no address present
+    return "Add delivery address";
+  };
+
   return (
     <div className="main">
       <div className="breadcrumb">
@@ -167,9 +237,10 @@ const Cart = () => {
       <div className="cart-container">
         <div className="cart-left">
           <h2>{cartItems.length} Items in your Cart</h2>
+
           <div className="delivery-section">
             <span>Deliver to:</span>
-            <a>Select Pincode</a>
+            <a>{renderAddressLine()}</a>
           </div>
 
           {cartItems.length === 0 ? (

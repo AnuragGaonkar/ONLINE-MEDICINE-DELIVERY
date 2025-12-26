@@ -2,287 +2,307 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from flask_pymongo import PyMongo
 import nltk
-from fuzzywuzzy import process  # For fuzzy matching
+from fuzzywuzzy import process
 from datetime import datetime
 
 app = Flask(__name__)
 CORS(app, origins=["http://localhost:3000"])
 
 # MongoDB configuration
-app.config["MONGO_URI"] = "mongodb://localhost:27017/medicineDB"  # Adjust your MongoDB URI
+app.config["MONGO_URI"] = "mongodb://localhost:27017/medicineDB"
 mongo = PyMongo(app)
 
-# Initialize a cache to store chat history and last mentioned medicine
-chat_history = []
-last_mentioned_medicine = None  # Track the last mentioned medicine globally
-awaiting_cart_confirmation = False  # Track if awaiting cart confirmation
-last_medicines_for_cart = []  # Store medicines to be added to cart
-quantities = {}  # Track quantities for each medicine to be added to cart
+# ----------------- SESSION UTILITIES -----------------
 
+def get_session_id():
+    """
+    Prefer a stable session id passed from frontend (userId or guest UUID).
+    Fallback to token string, then 'anonymous'.
+    """
+    explicit = request.headers.get("X-Session-Id")
+    if explicit:
+        return explicit
 
-# ----------------- Utility: tokenization & chat logging -----------------
+    auth_header = request.headers.get("Authorization")
+    if auth_header and auth_header.startswith("Bearer "):
+        return auth_header.split(" ")[1]
+
+    return "anonymous"
+
+def get_or_create_session(session_id):
+    session = mongo.db.sessions.find_one({"session_id": session_id})
+    if not session:
+        session = {
+            "session_id": session_id,
+            "last_mentioned_medicine": None,
+            "awaiting_cart_confirmation": False,
+            "last_medicines_for_cart": [],
+            "quantities": {},
+        }
+        mongo.db.sessions.insert_one(session)
+    return session
+
+def update_session(session_id, updates):
+    mongo.db.sessions.update_one(
+        {"session_id": session_id},
+        {"$set": updates},
+        upsert=True,
+    )
+
+# ----------------- NLP UTILITIES -----------------
 
 def tokenize(text):
     words = nltk.word_tokenize(text.lower())
-    words = [word for word in words if word.isalnum()]
-    return words
+    return [w for w in words if w.isalnum()]
 
+def detect_intent(message):
+    msg = message.lower()
 
-def save_chat_turn(user_message, bot_message, medicines=None, quantities_data=None, session_id=None):
-    """
-    Persist a single user–bot interaction in MongoDB.
-    """
-    if session_id is None:
-        session_id = "default-session"
+    if any(x in msg for x in ["add", "buy", "cart", "purchase"]):
+        return "ADD_TO_CART"
 
-    mongo.db.chats.insert_one({
-        "session_id": session_id,
-        "user_message": user_message,
-        "bot_message": bot_message,
-        "medicines": medicines or [],
-        "quantities": quantities_data or {},
-        "timestamp": datetime.utcnow(),
-    })
+    if any(x in msg for x in ["price", "cost", "mrp"]):
+        return "PRICE"
 
+    if any(x in msg for x in ["dosage", "dose", "how much"]):
+        return "DOSAGE"
 
-# ----------------- Core logic: search & details -----------------
+    if any(x in msg for x in ["side effect", "effects", "reaction"]):
+        return "SIDE_EFFECTS"
 
-# Function to find relevant medicines based on symptoms
+    if any(x in msg for x in ["precaution", "safe"]):
+        return "PRECAUTIONS"
+
+    if any(x in msg for x in ["delivery"]):
+        return "DELIVERY"
+
+    if any(x in msg for x in ["tell me", "about", "what is", "information", "details"]):
+        return "MEDICINE_OVERVIEW"
+
+    if any(x in msg for x in ["fever", "pain", "cold", "cough", "headache"]):
+        return "SYMPTOMS"
+
+    return "UNKNOWN"
+
+# ----------------- CHAT LOGGING -----------------
+
+def save_chat_turn(session_id, user_message, bot_message, medicines=None, quantities=None):
+    mongo.db.chats.insert_one(
+        {
+            "session_id": session_id,
+            "user_message": user_message,
+            "bot_message": bot_message,
+            "medicines": medicines or [],
+            "quantities": quantities or {},
+            "timestamp": datetime.utcnow(),
+        }
+    )
+
+# ----------------- MEDICINE LOGIC -----------------
+
 def find_medicines(symptoms):
-    medicines = mongo.db.medicines.find()
-    medicine_scores = []
-
-    for medicine in medicines:
+    results = []
+    for med in mongo.db.medicines.find():
         score = 0
-        # Check for matching symptoms in uses
-        for i in range(5):  # Check up to use0 to use4
-            use_key = f"use{i}"
-            if medicine.get(use_key) and medicine[use_key] in symptoms:
+        for i in range(5):
+            key = f"use{i}"
+            if med.get(key) and med[key] in symptoms:
                 score += 1
-
-        # Append medicines with a score greater than 0
         if score > 0:
-            medicine_scores.append({
-                "name": medicine["name"],
-                "description": medicine["description"],
-                "dosage": medicine["dosage"],
-                "price": medicine["price"],
-                "delivery_time": medicine["delivery_time"],
-                "in_stock": medicine["in_stock"],
-                "score": score,
-            })
+            results.append(
+                {
+                    "name": med["name"],
+                    "description": med["description"],
+                    "dosage": med["dosage"],
+                    "price": med["price"],
+                    "delivery_time": med["delivery_time"],
+                    "in_stock": med["in_stock"],
+                    "score": score,
+                }
+            )
+    results.sort(key=lambda x: x["score"], reverse=True)
+    return results[:5]
 
-    # Sort by score in descending order and return top 5
-    medicine_scores.sort(key=lambda x: x["score"], reverse=True)
-    return medicine_scores[:5]
+def build_overview(med):
+    uses = [med.get(f"use{i}") for i in range(5) if med.get(f"use{i}")]
+    return (
+        f"{med['name']} is commonly used for {', '.join(uses)}. "
+        f"The recommended dosage is {med['dosage']}. "
+        f"It costs ₹{med['price']}. "
+        f"The delivery time is {med['delivery_time']}."
+    )
 
+def get_medicine_details(med_name, intent):
+    med = mongo.db.medicines.find_one(
+        {"name": {"$regex": med_name, "$options": "i"}}
+    )
 
-# Function to get medicine details based on user query
-def get_medicine_details(medicine_name, queries):
-    # Retrieve medicine details from MongoDB
-    medicine = mongo.db.medicines.find_one({"name": {"$regex": medicine_name, "$options": "i"}})
-    if not medicine:
-        return "Sorry, I could not find any details about that medicine."
+    if not med:
+        return None
 
-    response_parts = []
+    if intent == "PRICE":
+        return f"The price of {med['name']} is ₹{med['price']}."
 
-    if "price" in queries:
-        response_parts.append(f"The price of {medicine['name']} is {medicine['price']}.")
-    if "dosage" in queries:
-        response_parts.append(f"The recommended dosage for {medicine['name']} is {medicine['dosage']}.")
-    if "side effects" in queries and medicine.get("side_effects"):
-        response_parts.append(
-            f"The side effects of {medicine['name']} include {', '.join(medicine['side_effects'])}."
-        )
-    if "precautions" in queries and medicine.get("precautions"):
-        response_parts.append(
-            f"Precautions for {medicine['name']} include {', '.join(medicine['precautions'])}."
-        )
-    if "alternatives" in queries and medicine.get("alternativeMedicines"):
-        response_parts.append(
-            f"Some alternatives for {medicine['name']} are {', '.join(medicine['alternativeMedicines'])}."
-        )
-    if "availability" in queries:
-        response_parts.append(
-            f"{medicine['name']} is currently {'available' if medicine['in_stock'] else 'not available'} in stock."
-        )
-    if "delivery" in queries:
-        response_parts.append(f"The delivery time for {medicine['name']} is {medicine['delivery_time']}.")
-    if "uses" in queries or "how to use" in queries:
-        uses = [medicine[f"use{i}"] for i in range(5) if medicine.get(f"use{i}")]
-        if uses:
-            response_parts.append(f"The uses of {medicine['name']} include: {', '.join(uses)}.")
+    if intent == "DOSAGE":
+        return f"The recommended dosage for {med['name']} is {med['dosage']}."
 
-    return " ".join(response_parts) if response_parts else "I'm sorry, I cannot provide that information."
+    if intent == "SIDE_EFFECTS" and med.get("side_effects"):
+        return f"The side effects include {', '.join(med['side_effects'])}."
 
+    if intent == "PRECAUTIONS" and med.get("precautions"):
+        return f"Precautions include {', '.join(med['precautions'])}."
 
-# ----------------- Default responses & cart handling -----------------
+    if intent == "DELIVERY":
+        return f"The delivery time for {med['name']} is {med['delivery_time']}."
 
-def get_default_response(message):
-    global last_mentioned_medicine
-
-    greetings = ["hello", "hi", "hey", "howdy", "greetings"]
-    if any(greeting in message.lower() for greeting in greetings):
-        return "Hello! How can I assist you today?"
-
-    medicine_queries = [
-        "price", "how to use", "side effects",
-        "precautions", "alternatives",
-        "where can I buy", "is it safe", "dosage",
-        "delivery", "delivery time", "uses",
-    ]
-
-    tokens = tokenize(message)
-    found_queries = [query for query in medicine_queries if query in message.lower()]
-
-    # Extracting the potential medicine name
-    medicine_names = [med["name"] for med in mongo.db.medicines.find()]
-    found_medicines = process.extract(message, medicine_names, limit=1)
-
-    # New medicine mentioned
-    if found_queries and found_medicines and found_medicines[0][1] > 80:
-        medicine_name = found_medicines[0][0]
-        last_mentioned_medicine = medicine_name
-        details_response = get_medicine_details(medicine_name, found_queries)
-        if details_response:
-            return details_response
-
-    # Refer back to last mentioned medicine
-    if last_mentioned_medicine and found_queries:
-        details_response = get_medicine_details(last_mentioned_medicine, found_queries)
-        if details_response:
-            return details_response
+    if intent == "MEDICINE_OVERVIEW":
+        return build_overview(med)
 
     return None
 
+# ----------------- CART HANDLING -----------------
 
-def handle_cart(message):
-    global last_medicines_for_cart
-    global awaiting_cart_confirmation
-    global quantities
-
+def handle_cart(session, message):
     if "add to cart" in message.lower():
-        medicines = [med["name"] for med in mongo.db.medicines.find()]
-        found_medicines = process.extract(message, medicines, limit=5)
-        matched_medicines = [med[0] for med in found_medicines if med[1] > 80]
+        names = [m["name"] for m in mongo.db.medicines.find()]
+        matches = process.extract(message, names, limit=5)
+        matched = [m[0] for m in matches if m[1] > 80]
 
-        if matched_medicines:
-            last_medicines_for_cart = matched_medicines
-            awaiting_cart_confirmation = True
-            return (
-                f"Do you want to add {', '.join(last_medicines_for_cart)} to your cart? "
-                f"If so, please specify the quantities."
+        if matched:
+            update_session(
+                session["session_id"],
+                {
+                    "awaiting_cart_confirmation": True,
+                    "last_medicines_for_cart": matched,
+                },
             )
+            return f"Please specify quantity for {', '.join(matched)}."
 
-        return "Please specify the medicines you want to add to the cart."
-
-    # Handle quantity input
-    if awaiting_cart_confirmation:
+    if session.get("awaiting_cart_confirmation"):
         tokens = tokenize(message)
-        quantities_response = []
-        for med in last_medicines_for_cart:
-            for token in tokens:
-                if token.isdigit():
-                    quantities[med] = int(token)
-                    quantities_response.append(f"{med}: {token}")
+        qty = next((int(t) for t in tokens if t.isdigit()), None)
 
-        if len(quantities_response) == len(last_medicines_for_cart):
-            # Save to cart collection
-            for med, qty in quantities.items():
-                mongo.db.cart.insert_one({
-                    "medicine": med,
-                    "quantity": qty,
-                })
+        if qty:
+            for med in session["last_medicines_for_cart"]:
+                mongo.db.cart.insert_one(
+                    {
+                        "medicine": med,
+                        "quantity": qty,
+                        "session_id": session["session_id"],
+                    }
+                )
 
-            awaiting_cart_confirmation = False
-            return (
-                f"Added to cart: {', '.join(quantities_response)}. "
-                f"Would you like to proceed with the checkout?"
+            update_session(
+                session["session_id"],
+                {
+                    "awaiting_cart_confirmation": False,
+                    "last_medicines_for_cart": [],
+                },
             )
 
-        elif quantities_response:
-            return (
-                f"Added to cart: {', '.join(quantities_response)}. "
-                f"Please specify the quantities for the remaining medicines."
-            )
+            return "Items added to cart successfully."
 
     return None
 
-
-# ----------------- Routes -----------------
+# ----------------- MAIN CHAT ROUTE -----------------
 
 @app.route("/chat", methods=["POST"])
 def chat():
-    global chat_history, awaiting_cart_confirmation, last_medicines_for_cart, quantities
+    session_id = get_session_id()
+    session = get_or_create_session(session_id)
 
-    user_message = request.json.get("message")
-    chat_history.append(user_message)
+    data = request.get_json(force=True)
+    user_message = data.get("message", "").strip()
+    if not user_message:
+        return jsonify({"message": "Please enter a message.", "medicines": []}), 400
 
-    # 1) Cart logic
-    cart_response = handle_cart(user_message)
-    if cart_response:
-        bot_message = cart_response
-        save_chat_turn(
-            user_message,
-            bot_message,
-            medicines=last_medicines_for_cart,
-            quantities_data=quantities,
+    intent = detect_intent(user_message)
+
+    # Cart handling
+    cart_reply = handle_cart(session, user_message)
+    if cart_reply:
+        save_chat_turn(session_id, user_message, cart_reply)
+        return jsonify({"message": cart_reply, "medicines": []})
+
+    # Detect medicine mention
+    medicine_names = [m["name"] for m in mongo.db.medicines.find()]
+    match = process.extract(user_message, medicine_names, limit=1)
+
+    if match and match[0][1] > 80:
+        update_session(session_id, {"last_mentioned_medicine": match[0][0]})
+        session["last_mentioned_medicine"] = match[0][0]
+
+    # 1) Direct medicine details
+    if session.get("last_mentioned_medicine"):
+        reply = get_medicine_details(session["last_mentioned_medicine"], intent)
+        if reply:
+            save_chat_turn(
+                session_id,
+                user_message,
+                reply,
+                medicines=[session["last_mentioned_medicine"]],
+            )
+            return jsonify({"message": reply, "medicines": []})
+
+    # 2) Symptom-based
+    meds = find_medicines(tokenize(user_message))
+    if meds:
+        update_session(session_id, {"last_mentioned_medicine": meds[0]["name"]})
+
+        # build full formatted text including medicines
+        numbered = []
+        for idx, med in enumerate(meds, start=1):
+            numbered.append(
+                f"""{idx}. {med['name']}
+Dosage: {med['dosage']}
+Price: {med['price']}
+Delivery: {med['delivery_time']}"""
+            )
+        meds_block = "\n\n".join(numbered)
+
+        msg = (
+            "Here are some medicines that may help with your symptoms.\n\n"
+            + meds_block
         )
-        return jsonify({
-            "message": bot_message,
-            "medicines": last_medicines_for_cart,
-            "quantities": quantities,
-        })
 
-    # 2) Default responses (greetings, price/side‑effects queries, etc.)
-    default_response = get_default_response(user_message)
-    if default_response:
-        bot_message = default_response
-        save_chat_turn(user_message, bot_message)
-        return jsonify({"message": bot_message, "medicines": []})
+        save_chat_turn(
+            session_id,
+            user_message,
+            msg,
+            medicines=[m["name"] for m in meds],
+        )
+        return jsonify({"message": msg, "medicines": meds})
 
-    # 3) Symptom‑based recommendation
-    tokens = tokenize(user_message)
-    medicines = find_medicines(tokens)
-
-    if medicines:
-        global last_mentioned_medicine
-        last_mentioned_medicine = medicines[0]["name"]
-        bot_message = "Here are the recommended medicines for your symptoms:"
-        response = {
-            "message": bot_message,
-            "medicines": medicines,
-        }
-    else:
-        bot_message = "I'm sorry, I couldn't find any medicines for your symptoms."
-        response = {
-            "message": bot_message,
-            "medicines": [],
-        }
-
-    save_chat_turn(
-        user_message,
-        bot_message,
-        medicines=[m["name"] for m in medicines] if medicines else [],
+    # 3) Fallback
+    fallback = (
+        "I could not understand that. You can ask about a medicine, "
+        "its price, dosage, side effects, or delivery time."
     )
-    return jsonify(response)
+    save_chat_turn(session_id, user_message, fallback)
+    return jsonify({"message": fallback, "medicines": []})
 
+# ----------------- VIEW CART -----------------
 
 @app.route("/view_cart", methods=["GET"])
 def view_cart():
-    cart_items = mongo.db.cart.find()
-    cart_list = [{"medicine": item["medicine"], "quantity": item["quantity"]} for item in cart_items]
-    return jsonify(cart_list)
+    session_id = get_session_id()
+    items = mongo.db.cart.find({"session_id": session_id})
+    return jsonify(
+        [{"medicine": i["medicine"], "quantity": i["quantity"]} for i in items]
+    )
 
+# ----------------- HISTORY -----------------
 
 @app.route("/chat_history", methods=["GET"])
-def get_chat_history():
-    session_id = request.args.get("session_id", "default-session")
-    history = list(
-        mongo.db.chats.find({"session_id": session_id}, {"_id": 0}).sort("timestamp", 1)
+def history():
+    session_id = get_session_id()
+    chats = (
+        mongo.db.chats.find({"session_id": session_id}, {"_id": 0})
+        .sort("timestamp", 1)
     )
-    return jsonify(history)
+    return jsonify(list(chats))
 
+# ----------------- RUN -----------------
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -1,12 +1,14 @@
 /* src/PaymentSuccess/PaymentSuccess.css */
 
+/* ---------- base (light) ---------- */
+
 .payment-success-page {
   min-height: calc(100vh - 80px);
   display: flex;
   justify-content: center;
   align-items: center;
-  background: radial-gradient(circle at top left, #e8f5e9 0, #ffffff 45%);
   padding: 24px;
+  background: transparent;            /* let app background show */
 }
 
 .payment-card {
@@ -43,7 +45,7 @@
 
 .payment-text {
   font-size: 15px;
-  color: #555;
+  color: #374151;
   margin-bottom: 20px;
 }
 
@@ -133,11 +135,132 @@
   transform: translateY(-1px);
 }
 
+/* ---------- dark shell support ---------- */
+/* assume your root has either body.dark or .app.dark-mode */
+
+body.dark .payment-success-page,
+.app.dark-mode .payment-success-page {
+  background: transparent;
+}
+
+body.dark .payment-card,
+.app.dark-mode .payment-card {
+  background: #020617;
+  border: 1px solid #1f2937;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.7);
+}
+
+body.dark .payment-icon,
+.app.dark-mode .payment-icon {
+  background: rgba(22, 163, 74, 0.15);
+  color: #4ade80;
+}
+
+body.dark .payment-card h1,
+.app.dark-mode .payment-card h1 {
+  color: #e5f9e7;
+}
+
+body.dark .payment-text,
+.app.dark-mode .payment-text {
+  color: #e5e7eb;           /* strong readable text */
+}
+
+body.dark .payment-text.error-text,
+.app.dark-mode .payment-text.error-text {
+  color: #fecaca;
+}
+
+body.dark .highlight,
+.app.dark-mode .highlight {
+  color: #6ee7b7;
+}
+
+body.dark .summary-box,
+.app.dark-mode .summary-box {
+  background: #020617;
+  border-color: #1f2937;
+}
+
+body.dark .summary-box h2,
+body.dark .summary-line,
+body.dark .summary-list li,
+.app.dark-mode .summary-box h2,
+.app.dark-mode .summary-line,
+.app.dark-mode .summary-list li {
+  color: #e5e7eb;
+}
+
+body.dark .secondary-btn,
+.app.dark-mode .secondary-btn {
+  background-color: #111827;
+  color: #e5e7eb;
+}
+
+body.dark .secondary-btn:hover,
+.app.dark-mode .secondary-btn:hover {
+  background-color: #1f2937;
+}
+
+/* --------------------
+   Mobile view
+-------------------- */
+
 @media (max-width: 640px) {
-  .payment-card {
-    padding: 24px 18px 20px;
+  .payment-success-page {
+    padding: 16px;
+    align-items: flex-start;
   }
+
+  .payment-card {
+    margin-top: 24px;
+    padding: 20px 16px 18px;
+    border-radius: 14px;
+  }
+
+  .payment-icon {
+    width: 56px;
+    height: 56px;
+    font-size: 28px;
+    margin-bottom: 12px;
+  }
+
+  .payment-card h1 {
+    font-size: 22px;
+    margin-bottom: 6px;
+  }
+
+  .payment-text {
+    font-size: 14px;
+    margin-bottom: 16px;
+  }
+
+  .summary-box {
+    padding: 12px 12px;
+    margin-bottom: 18px;
+  }
+
+  .summary-box h2 {
+    font-size: 15px;
+    margin-bottom: 8px;
+  }
+
+  .summary-line,
+  .summary-list li {
+    font-size: 13px;
+  }
+
   .button-row {
     flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .primary-btn,
+  .secondary-btn {
+    min-width: 0;
+    width: 100%;
+    padding: 9px 12px;
+    font-size: 14px;
   }
 }

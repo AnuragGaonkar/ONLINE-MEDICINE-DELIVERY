@@ -11,15 +11,17 @@ const PaymentSuccess = () => {
 
   const [orderSummary, setOrderSummary] = useState({
     email: "",
-    amount: 0,
+    amount: 0,        // in paise
     currency: "INR",
     items: [],
   });
 
+  // clear cart on successful payment
   useEffect(() => {
     clearCart();
   }, [clearCart]);
 
+  // restore summary from localStorage or URL
   useEffect(() => {
     const stored = localStorage.getItem("last-order-summary");
     if (stored) {
@@ -27,16 +29,28 @@ const PaymentSuccess = () => {
         const parsed = JSON.parse(stored);
         setOrderSummary(parsed);
         return;
-      } catch (_) {}
+      } catch (_) {
+        // ignore parse error and fall back to URL params
+      }
     }
 
     const params = new URLSearchParams(location.search);
     const email = params.get("email") || "";
     const amount = Number(params.get("amount") || 0);
+
     if (email || amount) {
       setOrderSummary((prev) => ({ ...prev, email, amount }));
     }
   }, [location.search]);
+
+  const handleGoHome = () => {
+    navigate("/");
+  };
+
+  const handleViewOrders = () => {
+    // Profile page should read ?tab=orders and open Orders tab
+    navigate("/profile?tab=orders");
+  };
 
   return (
     <div className="payment-success-page">
@@ -53,7 +67,7 @@ const PaymentSuccess = () => {
 
         <div className="summary-box">
           <h2>Order summary</h2>
-          <p>
+          <p className="summary-line">
             Amount paid:{" "}
             <strong>₹{(orderSummary.amount / 100).toFixed(2)}</strong>
           </p>
@@ -61,7 +75,8 @@ const PaymentSuccess = () => {
             <ul className="summary-list">
               {orderSummary.items.map((item, idx) => (
                 <li key={idx}>
-                  {item.name} × {item.quantity}
+                  <span>{item.name}</span>
+                  <span>× {item.quantity}</span>
                 </li>
               ))}
             </ul>
@@ -69,16 +84,10 @@ const PaymentSuccess = () => {
         </div>
 
         <div className="button-row">
-          <button
-            className="primary-btn"
-            onClick={() => navigate("/")}
-          >
+          <button className="primary-btn" onClick={handleGoHome}>
             Go to Home
           </button>
-          <button
-            className="secondary-btn"
-            onClick={() => navigate("/orders")}
-          >
+          <button className="secondary-btn" onClick={handleViewOrders}>
             View your orders
           </button>
         </div>

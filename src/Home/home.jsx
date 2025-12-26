@@ -2,25 +2,24 @@ import React, { useState, useEffect, useContext, useRef } from "react";
 import "./home.css";
 import { CartContext } from "../Cart/CartContext";
 import Card from "../card/Card";
-import one from './comp_india_covered.jpg';
-import two from './comp_cod.jpg';
-import three from './safe.jpg';
-import four from './del.png';
+import one from "./comp_india_covered.jpg";
+import two from "./comp_cod.jpg";
+import three from "./safe.jpg";
+import four from "./del.png";
 import { useNavigate, useLocation } from "react-router-dom";
 
 const Home = () => {
   const location = useLocation();
   const { addToCart } = useContext(CartContext);
   const [alertMessage, setAlertMessage] = useState("");
-  const [medicines, setMedicines] = useState([]); // State to store medicines
-  const [searchTerm, setSearchTerm] = useState(""); // State for search term
-  const [filteredSuggestions, setFilteredSuggestions] = useState([]); // Autocomplete suggestions
-  const [showSuggestions, setShowSuggestions] = useState(false); // Toggle suggestion box
-  const navigate = useNavigate(); // Navigation hook for redirection
-  const [quantity] = useState({}); // currently not changed anywhere
+  const [medicines, setMedicines] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredSuggestions, setFilteredSuggestions] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const navigate = useNavigate();
+  const [quantity] = useState({});
   const searchWrapperRef = useRef(null);
 
-  // Function to fetch medicines from API
   const getMedicines = async () => {
     const URL = "http://localhost:5001/api/medicines";
     try {
@@ -29,12 +28,12 @@ const Home = () => {
         console.log("Could not fetch medicines");
       }
       const medicines = await response.json();
-      setMedicines(medicines); // Set medicines in state
+      setMedicines(medicines);
     } catch (error) {
       console.log("Internal Server error.");
     }
   };
-  
+
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (
@@ -59,18 +58,15 @@ const Home = () => {
     };
   }, []);
 
-  // Fetch medicines on component mount
   useEffect(() => {
     getMedicines();
   }, []);
 
-  // Handle adding to cart and show alert
   const handleAddToCart = (medicine) => {
-    const isLoggedIn = !!localStorage.getItem("auth-token"); // FIXED KEY
+    const isLoggedIn = !!localStorage.getItem("auth-token");
     const qty = quantity[medicine._id] || 1;
 
     if (!isLoggedIn) {
-      // Remember what user tried to add
       window.history.replaceState(
         {
           ...(window.history.state || {}),
@@ -81,7 +77,6 @@ const Home = () => {
         },
         ""
       );
-      // Ask Navbar to open login modal via custom event
       window.dispatchEvent(new Event("open-login-modal"));
       return;
     }
@@ -93,13 +88,11 @@ const Home = () => {
     setTimeout(() => setAlertMessage(""), 3000);
   };
 
-  // Handle search input change
   const handleSearchInputChange = (e) => {
     const userData = e.target.value;
     setSearchTerm(userData);
 
     if (userData) {
-      // Filter suggestions based on search term
       const filtered = medicines.filter((medicine) =>
         medicine.name.toLowerCase().startsWith(userData.toLowerCase())
       );
@@ -110,11 +103,38 @@ const Home = () => {
     }
   };
 
-  // Select a suggestion and navigate to its details page
+  const handleSearchSubmit = (e) => {
+    if (e) e.preventDefault();
+
+    const term = searchTerm.trim().toLowerCase();
+    if (!term) return;
+
+    const exact = medicines.find(
+      (m) => m.name.toLowerCase() === term
+    );
+
+    if (exact) {
+      setShowSuggestions(false);
+      setSearchTerm("");
+      navigate(`/medicine/${exact._id}`);
+      return;
+    }
+
+    if (filteredSuggestions.length > 0) {
+      const top = filteredSuggestions[0];
+      setShowSuggestions(false);
+      setSearchTerm("");
+      navigate(`/medicine/${top._id}`);
+      return;
+    }
+
+    navigate(`/search-not-found?query=${encodeURIComponent(searchTerm)}`);
+  };
+
   const selectSuggestion = (medicineId) => {
-    setSearchTerm(""); // Clear search term
+    setSearchTerm("");
     setShowSuggestions(false);
-    navigate(`/medicine/${medicineId}`); // Navigate to medicine details page
+    navigate(`/medicine/${medicineId}`);
   };
 
   return (
@@ -129,28 +149,29 @@ const Home = () => {
             <img src={four} alt="Slideshow 4" className="slideshow-image" />
           </div>
 
-          <div className="search-container">
-            <input
-              type="text"
-              className="search-input"
-              placeholder="Search for medicines..."
-              value={searchTerm}
-              onChange={handleSearchInputChange}
-              onFocus={() => setShowSuggestions(true)}
-            />
-            <button className="search-button">
-              <i className="fas fa-search"></i>
-            </button>
+          <div className="search-container" ref={searchWrapperRef}>
+            <form onSubmit={handleSearchSubmit} style={{ width: "100%" }}>
+              <input
+                type="text"
+                className="search-input"
+                placeholder="Search for medicines..."
+                value={searchTerm}
+                onChange={handleSearchInputChange}
+                onFocus={() => setShowSuggestions(true)}
+              />
+              <button type="submit" className="search-button">
+                <i className="fas fa-search"></i>
+              </button>
+            </form>
 
-            {/* Suggestion box */}
             {showSuggestions && filteredSuggestions.length > 0 && (
               <ul className="resultBox">
                 {filteredSuggestions.map((medicine) => (
                   <li
                     key={medicine._id}
-                    onClick={() => selectSuggestion(medicine._id)} // Redirect on suggestion click
+                    onClick={() => selectSuggestion(medicine._id)}
                     className="suggestion-item"
-                    style={{ textAlign: "left" }} // Change the text color of suggestions
+                    style={{ textAlign: "left" }}
                   >
                     {medicine.name}
                   </li>
@@ -160,42 +181,9 @@ const Home = () => {
           </div>
         </section>
 
-        <div className="mobile-search">
-          <div className="search-container">
-            <input
-              type="text"
-              className="search-input"
-              placeholder="Search for medicines..."
-              value={searchTerm}
-              onChange={handleSearchInputChange}
-              onFocus={() => setShowSuggestions(true)}
-              style={{ color: "black" }}
-            />
-            <button className="search-button">
-              <i className="fas fa-search"></i>
-            </button>
-
-            {showSuggestions && filteredSuggestions.length > 0 && (
-              <ul className="resultBox">
-                {filteredSuggestions.map((medicine) => (
-                  <li
-                    key={medicine._id}
-                    onClick={() => selectSuggestion(medicine._id)}
-                    className="suggestion-item"
-                    style={{ color: "black", textAlign: "left" }}
-                  >
-                    {medicine.name}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-        </div>
-
         <section className="products">
           <h2>Popular Products</h2>
           <div className="product-list">
-            {/* Show all medicines, regardless of the search term */}
             {medicines.map((medicine) => (
               <div key={medicine._id} className="medicine-item">
                 <Card

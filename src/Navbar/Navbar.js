@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { ShoppingCart, Moon, Sun } from "lucide-react";
 import Login from "../Login/login";
+import MobileSearch from "./MobileSearch"; // adjust path if needed
 
 const Navbar = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -17,14 +18,13 @@ const Navbar = () => {
   const location = useLocation();
   const isHomePage = location.pathname === "/";
   const navigate = useNavigate();
-
   const avatarRef = useRef(null);
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
-  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+  const toggleMenu = () => setIsMenuOpen((prev) => !prev);
 
-  // INIT THEME FROM LOCALSTORAGE
+  // THEME INIT
   useEffect(() => {
     const saved = localStorage.getItem("theme");
     if (saved === "dark") {
@@ -36,7 +36,7 @@ const Navbar = () => {
     }
   }, []);
 
-  // APPLY THEME WHEN CHANGED
+  // THEME APPLY
   useEffect(() => {
     if (theme === "dark") {
       document.documentElement.classList.add("dark");
@@ -51,7 +51,7 @@ const Navbar = () => {
     setTheme((prev) => (prev === "light" ? "dark" : "light"));
   };
 
-  // Load user on refresh if token exists
+  // load user
   useEffect(() => {
     const token = localStorage.getItem("auth-token");
     if (!token) return;
@@ -82,42 +82,41 @@ const Navbar = () => {
     fetchUser();
   }, []);
 
+  // external open-login-modal event
   useEffect(() => {
     const handler = () => setIsModalOpen(true);
     window.addEventListener("open-login-modal", handler);
     return () => window.removeEventListener("open-login-modal", handler);
   }, []);
 
+  // lock scroll on modal
   useEffect(() => {
-    if (isModalOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
+    document.body.style.overflow = isModalOpen ? "hidden" : "unset";
   }, [isModalOpen]);
 
-  const getMedicines = async () => {
-    const URL = "http://localhost:5001/api/medicines";
-    try {
-      const response = await fetch(URL);
-      if (!response.ok) {
-        console.log("Could not fetch medicines");
-        return;
-      }
-      const data = await response.json();
-      setMedicines(data);
-    } catch (error) {
-      console.log("Internal Server error.");
-    }
-  };
-
+  // fetch medicines
   useEffect(() => {
+    const getMedicines = async () => {
+      const URL = "http://localhost:5001/api/medicines";
+      try {
+        const response = await fetch(URL);
+        if (!response.ok) {
+          console.log("Could not fetch medicines");
+          return;
+        }
+        const data = await response.json();
+        setMedicines(data);
+      } catch (error) {
+        console.log("Internal Server error.");
+      }
+    };
     getMedicines();
   }, []);
 
   const handleSearchInputChange = (e) => {
     const userData = e.target.value;
     setSearchTerm(userData);
+
     if (userData) {
       const filtered = medicines.filter((medicine) =>
         medicine.name.toLowerCase().startsWith(userData.toLowerCase())
@@ -129,17 +128,41 @@ const Navbar = () => {
     }
   };
 
+  const handleSearchSubmit = (e) => {
+    if (e) e.preventDefault();
+
+    const term = searchTerm.trim().toLowerCase();
+    if (!term) return;
+
+    const exact = medicines.find((m) => m.name.toLowerCase() === term);
+
+    if (exact) {
+      setShowSuggestions(false);
+      setSearchTerm("");
+      navigate(`/medicine/${exact._id}`);
+      return;
+    }
+
+    if (filteredSuggestions.length > 0) {
+      const top = filteredSuggestions[0];
+      setShowSuggestions(false);
+      setSearchTerm("");
+      navigate(`/medicine/${top._id}`);
+      return;
+    }
+
+    navigate(`/search-not-found?query=${encodeURIComponent(searchTerm)}`);
+  };
+
   const selectSuggestion = (medicineId) => {
     setSearchTerm("");
     setShowSuggestions(false);
     navigate(`/medicine/${medicineId}`);
   };
 
-  // Called by Login component on success
   const handleLoginSuccess = (loggedInUser, token) => {
-    if (token) {
-      localStorage.setItem("auth-token", token);
-    }
+    if (token) localStorage.setItem("auth-token", token);
+
     if (loggedInUser) {
       setUser(loggedInUser);
     } else {
@@ -174,12 +197,12 @@ const Navbar = () => {
     navigate("/");
   };
 
-  // Close avatar dropdown whenever route changes
+  // close dropdown on route change
   useEffect(() => {
     setShowDropdown(false);
   }, [location.pathname]);
 
-  // Close dropdown on outside click
+  // close dropdown on outside click
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (avatarRef.current && !avatarRef.current.contains(e.target)) {
@@ -206,6 +229,7 @@ const Navbar = () => {
   return (
     <nav className="navbar shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* top row */}
         <div className="flex justify-between items-center h-20">
           {/* Logo */}
           <div className="flex items-center">
@@ -214,28 +238,30 @@ const Navbar = () => {
             </Link>
           </div>
 
-          {/* Search Bar (not on home) */}
+          {/* Desktop search (not on home) */}
           {!isHomePage && (
             <div className="hidden sm:block flex-grow px-4 lg:ml-6">
               <div className="relative max-w-lg w-full">
-                <input
-                  id="search"
-                  name="search"
-                  className="block w-full pl-4 pr-12 py-3 border border-gray-300 rounded-md bg-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 sm:text-lg"
-                  placeholder="Search for Medicines/Healthcare products"
-                  type="search"
-                  value={searchTerm}
-                  onChange={handleSearchInputChange}
-                  onFocus={() => setShowSuggestions(true)}
-                />
-                <div className="absolute inset-y-0 right-0 flex items-center">
-                  <button
-                    type="submit"
-                    className="h-full px-4 py-2 bg-green-500 text-white rounded-r-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500"
-                  >
-                    Search
-                  </button>
-                </div>
+                <form onSubmit={handleSearchSubmit}>
+                  <input
+                    id="search"
+                    name="search"
+                    className="block w-full pl-4 pr-12 py-3 border border-gray-300 rounded-md bg-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 sm:text-lg"
+                    placeholder="Search for Medicines/Healthcare products"
+                    type="search"
+                    value={searchTerm}
+                    onChange={handleSearchInputChange}
+                    onFocus={() => setShowSuggestions(true)}
+                  />
+                  <div className="absolute inset-y-0 right-0 flex items-center">
+                    <button
+                      type="submit"
+                      className="h-full px-4 py-2 bg-green-500 text-white rounded-r-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500"
+                    >
+                      Search
+                    </button>
+                  </div>
+                </form>
 
                 {showSuggestions && filteredSuggestions.length > 0 && (
                   <ul className="absolute z-10 bg-white border border-gray-300 w-full rounded-md mt-1 max-h-60 overflow-auto shadow-lg">
@@ -276,26 +302,28 @@ const Navbar = () => {
 
                 <div className="relative" ref={avatarRef}>
                   <div
-                    onClick={() => setShowDropdown(!showDropdown)}
+                    onClick={() => setShowDropdown((p) => !p)}
                     className="w-10 h-10 rounded-full bg-green-600 text-white flex items-center justify-center cursor-pointer"
                   >
                     {user.name?.charAt(0).toUpperCase() || "U"}
                   </div>
                   {showDropdown && (
-                    <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded shadow-md z-50">
-                      <button
-                        type="button"
-                        onClick={handleProfileClick}
-                        className="block w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100"
-                      >
-                        Profile
-                      </button>
-                      <button
-                        onClick={handleLogout}
-                        className="w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100"
-                      >
-                        Logout
-                      </button>
+                    <div className="profile-dropdown profile-dropdown-open">
+                      <div className="profile-dropdown-inner">
+                        <button
+                          type="button"
+                          onClick={handleProfileClick}
+                          className="block w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100"
+                        >
+                          Profile
+                        </button>
+                        <button
+                          onClick={handleLogout}
+                          className="w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100"
+                        >
+                          Logout
+                        </button>
+                      </div>
                     </div>
                   )}
                 </div>
@@ -327,8 +355,17 @@ const Navbar = () => {
             </Link>
           </div>
 
-          {/* Mobile Menu Button */}
-          <div className="flex sm:hidden">
+          {/* Mobile right side: pill search + hamburger */}
+          <div className="flex items-center gap-2 sm:hidden">
+            <MobileSearch
+              searchTerm={searchTerm}
+              onChange={handleSearchInputChange}
+              onSubmit={handleSearchSubmit}
+              onFocus={() => setShowSuggestions(true)}
+              suggestions={showSuggestions ? filteredSuggestions : []}
+              onSelectSuggestion={selectSuggestion}
+            />
+
             <button
               onClick={toggleMenu}
               className="text-gray-700 hover:text-green-500 focus:outline-none"
@@ -412,7 +449,6 @@ const Navbar = () => {
               </>
             )}
 
-            {/* Mobile theme toggle */}
             <button
               onClick={toggleTheme}
               className="flex items-center gap-2 text-gray-700 hover:text-green-500 text-lg font-medium"

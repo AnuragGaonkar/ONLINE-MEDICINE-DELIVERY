@@ -13,7 +13,7 @@
 }
 
 .modal-content {
-  background: rgb(255, 250, 250);
+  background: rgb(0, 0, 0);
   width: 500px;
   padding: 20px;
   border-radius: 10px;
@@ -146,4 +146,41 @@
     transform: translateY(0);
     opacity: 1;
   }
+}
+
+html.dark .modal-content {
+  background: #0a0a0a;         /* dark background for the box itself */
+  color: #000000;
+}
+
+html.dark .input {
+  background-color: #111827;   /* slightly lighter than card */
+  color: #f9fafb;
+  border-color: #4b5563;
+}
+
+html.dark .title {
+  color: #0a6c10;
+}
+
+html.dark .form-btn {
+  background: #16a34a;
+  color: #f9fafb;
+}
+html.dark .form-btn:hover {
+  background: #15803d;
+}
+
+html.dark .sign-up-label {
+  color: #089903;
+}
+
+html.dark .sign-up-link {
+  color: #22c55e;
+}
+
+html.dark .form-container{
+  background-color: #1e251a;
+  border-radius: 10px;
+  padding: 20px 24px;
 }

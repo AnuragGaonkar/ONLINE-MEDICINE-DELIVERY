@@ -1,16 +1,14 @@
-/* Loading message styles */
+/* Loading / thinking animations */
 .loading-message {
-  animation: blink 1s infinite; /* Blinking effect */
+  animation: blink 1s infinite;
 }
 
-/* Thinking message styles */
 .thinking-message {
-  animation: blink 1s infinite; /* Blinking effect for thinking */
+  animation: blink 1s infinite;
 }
 
-/* Dots animation styles */
 .dots {
-  animation: blink 1s infinite; /* Blinking effect for dots */
+  animation: blink 1s infinite;
 }
 
 @keyframes blink {
@@ -19,7 +17,7 @@
   100% { opacity: 1; }
 }
 
-/* Existing CSS for the chatbot icon and window (keep as it is) */
+/* === Chatbot floating icon === */
 .chatbot-icon {
   position: fixed;
   bottom: 20px;
@@ -68,27 +66,29 @@
   font-weight: bold;
 }
 
+/* === Chat window === */
 .chatbot-window {
   position: fixed;
   bottom: 80px;
   right: 20px;
   width: 500px;
   height: 600px;
-  max-height: 600px;
+  max-height: 80vh;              /* prevent overflowing small screens */
   background-color: white;
   border: 1px solid #ddd;
-  border-radius: 5px;
+  border-radius: 10px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
   z-index: 1000;
-  overflow-y: auto;
   display: flex;
   flex-direction: column;
+  overflow: hidden;              /* scroll only inside messages area */
 }
 
+/* Header */
 .chatbot-header {
   background-color: #269f10;
   color: white;
-  padding: 10px;
+  padding: 10px 14px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -106,6 +106,7 @@
   cursor: pointer;
 }
 
+/* Messages area */
 .chatbot-messages {
   padding: 10px;
   flex: 1;
@@ -114,48 +115,53 @@
   flex-direction: column;
 }
 
-/* Styles for messages */
+/* Message bubbles */
 .message {
   clear: both;
   margin: 5px 0;
-  max-width: 80%; /* Limit message width */
+  max-width: 80%;
   word-wrap: break-word;
 }
 
-/* User message styles */
 .user {
-  align-self: flex-end; /* Align user messages to the right */
+  align-self: flex-end;
 }
 
-/* Bot response styles */
 .bot {
-  align-self: flex-start; /* Align bot messages to the left */
+  align-self: flex-start;
 }
 
-/* User response styles */
 .user-response {
-  background-color: #269f10; /* Green background for user messages */
+  background-color: #269f10;
   color: white;
   border-radius: 10px;
   padding: 10px;
-  display: inline-block; /* Make sure it only takes up necessary space */
-  border: 1px solid #269f10; /* Border for user messages */
+  display: inline-block;
+  border: 1px solid #269f10;
 }
 
-/* Bot response styles */
 .bot-response {
-  background-color: #f1f1f1; /* Light gray background for bot responses */
+  background-color: #f1f1f1;
   color: black;
   border-radius: 10px;
   padding: 10px;
-  display: inline-block; /* Make sure it only takes up necessary space */
-  border: 1px solid #ccc; /* Border around bot responses */
+  display: inline-block;
+  border: 1px solid #ccc;
 }
 
-/* Chatbot input styles */
+.bot-response,
+.user-response {
+  white-space: pre-wrap;
+  line-height: 1.5;
+}
+
+/* Input bar */
 .chatbot-input {
   display: flex;
   padding: 10px;
+  gap: 8px;
+  border-top: 1px solid #e5e7eb;
+  background-color: #fff;
 }
 
 .chatbot-input input {
@@ -166,34 +172,33 @@
 }
 
 .chatbot-input button {
-  margin-left: 10px;
   background-color: #269f10;
   color: white;
   border: none;
   padding: 10px 15px;
   border-radius: 4px;
   cursor: pointer;
+  white-space: nowrap;
 }
 
-/* Add to Cart button styles */
+/* Add to cart button */
 .add-to-cart-button {
-  background-color: #ff5722; /* Orange background for the add to cart button */
+  background-color: #ff5722;
   color: white;
   padding: 10px 15px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  margin-top: 10px; /* Space above button */
-  align-self: center; /* Center align the button */
-  transition: background-color 0.3s; /* Smooth transition for hover effect */
+  margin-top: 10px;
+  align-self: center;
+  transition: background-color 0.3s;
 }
 
 .add-to-cart-button:hover {
-  background-color: #e64a19; /* Darker orange on hover */
+  background-color: #e64a19;
 }
 
-/* === Dark mode for chatbot (uses html.dark from Navbar) === */
-
+/* === Dark mode (html.dark) === */
 html.dark .chatbot-window {
   background-color: #020617;
   border-color: #1f2937;
@@ -201,7 +206,7 @@ html.dark .chatbot-window {
 }
 
 html.dark .chatbot-header {
-  background-color: #16a34a; /* slightly softer green on dark */
+  background-color: #16a34a;
   color: #f9fafb;
 }
 
@@ -213,7 +218,6 @@ html.dark .chatbot-messages {
   background-color: #020617;
 }
 
-/* User and bot bubbles on dark */
 html.dark .user-response {
   background-color: #22c55e;
   border-color: #16a34a;
@@ -226,12 +230,10 @@ html.dark .bot-response {
   color: #e5e7eb;
 }
 
-/* Thinking text */
 html.dark .thinking-message {
   color: #9ca3af;
 }
 
-/* Input area */
 html.dark .chatbot-input {
   background-color: #020617;
 }
@@ -251,7 +253,6 @@ html.dark .chatbot-input button {
   color: #022c22;
 }
 
-/* Confirm buttons */
 html.dark .confirm-add-to-cart {
   background-color: #020617;
 }
@@ -264,4 +265,66 @@ html.dark .confirm-add-to-cart button {
 html.dark .confirm-add-to-cart button:last-child {
   background-color: #111827;
   color: #e5e7eb;
+}
+
+/* === Mobile responsiveness === */
+@media (max-width: 768px) {
+  .chatbot-window {
+    right: 10px;
+    bottom: 80px;
+    width: 90vw;        /* take almost full width */
+    height: 70vh;       /* take most of height */
+    max-height: 70vh;
+    border-radius: 10px;
+  }
+
+  .chatbot-icon {
+    bottom: 16px;
+    right: 16px;
+    width: 56px;
+    height: 56px;
+  }
+
+  .chatbot-header {
+    padding: 8px 12px;
+  }
+
+  .chatbot-input {
+    padding: 8px;
+    gap: 6px;
+  }
+
+  .chatbot-input button {
+    padding: 8px 10px;
+    font-size: 14px;
+  }
+
+  .chatbot-messages {
+    padding: 8px;
+  }
+
+  .message {
+    max-width: 90%;
+  }
+}
+
+/* Very small devices (e.g., <= 480px) – almost full-screen chat */
+@media (max-width: 480px) {
+  .chatbot-window {
+    right: 0;
+    left: 0;
+    bottom: 0;
+    margin: 0 auto;
+    width: 100vw;
+    height: 80vh;
+    max-height: 80vh;
+    border-radius: 12px 12px 0 0;
+  }
+
+  .chatbot-icon {
+    bottom: 12px;
+    right: 12px;
+    width: 52px;
+    height: 52px;
+  }
 }
