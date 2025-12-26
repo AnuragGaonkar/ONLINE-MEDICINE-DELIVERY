@@ -1,10 +1,16 @@
+import os
+from datetime import datetime
+
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from flask_pymongo import PyMongo
 import nltk
 from fuzzywuzzy import process
-from datetime import datetime
 
+
+# ----------------- NLTK SETUP -----------------
+
+# Make sure tokenizer models exist (needed for word_tokenize)
 try:
     nltk.data.find("tokenizers/punkt")
 except LookupError:
@@ -14,34 +20,51 @@ try:
     nltk.data.find("tokenizers/punkt_tab")
 except LookupError:
     nltk.download("punkt_tab", quiet=True)
-    
+
+
+# ----------------- FLASK APP -----------------
+
 app = Flask(__name__)
 
-# ---------- CONFIG ----------
-
+# Frontend origins allowed for CORS
 FRONTEND_URLS = [
     "http://localhost:3000",
-    "https://mediquick-pqv7.onrender.com",   # deployed React frontend
+    "https://mediquick-pqv7.onrender.com",
 ]
 
-MONGO_URI = (
-    "mongodb+srv://mediquick_user:peCbDdnm3ZC1EpHv@mediquick-cluster.sdrfhkz.mongodb.net/"
+# ---------- MONGO CONFIG ----------
+
+# Prefer env var for safety; fall back to hardcoded only if present
+MONGO_URI = os.environ.get(
+    "MONGO_URI",
+    "mongodb+srv://mediquick_user:peCbDdnm3ZC1EpHv@mediquick-cluster.sdrfhkz.mongodb.net/mediquick?retryWrites=true&w=majority&appName=mediquick-cluster",
 )
+
+if not MONGO_URI:
+    raise RuntimeError("MONGO_URI environment variable is not set")
 
 app.config["MONGO_URI"] = MONGO_URI
 mongo = PyMongo(app)
 
+
 # Allow both local and deployed frontend
 CORS(app, origins=FRONTEND_URLS)
+
 
 # ---------- HEALTH CHECK ----------
 
 @app.route("/", methods=["GET"])
 def health():
-    return jsonify({"status": "ok"}), 200
+    # simple check that Mongo is available
+    try:
+        mongo.db.command("ping")
+        mongo_ok = True
+    except Exception:
+        mongo_ok = False
+    return jsonify({"status": "ok", "mongo": mongo_ok}), 200
 
 
-# ----------------- SESSION UTILITIES -----------------
+# ---------- SESSION UTILITIES ----------
 
 def get_session_id():
     """
@@ -81,7 +104,7 @@ def update_session(session_id, updates):
     )
 
 
-# ----------------- NLP UTILITIES -----------------
+# ---------- NLP UTILITIES ----------
 
 def tokenize(text):
     words = nltk.word_tokenize(text.lower())
@@ -118,7 +141,7 @@ def detect_intent(message):
     return "UNKNOWN"
 
 
-# ----------------- CHAT LOGGING -----------------
+# ---------- CHAT LOGGING ----------
 
 def save_chat_turn(session_id, user_message, bot_message, medicines=None, quantities=None):
     mongo.db.chats.insert_one(
@@ -133,7 +156,7 @@ def save_chat_turn(session_id, user_message, bot_message, medicines=None, quanti
     )
 
 
-# ----------------- MEDICINE LOGIC -----------------
+# ---------- MEDICINE LOGIC ----------
 
 def find_medicines(symptoms):
     results = []
@@ -198,7 +221,7 @@ def get_medicine_details(med_name, intent):
     return None
 
 
-# ----------------- CART HANDLING -----------------
+# ---------- CART HANDLING ----------
 
 def handle_cart(session, message):
     if "add to cart" in message.lower():
@@ -243,7 +266,7 @@ def handle_cart(session, message):
     return None
 
 
-# ----------------- MAIN CHAT ROUTE -----------------
+# ---------- MAIN CHAT ROUTE ----------
 
 @app.route("/chat", methods=["POST"])
 def chat():
@@ -320,7 +343,7 @@ Delivery: {med['delivery_time']}"""
     return jsonify({"message": fallback, "medicines": []})
 
 
-# ----------------- VIEW CART -----------------
+# ---------- VIEW CART ----------
 
 @app.route("/view_cart", methods=["GET"])
 def view_cart():
@@ -331,7 +354,7 @@ def view_cart():
     )
 
 
-# ----------------- HISTORY -----------------
+# ---------- HISTORY ----------
 
 @app.route("/chat_history", methods=["GET"])
 def history():
@@ -341,3 +364,8 @@ def history():
         .sort("timestamp", 1)
     )
     return jsonify(list(chats))
+
+
+if __name__ == "__main__":
+    # for local testing only; on Render use gunicorn
+    app.run(host="0.0.0.0", port=5000, debug=True)
