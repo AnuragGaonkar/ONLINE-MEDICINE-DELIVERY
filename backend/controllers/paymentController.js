@@ -10,8 +10,9 @@ const stripe = require("stripe")(stripeSecret);
 const Order = require("../models/Order");
 const User = require("../models/User");
 const Cart = require("../models/Cart");
-const nodemailer = require("nodemailer"); // no longer used, but safe to leave
-const fetch = require("node-fetch");      // <-- added
+const nodemailer = require("nodemailer"); // not used, but safe to leave
+const fetch = require("node-fetch");      // used for Brevo
+const BREVO_API_KEY = process.env.BREVO_API_KEY;
 
 // ---- helper to clean prices coming from DB/frontend ----
 const getNumericPrice = (rawPrice) => {
@@ -145,7 +146,7 @@ exports.paymentCheckout = async (req, res) => {
       customer_email: customerEmail || undefined,
       metadata: {
         userId: String(userId),
-        // store ONLY real cart data and real total (no top-up)
+        // store ONLY real cart data and real total (no top‑up)
         cart: JSON.stringify(
           cartItems.map((item) => {
             const numericPrice = getNumericPrice(item.price);
@@ -248,8 +249,8 @@ exports.handleStripeWebhook = async (req, res) => {
         minute: "2-digit",
       });
 
-      // ---------- 4) Send email with ONLY real cart prices and real total ----------
-      if (email && process.env.RESEND_API_KEY) {
+      // ---------- 4) Send email with Brevo (ONLY real cart prices and real total) ----------
+      if (email && BREVO_API_KEY) {
         try {
           const itemsText = cart
             .map(
@@ -274,28 +275,36 @@ ${itemsText}
 Thank you for ordering with MediQuick.
 `;
 
-          const resp = await fetch("https://api.resend.com/emails", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+          const payload = {
+            sender: {
+              name: "MediQuick",
+              email:
+                process.env.EMAIL_FROM || "no-reply@yourdomain.com",
             },
-            body: JSON.stringify({
-              from:
-                process.env.EMAIL_FROM ||
-                "MediQuick <onboarding@resend.dev>",
-              to: [email],
-              subject: "Your MediQuick order is confirmed",
-              text: mailBody,
-            }),
-          });
+            to: [{ email }],
+            subject: "Your MediQuick order is confirmed",
+            textContent: mailBody,
+          };
+
+          const resp = await fetch(
+            "https://api.brevo.com/v3/smtp/email",
+            {
+              method: "POST",
+              headers: {
+                accept: "application/json",
+                "content-type": "application/json",
+                "api-key": BREVO_API_KEY,
+              },
+              body: JSON.stringify(payload),
+            }
+          );
 
           if (!resp.ok) {
             const errText = await resp.text();
-            console.error("EMAIL API FAILED:", resp.status, errText);
+            console.error("BREVO EMAIL FAILED:", resp.status, errText);
           }
         } catch (err) {
-          console.error("EMAIL API ERROR:", err.message);
+          console.error("BREVO EMAIL ERROR:", err.message);
         }
       }
     } catch (err) {
