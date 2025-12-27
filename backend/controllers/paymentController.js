@@ -95,7 +95,7 @@ exports.paymentCheckout = async (req, res) => {
     const user = await User.findById(userId).select("email");
     if (user) customerEmail = user.email;
 
-    const frontendUrl = process.env.FRONTEND_URL || "http://localhost:3000";
+    const frontendUrl = process.env.FRONTEND_URL || "https://mediquick-pqv7.onrender.com";
 
     // 6) Create Checkout Session
     const session = await stripe.checkout.sessions.create({
