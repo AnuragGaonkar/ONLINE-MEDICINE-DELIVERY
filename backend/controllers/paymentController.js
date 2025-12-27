@@ -10,7 +10,8 @@ const stripe = require("stripe")(stripeSecret);
 const Order = require("../models/Order");
 const User = require("../models/User");
 const Cart = require("../models/Cart");
-const nodemailer = require("nodemailer");
+const nodemailer = require("nodemailer"); // no longer used, but safe to leave
+const fetch = require("node-fetch");      // <-- added
 
 // ---- helper to clean prices coming from DB/frontend ----
 const getNumericPrice = (rawPrice) => {
@@ -92,8 +93,6 @@ exports.paymentCheckout = async (req, res) => {
     let realTotalPaise = itemsTotalPaise + deliveryPaise + gstPaise;
 
     // ---------- 4) Optional Stripe minimum top‑up ----------
-    // Stripe usually enforces a minimum of what converts to 50 cents;
-    // MIN_ORDER_PAISE is a safety guard. [web:1708][web:1695]
     const MIN_ORDER_PAISE = 50 * 100; // e.g. ₹50
     if (realTotalPaise < MIN_ORDER_PAISE) {
       const topUpPaise = MIN_ORDER_PAISE - realTotalPaise;
@@ -114,8 +113,7 @@ exports.paymentCheckout = async (req, res) => {
         quantity: 1,
       });
 
-      // IMPORTANT: realTotalPaise stays as "real cart total"
-      // (items + delivery + GST). We do NOT add topUpPaise here.
+      // realTotalPaise stays items + delivery + GST only
     }
 
     // ---------- 5) Verify authenticated user ----------
@@ -251,27 +249,18 @@ exports.handleStripeWebhook = async (req, res) => {
       });
 
       // ---------- 4) Send email with ONLY real cart prices and real total ----------
-      if (email && process.env.SMTP_HOST) {
-        const transporter = nodemailer.createTransport({
-          host: process.env.SMTP_HOST,
-          port: Number(process.env.SMTP_PORT || 587),
-          secure: false, // STARTTLS on 587 [web:1703]
-          auth: {
-            user: process.env.SMTP_USER,
-            pass: process.env.SMTP_PASS,
-          },
-        });
+      if (email && process.env.RESEND_API_KEY) {
+        try {
+          const itemsText = cart
+            .map(
+              (i) =>
+                `• ${i.name} × ${i.quantity} — ₹${(
+                  i.price * i.quantity
+                ).toFixed(2)}`
+            )
+            .join("\n");
 
-        const itemsText = cart
-          .map(
-            (i) =>
-              `• ${i.name} × ${i.quantity} — ₹${(
-                i.price * i.quantity
-              ).toFixed(2)}`
-          )
-          .join("\n");
-
-        const mailBody = `
+          const mailBody = `
 Hi,
 
 Your order ${orderDoc._id} has been placed successfully.
@@ -285,14 +274,29 @@ ${itemsText}
 Thank you for ordering with MediQuick.
 `;
 
-        await transporter.sendMail({
-          from: `"MediQuick" <${
-            process.env.SMTP_FROM || process.env.SMTP_USER
-          }>`,
-          to: email,
-          subject: "Your MediQuick order is confirmed",
-          text: mailBody,
-        });
+          const resp = await fetch("https://api.resend.com/emails", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+            },
+            body: JSON.stringify({
+              from:
+                process.env.EMAIL_FROM ||
+                "MediQuick <onboarding@resend.dev>",
+              to: [email],
+              subject: "Your MediQuick order is confirmed",
+              text: mailBody,
+            }),
+          });
+
+          if (!resp.ok) {
+            const errText = await resp.text();
+            console.error("EMAIL API FAILED:", resp.status, errText);
+          }
+        } catch (err) {
+          console.error("EMAIL API ERROR:", err.message);
+        }
       }
     } catch (err) {
       console.error("Error handling checkout.session.completed:", err);
