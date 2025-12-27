@@ -11,15 +11,23 @@ const AdminInventory = () => {
   const [items, setItems] = useState([]);
   const [loadingInventory, setLoadingInventory] = useState(true);
   const [error, setError] = useState("");
-  const navigate = useNavigate();
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
+  const navigate = useNavigate();
   const token = localStorage.getItem("auth-token");
+
+  // handle resize for mobile/desktop switch
+  useEffect(() => {
+    const onResize = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
 
   // 1) Load current user and enforce admin role
   useEffect(() => {
     const fetchUser = async () => {
       if (!token) {
-        navigate("/"); // not logged in
+        navigate("/");
         return;
       }
       try {
@@ -65,7 +73,7 @@ const AdminInventory = () => {
         const res = await fetch(`${API_HOST}/api/inventory`, {
           headers: {
             "Content-Type": "application/json",
-            "auth-token": token, // ✅ fixed: same header your backend expects
+            "auth-token": token,
           },
         });
 
@@ -87,12 +95,6 @@ const AdminInventory = () => {
     fetchInventory();
   }, [token, user]);
 
-  const handleLogout = () => {
-    localStorage.removeItem("auth-token");
-    window.dispatchEvent(new Event("auth-changed"));
-    navigate("/");
-  };
-
   if (loadingUser) {
     return (
       <div className="admin-inv-page">
@@ -102,7 +104,7 @@ const AdminInventory = () => {
   }
 
   if (!user || user.role !== "admin") {
-    return null; // safety – redirect already happened
+    return null;
   }
 
   return (
@@ -145,34 +147,95 @@ const AdminInventory = () => {
               No medicines found in inventory.
             </div>
           ) : (
-            <div className="admin-inv-table-wrapper">
-              <table className="admin-inv-table">
-                <thead>
-                  <tr>
-                    <th>Medicine</th>
-                    <th>Category</th>
-                    <th>Price (₹)</th>
-                    <th>Stock</th>
-                    <th>Status</th>
-                  </tr>
-                </thead>
-                <tbody>
+            <>
+              {/* Desktop: table */}
+              {!isMobile && (
+                <div className="admin-inv-table-wrapper">
+                  <table className="admin-inv-table">
+                    <thead>
+                      <tr>
+                        <th>Medicine</th>
+                        <th>Category</th>
+                        <th>Price (₹)</th>
+                        <th>Stock</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {items.map((med) => {
+                        const isLow =
+                          med.stock > 0 && med.stock < LOW_STOCK_THRESHOLD;
+                        const isOut = med.stock <= 0;
+                        return (
+                          <tr
+                            key={med._id}
+                            className={
+                              isOut
+                                ? "row-out"
+                                : isLow
+                                ? "row-low"
+                                : "row-normal"
+                            }
+                          >
+                            <td className="cell-med">
+                              <div className="med-info">
+                                {med.imageUrl && (
+                                  <img
+                                    src={med.imageUrl}
+                                    alt={med.name}
+                                    className="med-image"
+                                  />
+                                )}
+                                <div className="med-text">
+                                  <span className="med-name">{med.name}</span>
+                                  <span className="med-id">
+                                    #{med._id?.slice(-6)}
+                                  </span>
+                                </div>
+                              </div>
+                            </td>
+                            <td>{med.category || "-"}</td>
+                            <td>{med.price ?? "-"}</td>
+                            <td>{med.stock}</td>
+                            <td>
+                              {isOut ? (
+                                <span className="status-badge out">
+                                  Out of stock
+                                </span>
+                              ) : isLow ? (
+                                <span className="status-badge low">
+                                  Low stock
+                                </span>
+                              ) : (
+                                <span className="status-badge ok">
+                                  In stock
+                                </span>
+                              )}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+
+              {/* Mobile: cards */}
+              {isMobile && (
+                <div className="admin-inv-cards">
                   {items.map((med) => {
                     const isLow =
                       med.stock > 0 && med.stock < LOW_STOCK_THRESHOLD;
                     const isOut = med.stock <= 0;
                     return (
-                      <tr
+                      <div
                         key={med._id}
                         className={
-                          isOut
-                            ? "row-out"
-                            : isLow
-                            ? "row-low"
-                            : "row-normal"
+                          "admin-inv-card-item " +
+                          (isOut ? "row-out" : isLow ? "row-low" : "row-normal")
                         }
                       >
-                        <td className="cell-med">
+                        <div className="admin-inv-card-top">
                           <div className="med-info">
                             {med.imageUrl && (
                               <img
@@ -188,27 +251,47 @@ const AdminInventory = () => {
                               </span>
                             </div>
                           </div>
-                        </td>
-                        <td>{med.category || "-"}</td>
-                        <td>{med.price ?? "-"}</td>
-                        <td>{med.stock}</td>
-                        <td>
-                          {isOut ? (
-                            <span className="status-badge out">
-                              Out of stock
+                          <div className="admin-inv-card-status">
+                            {isOut ? (
+                              <span className="status-badge out">
+                                Out of stock
+                              </span>
+                            ) : isLow ? (
+                              <span className="status-badge low">
+                                Low stock
+                              </span>
+                            ) : (
+                              <span className="status-badge ok">
+                                In stock
+                              </span>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="admin-inv-card-meta">
+                          <div className="meta-item">
+                            <span className="meta-label">Category</span>
+                            <span className="meta-value">
+                              {med.category || "-"}
                             </span>
-                          ) : isLow ? (
-                            <span className="status-badge low">Low stock</span>
-                          ) : (
-                            <span className="status-badge ok">In stock</span>
-                          )}
-                        </td>
-                      </tr>
+                          </div>
+                          <div className="meta-item">
+                            <span className="meta-label">Price</span>
+                            <span className="meta-value">
+                              {med.price ?? "-"}
+                            </span>
+                          </div>
+                          <div className="meta-item">
+                            <span className="meta-label">Stock</span>
+                            <span className="meta-value">{med.stock}</span>
+                          </div>
+                        </div>
+                      </div>
                     );
                   })}
-                </tbody>
-              </table>
-            </div>
+                </div>
+              )}
+            </>
           )}
         </div>
       </main>

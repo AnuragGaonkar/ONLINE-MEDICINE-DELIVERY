@@ -364,9 +364,6 @@
   .admin-inv-header {
     padding: 0.7rem 1rem;
   }
-  .admin-inv-content {
-    padding: 1rem;
-  }
   .admin-inv-card {
     padding: 1.1rem 1rem 1.3rem;
   }
@@ -398,4 +395,74 @@
 
 [data-theme="dark"] .theme-toggle:hover {
   background: rgba(0, 0, 0, 0.3);
+}
+
+/* Card layout for mobile inventory list */
+.admin-inv-cards {
+  margin-top: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+/* individual card */
+.admin-inv-card-item {
+  background: var(--card-bg);
+  border-radius: 0.9rem;
+  border: 1px solid var(--border);
+  padding: 0.7rem 0.8rem;
+  box-shadow: 0 6px 18px var(--shadow);
+}
+
+/* top row: image+name + status badge */
+.admin-inv-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+/* wrap status so it never overlaps */
+.admin-inv-card-status {
+  flex-shrink: 0;
+}
+
+/* meta row: category / price / stock */
+.admin-inv-card-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: 0.55rem;
+  flex-wrap: wrap;
+}
+
+.meta-item {
+  display: flex;
+  flex-direction: column;
+  min-width: 28%;
+}
+
+.meta-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-secondary);
+}
+
+.meta-value {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* ensure content not hidden behind FAB / bottom sheet */
+@media (max-width: 768px) {
+  .admin-inv-content {
+    padding-bottom: 4.5rem; /* space for floating button */
+  }
+
+  /* hide table, show cards (safety even if JS isMobile fails) */
+  .admin-inv-table-wrapper {
+    display: none;
+  }
 }
