@@ -16,15 +16,13 @@ const getUser = (req, res, next) => {
     }
 
     if (!token) {
-      return res
-        .status(401)
-        .send({
-          message: "Authentication token missing. Please log in again.",
-        });
+      return res.status(401).send({
+        message: "Authentication token missing. Please log in again.",
+      });
     }
 
     const data = jwt.verify(token, JWT_SECRET);
-    // matches what you set in authController: { user: { id: user.id } }
+    // data.user must be { id, role } from authController
     req.user = data.user;
     next();
   } catch (error) {

@@ -1,3 +1,4 @@
+// controllers/authController.js
 const User = require("../models/User");
 const { validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
@@ -22,8 +23,8 @@ exports.createUser = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const securePass = await bcrypt.hash(req.body.password, salt);
 
-    // IMPORTANT: never trust role from client on public signup
-    const role = "user"; // always create normal users here
+    // Always create normal users here
+    const role = "user";
 
     user = await User.create({
       name: req.body.name,
@@ -31,10 +32,11 @@ exports.createUser = async (req, res) => {
       password: securePass,
       contactNumber: req.body.contactNumber,
       address: req.body.address,
-      role, // fixed to "user"
+      role,
     });
 
-    const data = { user: { id: user.id } };
+    // ✅ include role in token
+    const data = { user: { id: user.id, role: user.role } };
     const authToken = jwt.sign(data, JWT_SECRET);
     res.json({ authToken });
   } catch (error) {
@@ -62,7 +64,8 @@ exports.loginUser = async (req, res) => {
       return res.status(400).json({ message: "Invalid login credentials." });
     }
 
-    const data = { user: { id: user.id } };
+    // ✅ include role in token
+    const data = { user: { id: user.id, role: user.role } };
     const authToken = jwt.sign(data, JWT_SECRET);
     res.json({ authToken });
   } catch (error) {
