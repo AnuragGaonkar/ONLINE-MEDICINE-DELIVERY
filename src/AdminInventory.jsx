@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import "./AdminInventory.css";
 
 const API_HOST = "https://mediquick-backend-yizx.onrender.com";
-
 const LOW_STOCK_THRESHOLD = 10;
 
 const AdminInventory = () => {
@@ -31,13 +30,16 @@ const AdminInventory = () => {
             "auth-token": token,
           },
         });
+
         if (!res.ok) {
           localStorage.removeItem("auth-token");
           navigate("/");
           return;
         }
+
         const data = await res.json();
         setUser(data);
+
         if (data.role !== "admin") {
           // logged in but not admin
           navigate("/");
@@ -66,10 +68,12 @@ const AdminInventory = () => {
             Authorization: `Bearer ${token}`,
           },
         });
+
         if (!res.ok) {
           setError("Failed to load inventory.");
           return;
         }
+
         const data = await res.json();
         setItems(data);
       } catch (err) {
@@ -157,8 +161,7 @@ const AdminInventory = () => {
                 </thead>
                 <tbody>
                   {items.map((med) => {
-                    const isLow =
-                      med.stock > 0 && med.stock < LOW_STOCK_THRESHOLD;
+                    const isLow = med.stock > 0 && med.stock < LOW_STOCK_THRESHOLD;
                     const isOut = med.stock <= 0;
                     return (
                       <tr
@@ -193,11 +196,11 @@ const AdminInventory = () => {
                         <td>{med.stock}</td>
                         <td>
                           {isOut ? (
-                            <span className="status-badge out">Out of stock</span>
-                          ) : isLow ? (
-                            <span className="status-badge low">
-                              Low stock
+                            <span className="status-badge out">
+                              Out of stock
                             </span>
+                          ) : isLow ? (
+                            <span className="status-badge low">Low stock</span>
                           ) : (
                             <span className="status-badge ok">In stock</span>
                           )}

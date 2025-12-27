@@ -160,16 +160,40 @@ const LoginSignup = ({ onLoginSuccess }) => {
         // Persist token
         localStorage.setItem("auth-token", data.authToken);
 
-        setAlertMessage("Successfully logged in.");
-        setTimeout(() => setAlertMessage(""), 3000);
-
         // Notify parent
         if (onLoginSuccess) {
-          // We don't have user details here; Navbar will refetch them using token
+          // Navbar will refetch user using token
           onLoginSuccess(null, data.authToken);
         }
 
-        // Handle "add to cart after login" flow
+        // *** NEW PART: check role and redirect admin ***
+        try {
+          const resUser = await fetch(`${HOST}/api/auth/getuser`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              "auth-token": data.authToken,
+            },
+          });
+
+          if (resUser.ok) {
+            const u = await resUser.json();
+            if (u.role === "admin") {
+              // Admin goes directly to admin portal
+              window.location.href = "/admin/inventory";
+              return; // stop normal redirect
+            }
+          }
+        } catch (err2) {
+          console.error("Error checking role after login:", err2);
+          // fall through to normal flow for safety
+        }
+        // *** END NEW PART ***
+
+        setAlertMessage("Successfully logged in.");
+        setTimeout(() => setAlertMessage(""), 3000);
+
+        // Handle "add to cart after login" flow (unchanged)
         const state = window.history.state?.usr;
         if (state?.productToAdd) {
           const { medicineId, qty } = state.productToAdd;
@@ -193,6 +217,7 @@ const LoginSignup = ({ onLoginSuccess }) => {
           }
         }
 
+        // Normal users: go to previous page or home
         window.location.href = state?.from || "/";
       } catch (error) {
         console.log("Could not login", error);
