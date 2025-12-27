@@ -1,5 +1,5 @@
 // controllers/inventoryController.js
-const Medicine = require("../models/MedicineDetails");  // use existing model
+const Medicine = require("../models/Medicine");  // use existing model
 
 // GET /api/inventory
 exports.getInventory = async (req, res) => {
