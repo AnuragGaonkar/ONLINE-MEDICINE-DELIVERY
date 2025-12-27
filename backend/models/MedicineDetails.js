@@ -2,6 +2,10 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
+if (mongoose.models.MedicineDetails) {
+  delete mongoose.models.MedicineDetails;
+}
+
 const medicineDetailsSchema = new Schema(
   {
     name: { type: String, required: true },
