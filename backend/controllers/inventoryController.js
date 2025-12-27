@@ -1,7 +1,6 @@
-// controllers/inventoryController.js
 const Medicine = require("../models/MedicineDetails");
 
-// GET /api/inventory - Get all medicines sorted by name
+// GET /api/inventory/inventory
 exports.getInventory = async (req, res) => {
   try {
     const meds = await Medicine.find()
@@ -14,7 +13,7 @@ exports.getInventory = async (req, res) => {
   }
 };
 
-// GET /api/inventory/low-stock?threshold=10 - Low stock medicines
+// GET /api/inventory/inventory/low-stock?threshold=10
 exports.getLowStock = async (req, res) => {
   try {
     const threshold = Number(req.query.threshold || 10);
@@ -31,14 +30,13 @@ exports.getLowStock = async (req, res) => {
   }
 };
 
-// PUT /api/inventory/update-stock/:id - Update stock for medicine
+// PUT /api/inventory/inventory/update-stock
 exports.updateStock = async (req, res) => {
   try {
-    const { id } = req.params;
-    const { newStock } = req.body;
-
+    const { medicineId, newStock } = req.body;
+    
     const med = await Medicine.findByIdAndUpdate(
-      id,
+      medicineId,
       {
         stock: newStock,
         in_stock: newStock > 0,
@@ -58,51 +56,7 @@ exports.updateStock = async (req, res) => {
   }
 };
 
-// GET /api/inventory/search?q=keyword&category=Analgesic - Search medicines
-exports.searchMedicines = async (req, res) => {
-  try {
-    const { q, category } = req.query;
-    let query = {};
-
-    if (q) {
-      query.$or = [
-        { name: { $regex: q, $options: "i" } },
-        { category: { $regex: q, $options: "i" } },
-        { description: { $regex: q, $options: "i" } },
-      ];
-    }
-
-    if (category) {
-      query.category = { $regex: category, $options: "i" };
-    }
-
-    const meds = await Medicine.find(query)
-      .sort({ name: 1 })
-      .limit(20)
-      .select("name description category price priceNumeric stock imageUrl rating");
-
-    res.json(meds);
-  } catch (err) {
-    console.error("Error in searchMedicines:", err);
-    res.status(500).json({ message: "Server error" });
-  }
-};
-
-// GET /api/inventory/:id - Get single medicine details
-exports.getMedicineById = async (req, res) => {
-  try {
-    const med = await Medicine.findById(req.params.id);
-    if (!med) {
-      return res.status(404).json({ message: "Medicine not found" });
-    }
-    res.json(med);
-  } catch (err) {
-    console.error("Error in getMedicineById:", err);
-    res.status(500).json({ message: "Server error" });
-  }
-};
-
-// GET /api/inventory/out-of-stock - Out of stock medicines
+// GET /api/inventory/inventory/out-of-stock
 exports.getOutOfStock = async (req, res) => {
   try {
     const meds = await Medicine.find({ stock: 0 })
@@ -111,6 +65,27 @@ exports.getOutOfStock = async (req, res) => {
     res.json(meds);
   } catch (err) {
     console.error("Error in getOutOfStock:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// GET /api/inventory/inventory/dashboard-stats
+exports.getDashboardStats = async (req, res) => {
+  try {
+    const totalMedicines = await Medicine.countDocuments();
+    const inStock = await Medicine.countDocuments({ in_stock: true });
+    const lowStock = await Medicine.countDocuments({ lowStock: true });
+    const outOfStock = await Medicine.countDocuments({ stock: 0 });
+
+    res.json({
+      totalMedicines,
+      inStock,
+      lowStock,
+      outOfStock,
+      lowStockPercentage: ((lowStock / totalMedicines) * 100).toFixed(1)
+    });
+  } catch (err) {
+    console.error("Error in getDashboardStats:", err);
     res.status(500).json({ message: "Server error" });
   }
 };

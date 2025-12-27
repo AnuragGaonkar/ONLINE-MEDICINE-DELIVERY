@@ -1,4 +1,3 @@
-// models/MedicineDetails.js
 const mongoose = require("mongoose");
 
 if (mongoose.models.MedicineDetails) {
