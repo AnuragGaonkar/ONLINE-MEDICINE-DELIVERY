@@ -8,7 +8,7 @@ const {
   updateStock,
 } = require("../controllers/inventoryController");
 
-const auth = require("../middleware/auth");    // your JWT middleware
+const auth = require("../middleware/getUser");    // your JWT middleware
 const isAdmin = require("../middleware/isAdmin");
 
 // Full inventory for admin
