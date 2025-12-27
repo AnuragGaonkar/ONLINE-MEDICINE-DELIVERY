@@ -41,7 +41,6 @@ const AdminInventory = () => {
         setUser(data);
 
         if (data.role !== "admin") {
-          // logged in but not admin
           navigate("/");
         }
       } catch (err) {
@@ -65,7 +64,8 @@ const AdminInventory = () => {
         setLoadingInventory(true);
         const res = await fetch(`${API_HOST}/api/inventory`, {
           headers: {
-            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+            "auth-token": token, // ✅ fixed: same header your backend expects
           },
         });
 
@@ -161,7 +161,8 @@ const AdminInventory = () => {
                 </thead>
                 <tbody>
                   {items.map((med) => {
-                    const isLow = med.stock > 0 && med.stock < LOW_STOCK_THRESHOLD;
+                    const isLow =
+                      med.stock > 0 && med.stock < LOW_STOCK_THRESHOLD;
                     const isOut = med.stock <= 0;
                     return (
                       <tr
