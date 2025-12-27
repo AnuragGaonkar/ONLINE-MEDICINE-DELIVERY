@@ -123,9 +123,6 @@ const AdminInventory = () => {
               <span className="admin-user-role">Administrator</span>
             </div>
           </div>
-          <button className="admin-logout-btn" onClick={handleLogout}>
-            Logout
-          </button>
         </div>
       </header>
 

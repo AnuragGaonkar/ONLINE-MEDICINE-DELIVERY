@@ -1,9 +1,39 @@
+/* Dark Mode Variables */
+:root {
+  --bg-primary: #e0f7f4;
+  --bg-secondary: #f5f7fb;
+  --card-bg: #ffffff;
+  --header-bg: rgba(255, 255, 255, 0.96);
+  --text-primary: #1f2933;
+  --text-secondary: #64748b;
+  --border: #e2e8f0;
+  --shadow: rgba(15, 23, 42, 0.06);
+  --success: #059669;
+  --warning: #92400e;
+  --danger: #b91c1c;
+}
+
+[data-theme="dark"] {
+  --bg-primary: #0f172a;
+  --bg-secondary: #1e293b;
+  --card-bg: #1e293b;
+  --header-bg: rgba(30, 41, 59, 0.96);
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --border: #334155;
+  --shadow: rgba(0, 0, 0, 0.4);
+  --success: #22c55e;
+  --warning: #eab308;
+  --danger: #f87171;
+}
+
+/* Base Styles (Light Mode) */
 .admin-inv-page {
   min-height: 100vh;
-  background: radial-gradient(circle at top left, #e0f7f4, #f5f7fb);
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-    sans-serif;
-  color: #1f2933;
+  background: radial-gradient(circle at top left, var(--bg-primary), var(--bg-secondary));
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: var(--text-primary);
+  transition: background 0.3s ease, color 0.3s ease;
 }
 
 /* Top header */
@@ -15,9 +45,11 @@
   justify-content: space-between;
   align-items: center;
   padding: 0.9rem 2.5rem;
-  background: rgba(255, 255, 255, 0.96);
+  background: var(--header-bg);
   backdrop-filter: blur(16px);
-  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+  box-shadow: 0 8px 24px var(--shadow);
+  color: var(--text-primary);
+  transition: all 0.3s ease;
 }
 
 .admin-inv-left {
@@ -31,7 +63,7 @@
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #059669;
+  color: var(--success);
 }
 
 .admin-tag {
@@ -41,6 +73,12 @@
   background: #ecfeff;
   color: #0f766e;
   border: 1px solid #99f6e4;
+}
+
+[data-theme="dark"] .admin-tag {
+  background: #0e4f50;
+  color: #5eead4;
+  border-color: #5eead4;
 }
 
 .admin-inv-right {
@@ -56,6 +94,11 @@
   padding: 0.35rem 0.8rem;
   border-radius: 999px;
   background: #f1f5f9;
+  transition: background 0.3s ease;
+}
+
+[data-theme="dark"] .admin-user-pill {
+  background: #334155;
 }
 
 .admin-avatar {
@@ -84,7 +127,7 @@
 
 .admin-user-role {
   font-size: 0.75rem;
-  color: #64748b;
+  color: var(--text-secondary);
 }
 
 .admin-logout-btn {
@@ -98,8 +141,7 @@
   font-size: 0.9rem;
   cursor: pointer;
   box-shadow: 0 8px 20px rgba(239, 68, 68, 0.35);
-  transition: transform 0.12s ease, box-shadow 0.12s ease,
-    filter 0.12s ease;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.12s ease;
 }
 
 .admin-logout-btn:hover {
@@ -121,10 +163,12 @@
 .admin-inv-card {
   max-width: 1100px;
   margin: 0 auto;
-  background: #ffffff;
+  background: var(--card-bg);
   border-radius: 1.2rem;
-  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.12);
+  box-shadow: 0 18px 45px var(--shadow);
   padding: 1.5rem 1.8rem 1.9rem;
+  border: 1px solid var(--border);
+  transition: all 0.3s ease;
 }
 
 .admin-inv-card-header {
@@ -137,7 +181,7 @@
 .admin-inv-card-header h2 {
   font-size: 1.4rem;
   font-weight: 700;
-  color: #020617;
+  color: var(--text-primary);
 }
 
 .admin-inv-chip {
@@ -147,6 +191,12 @@
   background: #fefce8;
   color: #854d0e;
   border: 1px solid #facc15;
+}
+
+[data-theme="dark"] .admin-inv-chip {
+  background: #713f12;
+  color: #fef3c7;
+  border-color: #facc15;
 }
 
 /* Loader / messages */
@@ -159,11 +209,11 @@
 }
 
 .admin-inv-error {
-  color: #b91c1c;
+  color: var(--danger);
 }
 
 .admin-inv-empty {
-  color: #64748b;
+  color: var(--text-secondary);
 }
 
 /* Table */
@@ -171,17 +221,21 @@
   margin-top: 0.5rem;
   border-radius: 0.9rem;
   overflow: hidden;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border);
 }
 
 .admin-inv-table {
   width: 100%;
   border-collapse: collapse;
-  background: #ffffff;
+  background: var(--card-bg);
 }
 
 .admin-inv-table thead {
   background: #f8fafc;
+}
+
+[data-theme="dark"] .admin-inv-table thead {
+  background: #334155;
 }
 
 .admin-inv-table th,
@@ -189,16 +243,21 @@
   padding: 0.6rem 0.9rem;
   font-size: 0.9rem;
   text-align: left;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-primary);
 }
 
 .admin-inv-table th {
   font-weight: 600;
-  color: #475569;
+  color: var(--text-secondary);
 }
 
 .admin-inv-table tbody tr:hover {
   background: #f9fafb;
+}
+
+[data-theme="dark"] .admin-inv-table tbody tr:hover {
+  background: #475569;
 }
 
 /* Row coloring */
@@ -206,8 +265,16 @@
   background: #fffbeb;
 }
 
+[data-theme="dark"] .row-low {
+  background: #713f12;
+}
+
 .row-out {
   background: #fef2f2;
+}
+
+[data-theme="dark"] .row-out {
+  background: #7f1d1d;
 }
 
 /* Medicine cell */
@@ -226,7 +293,7 @@
   height: 40px;
   object-fit: cover;
   border-radius: 999px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border);
 }
 
 .med-text {
@@ -237,11 +304,12 @@
 .med-name {
   font-weight: 600;
   font-size: 0.9rem;
+  color: var(--text-primary);
 }
 
 .med-id {
   font-size: 0.75rem;
-  color: #94a3b8;
+  color: var(--text-secondary);
 }
 
 /* Status badge */
@@ -258,16 +326,37 @@
 .status-badge.ok {
   background: #ecfdf3;
   color: #166534;
+  border: 1px solid #bbf7d0;
+}
+
+[data-theme="dark"] .status-badge.ok {
+  background: #166534;
+  color: #bbf7d0;
+  border-color: #22c55e;
 }
 
 .status-badge.low {
   background: #fef3c7;
   color: #92400e;
+  border: 1px solid #fed7aa;
+}
+
+[data-theme="dark"] .status-badge.low {
+  background: #92400e;
+  color: #fef3c7;
+  border-color: #eab308;
 }
 
 .status-badge.out {
   background: #fee2e2;
   color: #b91c1c;
+  border: 1px solid #fecaca;
+}
+
+[data-theme="dark"] .status-badge.out {
+  background: #b91c1c;
+  color: #fee2e2;
+  border-color: #f87171;
 }
 
 /* Responsive */
@@ -290,4 +379,23 @@
   .admin-inv-table td {
     padding: 0.45rem 0.5rem;
   }
+}
+
+/* Dark mode toggle (add to your HTML) */
+.theme-toggle {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.theme-toggle:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .theme-toggle:hover {
+  background: rgba(0, 0, 0, 0.3);
 }
