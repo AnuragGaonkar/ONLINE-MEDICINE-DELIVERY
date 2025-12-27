@@ -24,14 +24,16 @@ exports.paymentCheckout = async (req, res) => {
   try {
     console.log("Incoming Request Body:", req.body);
 
-    const { cartItems } = req.body;
+    const { cartItems, priceBreakdown } = req.body;
+
     if (!cartItems || cartItems.length === 0) {
       return res.status(400).json({ message: "No items in the cart" });
     }
 
-    // 1) Build line items for real cart
+    // ---------- 1) Build line items for real cart ----------
     const lineItems = cartItems.map((item) => {
       const numericPrice = getNumericPrice(item.price);
+
       console.log("Line item to Stripe:", {
         name: item.name,
         rawPrice: item.price,
@@ -52,15 +54,47 @@ exports.paymentCheckout = async (req, res) => {
       };
     });
 
-    // 2) Compute REAL total of cart in paise (no top‑up)
-    const realTotalPaise = cartItems.reduce((sum, item) => {
+    // ---------- 2) Add delivery + GST line items ----------
+    const deliveryFeeRupees = priceBreakdown?.deliveryFee || 0;
+    const gstAmountRupees = priceBreakdown?.gstAmount || 0;
+
+    const deliveryPaise = Math.round(deliveryFeeRupees * 100);
+    const gstPaise = Math.round(gstAmountRupees * 100);
+
+    if (deliveryPaise > 0) {
+      lineItems.push({
+        price_data: {
+          currency: "inr",
+          product_data: { name: "Delivery charges" },
+          unit_amount: deliveryPaise,
+        },
+        quantity: 1,
+      });
+    }
+
+    if (gstPaise > 0) {
+      lineItems.push({
+        price_data: {
+          currency: "inr",
+          product_data: { name: "GST (5%)" },
+          unit_amount: gstPaise,
+        },
+        quantity: 1,
+      });
+    }
+
+    // ---------- 3) Compute REAL total (items + delivery + GST) ----------
+    const itemsTotalPaise = cartItems.reduce((sum, item) => {
       const numericPrice = getNumericPrice(item.price);
       return sum + Math.round(numericPrice * 100) * item.quantity;
     }, 0);
 
-    // 3) If total is below Stripe minimum, add a HIDDEN top‑up line item
-    //    This exists ONLY in Stripe; we will not store or show it anywhere else.
-    const MIN_ORDER_PAISE = 50 * 100; // backend safety, e.g. ₹50
+    let realTotalPaise = itemsTotalPaise + deliveryPaise + gstPaise;
+
+    // ---------- 4) Optional Stripe minimum top‑up ----------
+    // Stripe usually enforces a minimum of what converts to 50 cents;
+    // MIN_ORDER_PAISE is a safety guard. [web:1708][web:1695]
+    const MIN_ORDER_PAISE = 50 * 100; // e.g. ₹50
     if (realTotalPaise < MIN_ORDER_PAISE) {
       const topUpPaise = MIN_ORDER_PAISE - realTotalPaise;
 
@@ -72,16 +106,19 @@ exports.paymentCheckout = async (req, res) => {
         price_data: {
           currency: "inr",
           product_data: {
-            // This name is visible on Stripe's hosted page ONLY.
+            // Visible only on Stripe hosted page
             name: "Stripe Minimum Top-up",
           },
           unit_amount: topUpPaise,
         },
         quantity: 1,
       });
+
+      // IMPORTANT: realTotalPaise stays as "real cart total"
+      // (items + delivery + GST). We do NOT add topUpPaise here.
     }
 
-    // 4) Verify authenticated user
+    // ---------- 5) Verify authenticated user ----------
     const userId = req.user && req.user.id;
     console.log("PAYMENT route req.user:", req.user);
     console.log("PAYMENT route userId:", userId);
@@ -90,14 +127,15 @@ exports.paymentCheckout = async (req, res) => {
       return res.status(401).json({ message: "User not authenticated" });
     }
 
-    // 5) Get customer email for Stripe + mail
+    // ---------- 6) Get customer email for Stripe + mail ----------
     let customerEmail = null;
     const user = await User.findById(userId).select("email");
     if (user) customerEmail = user.email;
 
-    const frontendUrl = process.env.FRONTEND_URL || "https://mediquick-pqv7.onrender.com";
+    const frontendUrl =
+      process.env.FRONTEND_URL || "https://mediquick-pqv7.onrender.com";
 
-    // 6) Create Checkout Session
+    // ---------- 7) Create Checkout Session ----------
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       line_items: lineItems,
@@ -109,7 +147,7 @@ exports.paymentCheckout = async (req, res) => {
       customer_email: customerEmail || undefined,
       metadata: {
         userId: String(userId),
-        // store ONLY real cart data and real total
+        // store ONLY real cart data and real total (no top-up)
         cart: JSON.stringify(
           cartItems.map((item) => {
             const numericPrice = getNumericPrice(item.price);
@@ -176,7 +214,7 @@ exports.handleStripeWebhook = async (req, res) => {
         return res.json({ received: true });
       }
 
-      // 1) Create Order using ONLY real total (no top‑up)
+      // ---------- 1) Create Order using ONLY real total (no top‑up) ----------
       const orderDoc = new Order({
         userId,
         medicines: cart.map((item) => ({
@@ -190,12 +228,16 @@ exports.handleStripeWebhook = async (req, res) => {
 
       await orderDoc.save();
 
-      // 2) Clear cart
+      // ---------- 2) Clear cart ----------
       if (userId) {
-        await Cart.deleteOne({ userId });
+        try {
+          await Cart.deleteOne({ userId });
+        } catch (err) {
+          console.error("Error clearing cart:", err.message);
+        }
       }
 
-      // 3) Compute ETA
+      // ---------- 3) Compute ETA ----------
       const etaMinutes = Math.floor(Math.random() * (120 - 30 + 1)) + 30;
       const eta = new Date();
       eta.setMinutes(eta.getMinutes() + etaMinutes);
@@ -208,12 +250,12 @@ exports.handleStripeWebhook = async (req, res) => {
         minute: "2-digit",
       });
 
-      // 4) Send email with ONLY real cart prices and real total
+      // ---------- 4) Send email with ONLY real cart prices and real total ----------
       if (email && process.env.SMTP_HOST) {
         const transporter = nodemailer.createTransport({
           host: process.env.SMTP_HOST,
           port: Number(process.env.SMTP_PORT || 587),
-          secure: false,
+          secure: false, // STARTTLS on 587 [web:1703]
           auth: {
             user: process.env.SMTP_USER,
             pass: process.env.SMTP_PASS,
