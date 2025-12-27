@@ -35,13 +35,10 @@ FRONTEND_URLS = [
 # ---------- MONGO CONFIG ----------
 
 # Prefer env var for safety; fall back to hardcoded only if present
-MONGO_URI = os.environ.get(
-    "MONGO_URI",
-    "mongodb+srv://mediquick_user:peCbDdnm3ZC1EpHv@mediquick-cluster.sdrfhkz.mongodb.net/mediquick?retryWrites=true&w=majority&appName=mediquick-cluster",
-)
-
+MONGO_URI = os.environ.get("MONGO_URI")
 if not MONGO_URI:
     raise RuntimeError("MONGO_URI environment variable is not set")
+
 
 app.config["MONGO_URI"] = MONGO_URI
 mongo = PyMongo(app)
