@@ -4,7 +4,7 @@ const { Schema } = mongoose;
 
 const medicineDetailsSchema = new Schema(
   {
-    name: { type: String, required: true },
+    name: { type: String, required: true, unique: true }, // Make unique to prevent duplicates
 
     // Detailed info used by chatbot and details page
     description: String,
@@ -21,12 +21,16 @@ const medicineDetailsSchema = new Schema(
     contraindications: [String],
     brand_name: [String],
 
-    // Here your docs store price as string: "₹50 for 10 tablets"
-    price: String,
+    // Updated: both string and numeric price
+    price: String, // "₹30" for display
+    priceNumeric: Number, // 30 for calculations/sorting
+
     delivery_time: String,
 
     prescription_required: Boolean,
     in_stock: Boolean,
+    stock: { type: Number, default: 0 }, // Added stock field
+    lowStock: { type: Boolean, default: false }, // Computed flag
 
     recommended_dosage: {
       children: String,
@@ -41,11 +45,19 @@ const medicineDetailsSchema = new Schema(
     manufacturer: String,
     category: String,
     rating: Number,
+
+    // Added imageUrl from mediciness
+    imageUrl: String,
   },
   { timestamps: true }
 );
 
-// IMPORTANT: third argument "medicines" matches your collection name
+// Index for better performance
+medicineDetailsSchema.index({ name: 1 });
+medicineDetailsSchema.index({ category: 1 });
+medicineDetailsSchema.index({ lowStock: 1 });
+medicineDetailsSchema.index({ in_stock: 1, stock: 1 });
+
 const MedicineDetails = mongoose.model(
   "MedicineDetails",
   medicineDetailsSchema,
