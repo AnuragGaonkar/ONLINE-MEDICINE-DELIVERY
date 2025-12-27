@@ -247,11 +247,7 @@ const Cart = () => {
 
           {cartItems.length === 0 ? (
             <div className="empty-cart">
-              <img
-                src="empty-cart.png"
-                alt="Empty cart"
-              />
-              <p>Your Medicine/Healthcare cart is empty!</p>
+              <p>Your Medicine cart is empty!</p>
             </div>
           ) : (
             <div>
