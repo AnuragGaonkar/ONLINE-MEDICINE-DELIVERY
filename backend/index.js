@@ -1,5 +1,4 @@
 // index.js
-
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
@@ -13,38 +12,35 @@ const port = process.env.PORT || 5001;
 
 // 2. Allowed origins (local + deployed frontend)
 const allowedOrigins = [
-  "http://localhost:3000",                     // local React
-  "https://mediquick-pqv7.onrender.com",      // deployed frontend
+  "http://localhost:3000",
+  "https://mediquick-pqv7.onrender.com",
 ];
 
-// 3. Global CORS middleware (MUST be before any routes)
+// 3. Global CORS middleware
 app.use(
   cors({
     origin: function (origin, callback) {
-      // Allow non-browser / same-origin requests with no Origin header
       if (!origin) return callback(null, true);
-
       if (allowedOrigins.includes(origin)) {
         return callback(null, true);
       }
-
       return callback(new Error("Not allowed by CORS"));
     },
-    credentials: true, // only if you use cookies / auth headers
+    credentials: true,
   })
 );
 
-// 4. Preflight handling for all routes (optional but helpful)
+// 4. Preflight
 app.options("*", cors());
 
-// 5. Stripe webhook must see the raw body BEFORE express.json
+// 5. Stripe webhook (raw body)
 app.post(
   "/api/payment/webhook",
   express.raw({ type: "application/json" }),
   require("./controllers/paymentController").handleStripeWebhook
 );
 
-// 6. JSON parser for the rest of the API
+// 6. JSON parser
 app.use(express.json());
 
 // 7. ROUTES
@@ -55,8 +51,9 @@ app.use("/api/payment", require("./routes/payment"));
 app.use("/api/chat", require("./routes/chat"));
 app.use("/api/orders", require("./routes/orders"));
 app.use("/api/combined-medicines", require("./routes/combinedMedicines"));
+app.use("/api", require("./routes/inventory"));   
 
-// 8. Health check / root
+// 8. Health check
 app.get("/", (req, res) => {
   res.send("MediQuick backend is running");
 });
