@@ -248,7 +248,7 @@ const Cart = () => {
           {cartItems.length === 0 ? (
             <div className="empty-cart">
               <img
-                src="/path-to-your-empty-cart-image.svg"
+                src="empty-cart.png"
                 alt="Empty cart"
               />
               <p>Your Medicine/Healthcare cart is empty!</p>
