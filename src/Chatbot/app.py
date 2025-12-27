@@ -7,7 +7,6 @@ from flask_pymongo import PyMongo
 import nltk
 from fuzzywuzzy import process
 
-
 # ----------------- NLTK SETUP -----------------
 
 # Make sure tokenizer models exist (needed for word_tokenize)
@@ -21,7 +20,6 @@ try:
 except LookupError:
     nltk.download("punkt_tab", quiet=True)
 
-
 # ----------------- FLASK APP -----------------
 
 app = Flask(__name__)
@@ -34,19 +32,15 @@ FRONTEND_URLS = [
 
 # ---------- MONGO CONFIG ----------
 
-# Prefer env var for safety; fall back to hardcoded only if present
 MONGO_URI = os.environ.get("MONGO_URI")
 if not MONGO_URI:
     raise RuntimeError("MONGO_URI environment variable is not set")
 
-
 app.config["MONGO_URI"] = MONGO_URI
 mongo = PyMongo(app)
 
-
 # Allow both local and deployed frontend
 CORS(app, origins=FRONTEND_URLS)
-
 
 # ---------- HEALTH CHECK ----------
 
@@ -59,7 +53,6 @@ def health():
     except Exception:
         mongo_ok = False
     return jsonify({"status": "ok", "mongo": mongo_ok}), 200
-
 
 # ---------- SESSION UTILITIES ----------
 
@@ -78,7 +71,6 @@ def get_session_id():
 
     return "anonymous"
 
-
 def get_or_create_session(session_id):
     session = mongo.db.sessions.find_one({"session_id": session_id})
     if not session:
@@ -92,7 +84,6 @@ def get_or_create_session(session_id):
         mongo.db.sessions.insert_one(session)
     return session
 
-
 def update_session(session_id, updates):
     mongo.db.sessions.update_one(
         {"session_id": session_id},
@@ -100,13 +91,11 @@ def update_session(session_id, updates):
         upsert=True,
     )
 
-
 # ---------- NLP UTILITIES ----------
 
 def tokenize(text):
     words = nltk.word_tokenize(text.lower())
     return [w for w in words if w.isalnum()]
-
 
 def detect_intent(message):
     msg = message.lower()
@@ -137,7 +126,6 @@ def detect_intent(message):
 
     return "UNKNOWN"
 
-
 # ---------- CHAT LOGGING ----------
 
 def save_chat_turn(session_id, user_message, bot_message, medicines=None, quantities=None):
@@ -152,12 +140,19 @@ def save_chat_turn(session_id, user_message, bot_message, medicines=None, quanti
         }
     )
 
-
 # ---------- MEDICINE LOGIC ----------
 
 def find_medicines(symptoms):
+    """
+    Symptom-based search; only return medicines that are in_stock and have stock > 0.
+    """
     results = []
-    for med in mongo.db.medicines.find():
+    # ensure we only show available medicines
+    for med in mongo.db.medicines.find({"in_stock": True}):
+        # optional: also check numeric stock field if present
+        if med.get("stock") is not None and med.get("stock", 0) <= 0:
+            continue
+
         score = 0
         for i in range(5):
             key = f"use{i}"
@@ -167,27 +162,29 @@ def find_medicines(symptoms):
             results.append(
                 {
                     "name": med["name"],
-                    "description": med["description"],
-                    "dosage": med["dosage"],
-                    "price": med["price"],
-                    "delivery_time": med["delivery_time"],
-                    "in_stock": med["in_stock"],
+                    "description": med.get("description", ""),
+                    "dosage": med.get("dosage", ""),
+                    "price": med.get("price"),
+                    "delivery_time": med.get("delivery_time", ""),
+                    "in_stock": med.get("in_stock", True),
+                    "stock": med.get("stock", 0),
                     "score": score,
                 }
             )
     results.sort(key=lambda x: x["score"], reverse=True)
     return results[:5]
 
-
 def build_overview(med):
     uses = [med.get(f"use{i}") for i in range(5) if med.get(f"use{i}")]
+    stock_val = med.get("stock", 0)
+    stock_info = f" Current stock: {stock_val} units." if stock_val is not None else ""
     return (
         f"{med['name']} is commonly used for {', '.join(uses)}. "
-        f"The recommended dosage is {med['dosage']}. "
-        f"It costs ₹{med['price']}. "
-        f"The delivery time is {med['delivery_time']}."
+        f"The recommended dosage is {med.get('dosage', 'not specified')}. "
+        f"It costs ₹{med.get('price')}. "
+        f"The delivery time is {med.get('delivery_time', 'not specified')}."
+        + stock_info
     )
-
 
 def get_medicine_details(med_name, intent):
     med = mongo.db.medicines.find_one(
@@ -198,10 +195,14 @@ def get_medicine_details(med_name, intent):
         return None
 
     if intent == "PRICE":
-        return f"The price of {med['name']} is ₹{med['price']}."
+        stock_val = med.get("stock", 0)
+        return (
+            f"The price of {med['name']} is ₹{med.get('price')}."
+            f" Current stock: {stock_val} units."
+        )
 
     if intent == "DOSAGE":
-        return f"The recommended dosage for {med['name']} is {med['dosage']}."
+        return f"The recommended dosage for {med['name']} is {med.get('dosage', 'not specified')}."
 
     if intent == "SIDE_EFFECTS" and med.get("side_effects"):
         return f"The side effects include {', '.join(med['side_effects'])}."
@@ -210,13 +211,12 @@ def get_medicine_details(med_name, intent):
         return f"Precautions include {', '.join(med['precautions'])}."
 
     if intent == "DELIVERY":
-        return f"The delivery time for {med['name']} is {med['delivery_time']}."
+        return f"The delivery time for {med['name']} is {med.get('delivery_time', 'not specified')}."
 
     if intent == "MEDICINE_OVERVIEW":
         return build_overview(med)
 
     return None
-
 
 # ---------- CART HANDLING ----------
 
@@ -261,7 +261,6 @@ def handle_cart(session, message):
             return "Items added to cart successfully."
 
     return None
-
 
 # ---------- MAIN CHAT ROUTE ----------
 
@@ -312,9 +311,10 @@ def chat():
         for idx, med in enumerate(meds, start=1):
             numbered.append(
                 f"""{idx}. {med['name']}
-Dosage: {med['dosage']}
-Price: {med['price']}
-Delivery: {med['delivery_time']}"""
+Dosage: {med.get('dosage', '')}
+Price: {med.get('price')}
+Delivery: {med.get('delivery_time', '')}
+Stock: {med.get('stock', 0)}"""
             )
         meds_block = "\n\n".join(numbered)
 
@@ -339,7 +339,6 @@ Delivery: {med['delivery_time']}"""
     save_chat_turn(session_id, user_message, fallback)
     return jsonify({"message": fallback, "medicines": []})
 
-
 # ---------- VIEW CART ----------
 
 @app.route("/view_cart", methods=["GET"])
@@ -349,7 +348,6 @@ def view_cart():
     return jsonify(
         [{"medicine": i["medicine"], "quantity": i["quantity"]} for i in items]
     )
-
 
 # ---------- HISTORY ----------
 
@@ -361,7 +359,6 @@ def history():
         .sort("timestamp", 1)
     )
     return jsonify(list(chats))
-
 
 if __name__ == "__main__":
     # for local testing only; on Render use gunicorn

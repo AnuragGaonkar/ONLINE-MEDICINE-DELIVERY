@@ -10,6 +10,7 @@ import About from "./About/About";
 import PaymentSuccess from "./PaymentSuccess/PaymentSuccess";
 import Profile from "./Profile/Profile";
 import SearchNotFound from "./SearchNotFound.jsx";
+import AdminInventory from "./AdminInventory.jsx";
 
 const App = () => {
   return (
@@ -25,6 +26,7 @@ const App = () => {
             <Route path="/payment-success" element={<PaymentSuccess />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/search-not-found" element={<SearchNotFound />} />
+            <Route path="/admin/inventory" element={<AdminInventory />} />
           </Routes>
         </div>
         <Chatbot />

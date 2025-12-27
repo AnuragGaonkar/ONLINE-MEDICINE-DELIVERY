@@ -1,47 +1,38 @@
+// models/Order.js
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
-const OrderSchema = new Schema(
+const orderMedicineSchema = new Schema({
+  medicineId: {
+    type: Schema.Types.ObjectId,
+    ref: "Medicine",
+    required: true,
+  },
+  quantity: {
+    type: Number,
+    required: true,
+    min: 1,
+  },
+});
+
+const orderSchema = new Schema(
   {
     userId: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
-    medicines: [
-      {
-        medicineId: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Medicine", // Reference to the Medicine model
-          required: true,
-        },
-        quantity: {
-          type: Number,
-          required: true,
-        },
-      },
-    ],
-    totalAmount: {
+    medicines: [orderMedicineSchema],
+    totalPrice: {
       type: Number,
       required: true,
     },
-    paymentStatus: {
+    status: {
       type: String,
-      enum: ["Pending", "Completed", "Failed"],
-      default: "Pending",
-    },
-    deliveryStatus: {
-      type: String,
-      enum: ["Processing", "Shipped", "Delivered", "Cancelled"],
-      default: "Processing",
-    },
-    orderDate: {
-      type: Date,
-      default: Date.now,
+      default: "PLACED",
     },
   },
   { timestamps: true }
 );
 
-const Order = mongoose.model("Order", OrderSchema);
-module.exports = Order;
+module.exports = mongoose.model("Order", orderSchema);

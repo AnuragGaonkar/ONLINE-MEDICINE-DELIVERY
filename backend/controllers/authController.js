@@ -22,13 +22,16 @@ exports.createUser = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const securePass = await bcrypt.hash(req.body.password, salt);
 
+    // IMPORTANT: never trust role from client on public signup
+    const role = "user"; // always create normal users here
+
     user = await User.create({
       name: req.body.name,
       email: req.body.email,
       password: securePass,
       contactNumber: req.body.contactNumber,
       address: req.body.address,
-      role: req.body.role,
+      role, // fixed to "user"
     });
 
     const data = { user: { id: user.id } };
