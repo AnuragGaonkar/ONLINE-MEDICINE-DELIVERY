@@ -25,6 +25,16 @@ const Profile = () => {
 
   const token = localStorage.getItem("auth-token");
 
+  // Decide initial tab based on URL (?tab=orders)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const tab = params.get("tab");
+    if (tab === "orders") {
+      setActiveTab("orders");
+    }
+  }, []);
+
+  // Fetch profile
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -290,10 +300,14 @@ const Profile = () => {
                       })}
                     </span>
                   </div>
+
                   <div className="order-meta">
-                    <span>Total: ₹{order.totalAmount}</span>
-                    <span>Payment: {order.paymentStatus}</span>
-                    <span>Delivery: {order.deliveryStatus}</span>
+                    <span>Total: ₹{order.totalPrice}</span>
+                    <span>
+                      Payment:{" "}
+                      {order.status === "PAID" ? "Completed" : order.status}
+                    </span>
+                    <span>Delivery: Processing</span>
                   </div>
 
                   <ul className="order-items">

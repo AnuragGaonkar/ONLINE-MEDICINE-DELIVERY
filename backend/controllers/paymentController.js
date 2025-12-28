@@ -10,6 +10,7 @@ const stripe = require("stripe")(stripeSecret);
 const Order = require("../models/Order");
 const User = require("../models/User");
 const Cart = require("../models/Cart");
+const Medicine = require("../models/Medicine");   // <--- add this
 const nodemailer = require("nodemailer"); // not used, but safe to leave
 const fetch = require("node-fetch");      // used for Brevo
 const BREVO_API_KEY = process.env.BREVO_API_KEY;
@@ -212,18 +213,48 @@ exports.handleStripeWebhook = async (req, res) => {
         return res.json({ received: true });
       }
 
-      // ---------- 1) Create Order using schema fields ----------
-      const totalPrice = totalAmountPaise / 100; // rupees
+      // ---------- 1) Create Order with ORIGINAL schema ----------
+      const totalAmount = totalAmountPaise / 100; // rupees
 
-      const orderDoc = await Order.create({
+      const orderDoc = new Order({
         userId,
         medicines: cart.map((item) => ({
           medicineId: item.medicineId,
           quantity: item.quantity,
         })),
-        totalPrice,          // REQUIRED BY MODEL
-        status: "PAID",      // still fits your schema
+        totalAmount,
+        paymentStatus: "Completed",
+        deliveryStatus: "Processing",
+        orderDate: new Date(),
       });
+
+      await orderDoc.save();
+
+      // ---------- 1b) Decrement stock for each medicine ----------
+      for (const item of cart) {
+        const { medicineId, quantity } = item;
+        try {
+          const med = await Medicine.findById(medicineId);
+          if (!med) {
+            console.error(`WEBHOOK: Medicine not found: ${medicineId}`);
+            continue;
+          }
+
+          if (med.stock < quantity) {
+            console.error(
+              `WEBHOOK: Insufficient stock for ${med.name}. Have ${med.stock}, need ${quantity}`
+            );
+            // payment already done; just log
+          } else {
+            med.stock -= quantity;
+          }
+
+          med.lowStock = med.stock > 0 && med.stock <= 10;
+          await med.save();
+        } catch (err) {
+          console.error("WEBHOOK: Error updating stock:", err.message);
+        }
+      }
 
       // ---------- 2) Clear cart ----------
       try {
@@ -232,7 +263,7 @@ exports.handleStripeWebhook = async (req, res) => {
         console.error("Error clearing cart:", err.message);
       }
 
-      // ---------- 3) Optional: send email (unchanged, but use totalPrice) ----------
+      // ---------- 3) Send email (same totalAmount) ----------
       const etaMinutes = Math.floor(Math.random() * (120 - 30 + 1)) + 30;
       const eta = new Date();
       eta.setMinutes(eta.getMinutes() + etaMinutes);
@@ -261,7 +292,7 @@ Hi,
 
 Your order ${orderDoc._id} has been placed successfully.
 
-Order total: ₹${totalPrice.toFixed(2)}
+Order total: ₹${totalAmount.toFixed(2)}
 Estimated delivery: ${etaString}
 
 Items:

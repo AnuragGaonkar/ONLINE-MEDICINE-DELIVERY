@@ -5,7 +5,7 @@ const { Schema } = mongoose;
 const orderMedicineSchema = new Schema({
   medicineId: {
     type: Schema.Types.ObjectId,
-    ref: "Medicine",            // <<< IMPORTANT CHANGE
+    ref: "Medicine",
     required: true,
   },
   quantity: {
@@ -23,13 +23,21 @@ const orderSchema = new Schema(
       required: true,
     },
     medicines: [orderMedicineSchema],
-    totalPrice: {
+    totalAmount: {
       type: Number,
       required: true,
     },
-    status: {
+    paymentStatus: {
       type: String,
-      default: "PLACED",
+      default: "Pending",
+    },
+    deliveryStatus: {
+      type: String,
+      default: "Processing",
+    },
+    orderDate: {
+      type: Date,
+      default: Date.now,
     },
   },
   { timestamps: true }

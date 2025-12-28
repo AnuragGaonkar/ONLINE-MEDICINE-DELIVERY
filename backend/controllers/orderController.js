@@ -1,13 +1,13 @@
 // controllers/orderController.js
 const Order = require("../models/Order");
-const Medicine = require("../models/Medicine");   // <<< CHANGE IMPORT
+const Medicine = require("../models/Medicine");
 
 const LOW_STOCK_THRESHOLD = 10;
 
 exports.createOrder = async (req, res) => {
   try {
     const userId = req.user.id;
-    const { medicines, totalPrice } = req.body;
+    const { medicines, totalAmount } = req.body;
 
     if (!Array.isArray(medicines) || medicines.length === 0) {
       return res.status(400).json({ message: "No medicines in order" });
@@ -17,10 +17,11 @@ exports.createOrder = async (req, res) => {
     session.startTransaction();
 
     try {
+      // 1) Decrement stock in a transaction
       for (const item of medicines) {
         const { medicineId, quantity } = item;
 
-        const med = await Medicine.findById(medicineId).session(session); // <<< USE Medicine
+        const med = await Medicine.findById(medicineId).session(session);
         if (!med) {
           throw new Error(`Medicine not found: ${medicineId}`);
         }
@@ -30,17 +31,20 @@ exports.createOrder = async (req, res) => {
         }
 
         med.stock -= quantity;
-        // optional: add lowStock if you want
         med.lowStock = med.stock > 0 && med.stock <= LOW_STOCK_THRESHOLD;
         await med.save({ session });
       }
 
+      // 2) Create order with original schema fields
       const [order] = await Order.create(
         [
           {
             userId,
             medicines,
-            totalPrice,
+            totalAmount,
+            paymentStatus: "Completed",
+            deliveryStatus: "Processing",
+            orderDate: new Date(),
           },
         ],
         { session }
