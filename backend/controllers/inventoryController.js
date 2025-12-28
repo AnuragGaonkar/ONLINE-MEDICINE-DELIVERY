@@ -1,10 +1,9 @@
-// controllers/inventoryController.js
-const Medicine = require("../models/Medicine");  // use existing model
+const Mediciness = require("../models/Mediciness");
 
 // GET /api/inventory
 exports.getInventory = async (req, res) => {
   try {
-    const meds = await Medicine.find().sort({ name: 1 });
+    const meds = await Mediciness.find({}).sort({ name: 1 });
     res.json(meds);
   } catch (err) {
     console.error("Error in getInventory:", err);
@@ -16,7 +15,7 @@ exports.getInventory = async (req, res) => {
 exports.getLowStock = async (req, res) => {
   try {
     const threshold = Number(req.query.threshold || 10);
-    const meds = await Medicine.find({
+    const meds = await Mediciness.find({
       stock: { $gt: 0, $lt: threshold },
     }).sort({ stock: 1 });
     res.json(meds);
@@ -31,13 +30,9 @@ exports.updateStock = async (req, res) => {
   try {
     const { medicineId, newStock } = req.body;
 
-    const med = await Medicine.findByIdAndUpdate(
+    const med = await Mediciness.findByIdAndUpdate(
       medicineId,
-      {
-        stock: newStock,
-        lowStock: newStock > 0 && newStock < 10,
-        in_stock: newStock > 0,
-      },
+      { stock: newStock },
       { new: true }
     );
 
