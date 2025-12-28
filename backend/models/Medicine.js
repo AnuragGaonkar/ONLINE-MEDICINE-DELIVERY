@@ -18,4 +18,4 @@ medicinessSchema.virtual('in_stock').get(function() {
   return this.stock > 0;
 });
 
-module.exports = mongoose.model("Mediciness", medicinessSchema, "mediciness");
+module.exports = mongoose.model("Medicine", medicinessSchema, "mediciness");

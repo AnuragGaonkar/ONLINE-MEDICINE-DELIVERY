@@ -1,11 +1,9 @@
 // controllers/orderController.js
 const Order = require("../models/Order");
-const Mediciness = require("../models/Mediciness");
+const Medicine = require("../models/Medicine");   // <<< CHANGE IMPORT
 
 const LOW_STOCK_THRESHOLD = 10;
 
-// POST /api/orders
-// body: { medicines: [{ medicineId, quantity }], totalPrice }
 exports.createOrder = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -15,16 +13,14 @@ exports.createOrder = async (req, res) => {
       return res.status(400).json({ message: "No medicines in order" });
     }
 
-    // Optional but safer: transaction
     const session = await Order.startSession();
     session.startTransaction();
 
     try {
-      // 1) Decrement stock for each item
       for (const item of medicines) {
         const { medicineId, quantity } = item;
 
-        const med = await Mediciness.findById(medicineId).session(session);
+        const med = await Medicine.findById(medicineId).session(session); // <<< USE Medicine
         if (!med) {
           throw new Error(`Medicine not found: ${medicineId}`);
         }
@@ -34,11 +30,11 @@ exports.createOrder = async (req, res) => {
         }
 
         med.stock -= quantity;
+        // optional: add lowStock if you want
         med.lowStock = med.stock > 0 && med.stock <= LOW_STOCK_THRESHOLD;
         await med.save({ session });
       }
 
-      // 2) Create order
       const [order] = await Order.create(
         [
           {
@@ -66,7 +62,6 @@ exports.createOrder = async (req, res) => {
   }
 };
 
-// GET /api/orders/my
 exports.getMyOrders = async (req, res) => {
   try {
     const userId = req.user.id;

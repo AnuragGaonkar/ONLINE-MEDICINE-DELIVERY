@@ -1,9 +1,9 @@
-const Mediciness = require("../models/Mediciness");
+const Medicine = require("../models/Medicine");
 
 // GET /api/inventory
 exports.getInventory = async (req, res) => {
   try {
-    const meds = await Mediciness.find({}).sort({ name: 1 });
+    const meds = await Medicine.find({}).sort({ name: 1 });
     res.json(meds);
   } catch (err) {
     console.error("Error in getInventory:", err);
@@ -15,7 +15,7 @@ exports.getInventory = async (req, res) => {
 exports.getLowStock = async (req, res) => {
   try {
     const threshold = Number(req.query.threshold || 10);
-    const meds = await Mediciness.find({
+    const meds = await Medicine.find({
       stock: { $gt: 0, $lt: threshold },
     }).sort({ stock: 1 });
     res.json(meds);
@@ -30,7 +30,7 @@ exports.updateStock = async (req, res) => {
   try {
     const { medicineId, newStock } = req.body;
 
-    const med = await Mediciness.findByIdAndUpdate(
+    const med = await Medicine.findByIdAndUpdate(
       medicineId,
       { stock: newStock },
       { new: true }

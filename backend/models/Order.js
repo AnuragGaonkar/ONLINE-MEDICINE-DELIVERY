@@ -5,7 +5,7 @@ const { Schema } = mongoose;
 const orderMedicineSchema = new Schema({
   medicineId: {
     type: Schema.Types.ObjectId,
-    ref: "Mediciness",            // <<< IMPORTANT CHANGE
+    ref: "Medicine",            // <<< IMPORTANT CHANGE
     required: true,
   },
   quantity: {
