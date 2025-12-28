@@ -159,6 +159,24 @@ const Profile = () => {
     window.location.href = "/";
   };
 
+  // Helper to normalize total + payment + delivery for mixed schemas
+  const getTotal = (order) => {
+    // old: totalAmount, new: totalPrice
+    return order.totalAmount ?? order.totalPrice ?? 0;
+  };
+
+  const getPaymentLabel = (order) => {
+    // old: paymentStatus, new: status
+    if (order.paymentStatus) return order.paymentStatus;
+    if (order.status === "PAID") return "Completed";
+    if (order.status) return order.status;
+    return "Unknown";
+  };
+
+  const getDeliveryLabel = (order) => {
+    return order.deliveryStatus || "Processing";
+  };
+
   return (
     <div className="profile-page">
       {/* Top bar with Back button */}
@@ -302,12 +320,9 @@ const Profile = () => {
                   </div>
 
                   <div className="order-meta">
-                    <span>Total: ₹{order.totalPrice}</span>
-                    <span>
-                      Payment:{" "}
-                      {order.status === "PAID" ? "Completed" : order.status}
-                    </span>
-                    <span>Delivery: Processing</span>
+                    <span>Total: ₹{getTotal(order)}</span>
+                    <span>Payment: {getPaymentLabel(order)}</span>
+                    <span>Delivery: {getDeliveryLabel(order)}</span>
                   </div>
 
                   <ul className="order-items">
