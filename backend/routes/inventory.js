@@ -6,21 +6,22 @@ const {
   getInventory,
   getLowStock,
   updateStock,
+  restockMedicine,          // <<< add this
 } = require("../controllers/inventoryController");
 
-const auth = require("../middleware/getUser");    // your JWT middleware
+const auth = require("../middleware/getUser");
 const isAdmin = require("../middleware/isAdmin");
 
 // Full inventory for admin
-// GET /api/inventory
 router.get("/inventory", auth, isAdmin, getInventory);
 
 // Low‑stock list
-// GET /api/inventory/low-stock?threshold=10
 router.get("/inventory/low-stock", auth, isAdmin, getLowStock);
 
-// Update stock
-// PUT /api/inventory/update-stock
+// Update stock (absolute set)
 router.put("/inventory/update-stock", auth, isAdmin, updateStock);
+
+// Restock (increment)
+router.post("/inventory/restock", auth, isAdmin, restockMedicine);  // <<< new
 
 module.exports = router;

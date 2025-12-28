@@ -13,6 +13,20 @@ const AdminInventory = () => {
   const [error, setError] = useState("");
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
+  // RESTOCK STATE
+  const [showRestock, setShowRestock] = useState(false);
+  const [restockForm, setRestockForm] = useState({
+    medicineId: "",
+    quantity: "",
+    supplierName: "",
+    supplierContact: "",
+    invoiceNumber: "",
+    notes: "",
+  });
+  const [restockLoading, setRestockLoading] = useState(false);
+  const [restockError, setRestockError] = useState("");
+  const [restockSuccess, setRestockSuccess] = useState("");
+
   const navigate = useNavigate();
   const token = localStorage.getItem("auth-token");
 
@@ -95,6 +109,75 @@ const AdminInventory = () => {
     fetchInventory();
   }, [token, user]);
 
+  // RESTOCK HANDLERS
+  const openRestock = () => {
+    setRestockForm({
+      medicineId: "",
+      quantity: "",
+      supplierName: "",
+      supplierContact: "",
+      invoiceNumber: "",
+      notes: "",
+    });
+    setRestockError("");
+    setRestockSuccess("");
+    setShowRestock(true);
+  };
+
+  const closeRestock = () => {
+    setShowRestock(false);
+  };
+
+  const handleRestockChange = (e) => {
+    const { name, value } = e.target;
+    setRestockForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const submitRestock = async (e) => {
+    e.preventDefault();
+    setRestockError("");
+    setRestockSuccess("");
+
+    const qty = Number(restockForm.quantity);
+    if (!restockForm.medicineId || !qty || qty <= 0) {
+      setRestockError("Please select a medicine and enter a positive quantity.");
+      return;
+    }
+
+    try {
+      setRestockLoading(true);
+      const res = await fetch(`${API_HOST}/api/inventory/restock`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "auth-token": token,
+        },
+        body: JSON.stringify(restockForm),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.message || "Failed to restock medicine");
+      }
+
+      setRestockSuccess("Stock updated successfully.");
+
+      // update items list locally so table/cards reflect new stock
+      setItems((prev) =>
+        prev.map((m) =>
+          m._id === data.medicine._id ? { ...m, stock: data.medicine.stock } : m
+        )
+      );
+
+      setTimeout(() => setShowRestock(false), 1000);
+    } catch (err) {
+      console.error(err);
+      setRestockError(err.message || "Could not restock medicine.");
+    } finally {
+      setRestockLoading(false);
+    }
+  };
+
   if (loadingUser) {
     return (
       <div className="admin-inv-page">
@@ -133,9 +216,14 @@ const AdminInventory = () => {
         <div className="admin-inv-card">
           <div className="admin-inv-card-header">
             <h2>Inventory Overview</h2>
-            <span className="admin-inv-chip">
-              Low stock &lt; {LOW_STOCK_THRESHOLD}
-            </span>
+            <div className="admin-inv-header-actions">
+              <span className="admin-inv-chip">
+                Low stock &lt; {LOW_STOCK_THRESHOLD}
+              </span>
+              <button className="restock-btn" onClick={openRestock}>
+                Restock
+              </button>
+            </div>
           </div>
 
           {loadingInventory ? (
@@ -295,6 +383,107 @@ const AdminInventory = () => {
           )}
         </div>
       </main>
+
+      {/* Restock Modal */}
+      {showRestock && (
+        <div className="restock-overlay">
+          <div className="restock-modal">
+            <div className="restock-header">
+              <h3>Restock Medicine</h3>
+              <button className="restock-close" onClick={closeRestock}>
+                ×
+              </button>
+            </div>
+
+            <form className="restock-form" onSubmit={submitRestock}>
+              <label>
+                Medicine
+                <select
+                  name="medicineId"
+                  value={restockForm.medicineId}
+                  onChange={handleRestockChange}
+                  required
+                >
+                  <option value="">Select medicine</option>
+                  {items.map((m) => (
+                    <option key={m._id} value={m._id}>
+                      {m.name} (Stock: {m.stock})
+                    </option>
+                  ))}
+                </select>
+              </label>
+
+              <div className="restock-row">
+                <label>
+                  Quantity to add
+                  <input
+                    type="number"
+                    name="quantity"
+                    min="1"
+                    value={restockForm.quantity}
+                    onChange={handleRestockChange}
+                    required
+                  />
+                </label>
+                <label>
+                  Invoice No.
+                  <input
+                    type="text"
+                    name="invoiceNumber"
+                    value={restockForm.invoiceNumber}
+                    onChange={handleRestockChange}
+                  />
+                </label>
+              </div>
+
+              <label>
+                Supplier name
+                <input
+                  type="text"
+                  name="supplierName"
+                  value={restockForm.supplierName}
+                  onChange={handleRestockChange}
+                />
+              </label>
+
+              <label>
+                Supplier contact
+                <input
+                  type="text"
+                  name="supplierContact"
+                  value={restockForm.supplierContact}
+                  onChange={handleRestockChange}
+                />
+              </label>
+
+              <label>
+                Notes
+                <textarea
+                  name="notes"
+                  rows="3"
+                  value={restockForm.notes}
+                  onChange={handleRestockChange}
+                />
+              </label>
+
+              {restockError && (
+                <p className="restock-error">{restockError}</p>
+              )}
+              {restockSuccess && (
+                <p className="restock-success">{restockSuccess}</p>
+              )}
+
+              <button
+                type="submit"
+                className="restock-submit"
+                disabled={restockLoading}
+              >
+                {restockLoading ? "Updating..." : "Add to stock"}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
