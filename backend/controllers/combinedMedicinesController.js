@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const Mediciness = require("../models/Mediciness");
+const Mediciness = require("../models/Medicine");
 const MedicineDetails = require("../models/MedicineDetails");
 
 exports.getCombinedMedicineById = async (req, res) => {
