@@ -185,7 +185,6 @@ exports.handleStripeWebhook = async (req, res) => {
       return res.status(500).send("Webhook secret not configured");
     }
 
-    // req.body is raw buffer because of express.raw in index.js
     event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
   } catch (err) {
     console.error("Webhook signature verification failed:", err.message);
@@ -213,30 +212,27 @@ exports.handleStripeWebhook = async (req, res) => {
         return res.json({ received: true });
       }
 
-      // ---------- 1) Create Order using ONLY real total (no top‑up) ----------
-      const orderDoc = new Order({
+      // ---------- 1) Create Order using schema fields ----------
+      const totalPrice = totalAmountPaise / 100; // rupees
+
+      const orderDoc = await Order.create({
         userId,
         medicines: cart.map((item) => ({
           medicineId: item.medicineId,
           quantity: item.quantity,
         })),
-        totalAmount: totalAmountPaise / 100, // rupees (real)
-        paymentStatus: "Completed",
-        deliveryStatus: "Processing",
+        totalPrice,          // REQUIRED BY MODEL
+        status: "PAID",      // still fits your schema
       });
 
-      await orderDoc.save();
-
       // ---------- 2) Clear cart ----------
-      if (userId) {
-        try {
-          await Cart.deleteOne({ userId });
-        } catch (err) {
-          console.error("Error clearing cart:", err.message);
-        }
+      try {
+        await Cart.deleteOne({ userId });
+      } catch (err) {
+        console.error("Error clearing cart:", err.message);
       }
 
-      // ---------- 3) Compute ETA ----------
+      // ---------- 3) Optional: send email (unchanged, but use totalPrice) ----------
       const etaMinutes = Math.floor(Math.random() * (120 - 30 + 1)) + 30;
       const eta = new Date();
       eta.setMinutes(eta.getMinutes() + etaMinutes);
@@ -249,7 +245,6 @@ exports.handleStripeWebhook = async (req, res) => {
         minute: "2-digit",
       });
 
-      // ---------- 4) Send email with Brevo (ONLY real cart prices and real total) ----------
       if (email && BREVO_API_KEY) {
         try {
           const itemsText = cart
@@ -266,7 +261,7 @@ Hi,
 
 Your order ${orderDoc._id} has been placed successfully.
 
-Order total: ₹${(totalAmountPaise / 100).toFixed(2)}
+Order total: ₹${totalPrice.toFixed(2)}
 Estimated delivery: ${etaString}
 
 Items:
