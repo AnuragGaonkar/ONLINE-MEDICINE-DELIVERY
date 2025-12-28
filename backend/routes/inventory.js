@@ -6,7 +6,7 @@ const {
   getInventory,
   getLowStock,
   updateStock,
-  restockMedicine,          // <<< add this
+  restockMedicine,
 } = require("../controllers/inventoryController");
 
 const auth = require("../middleware/getUser");
@@ -22,6 +22,6 @@ router.get("/inventory/low-stock", auth, isAdmin, getLowStock);
 router.put("/inventory/update-stock", auth, isAdmin, updateStock);
 
 // Restock (increment)
-router.post("/inventory/restock", auth, isAdmin, restockMedicine);  // <<< new
+router.post("/inventory/restock", auth, isAdmin, restockMedicine);
 
 module.exports = router;
