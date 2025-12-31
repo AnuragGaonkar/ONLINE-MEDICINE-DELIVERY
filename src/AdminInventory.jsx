@@ -192,24 +192,6 @@ const AdminInventory = () => {
 
   return (
     <div className="admin-inv-page">
-      {/* Top bar */}
-      <header className="admin-inv-header">
-        <div className="admin-inv-left">
-          <span className="admin-logo">MediQuick</span>
-          <span className="admin-tag">Admin Inventory</span>
-        </div>
-        <div className="admin-inv-right">
-          <div className="admin-user-pill">
-            <span className="admin-avatar">
-              {user.name?.charAt(0).toUpperCase() || "A"}
-            </span>
-            <div className="admin-user-text">
-              <span className="admin-user-name">{user.name || "Admin"}</span>
-              <span className="admin-user-role">Administrator</span>
-            </div>
-          </div>
-        </div>
-      </header>
 
       {/* Content */}
       <main className="admin-inv-content">
