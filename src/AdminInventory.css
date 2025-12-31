@@ -13,6 +13,39 @@
   --danger: #b91c1c;
 }
 
+/* 🔥 MOBILE NAVBAR SAFE AREA */
+@media (max-width: 640px) {
+  .admin-inv-header {
+    padding-top: env(safe-area-inset-top, 44px) !important; /* iOS notch */
+    padding-bottom: env(safe-area-inset-bottom, 20px);
+    position: relative; /* Prevent fixed overlap */
+    z-index: 1000;
+  }
+  
+  .admin-inv-content {
+    padding-top: calc(env(safe-area-inset-top, 44px) + 1rem);
+    padding-bottom: env(safe-area-inset-bottom, 2rem) !important;
+  }
+  
+  body {
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+}
+
+/* Portfolio navbar compatibility */
+.page-root .admin-inv-page {
+  padding-top: 80px; /* Mobile CardNav height */
+}
+
+/* Restock modal - above everything */
+.restock-overlay {
+  z-index: 3000 !important; /* Above portfolio z=2000 */
+}
+
+.project-modal-backdrop {
+  z-index: 2500 !important; /* Between portfolio & restock */
+}
+
 [data-theme="dark"] {
   --bg-primary: #0f172a;
   --bg-secondary: #1e293b;
