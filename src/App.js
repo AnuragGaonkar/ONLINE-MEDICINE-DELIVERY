@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { CartProvider } from "./Cart/CartContext";
 import Home from "./Home/home";
 import Cart from "./Cart/Cart";
@@ -13,6 +13,20 @@ import SearchNotFound from "./SearchNotFound.jsx";
 import AdminInventory from "./AdminInventory.jsx";
 
 const App = () => {
+  // 🔥 Wake Render backend when frontend loads
+  useEffect(() => {
+    const endpoints = [
+      "https://mediquick-backend-yizx.onrender.com",        // light root/health
+      "https://mediquick-backend-yizx.onrender.com" // optional: chatbot-specific
+    ];
+
+    endpoints.forEach((url) => {
+      fetch(url, { method: "GET" }).catch(() => {
+        // ignore errors – this is just a warm-up ping
+      });
+    });
+  }, []);
+
   return (
     <CartProvider>
       <Router>
