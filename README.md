@@ -121,19 +121,19 @@ npm run dev
 
 ### System Architecture
 
-<img src="public/Mediquick.png" alt="System Architecture Flow" width="100%"/>
+<img src="public/photo/Mediquick.png" alt="System Architecture Flow" width="100%"/>
 
 ### Video Walkthroughs
 
 #### Desktop Experience
 *Full-featured user journey including AI consultation, product search, and secure checkout.*
 > [!IMPORTANT]
-> **[Watch High-Resolution Desktop Demo](public/video/mediquick_desktop.mp4)**
+> **[Watch High-Resolution Desktop Demo](public/video/mediquick-desktop.mp4)**
 
 #### Mobile Responsive Design
 *Demonstrating fluid UI/UX transitions and mobile-first pharmaceutical browsing.*
 > [!IMPORTANT]
-> **[Watch High-Resolution Mobile Demo](public/video/mediquick_mobile.mp4)**
+> **[Watch High-Resolution Mobile Demo](public/video/mediquick-mobile.mp4)**
 
 ---
 
