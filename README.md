@@ -85,14 +85,13 @@ OPENAI_API_KEY=your_openai_key
 
 **Start Server:**
 ```bash
-cd server
+cd backend
 npm install
 npm start
 ```
 
 **Start Client:**
 ```bash
-cd client
 npm install
 npm run dev
 ```
