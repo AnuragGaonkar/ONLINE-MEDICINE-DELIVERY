@@ -150,28 +150,11 @@ def detect_intent(message):
 
 def extract_symptoms_from_text(text):
     """
-    Dynamically infer symptoms by matching user words
-    against DB medicine uses (use0..use4).
-    No hardcoding. Fully data-driven.
+    Extract core medical terms ONLY.
+    No fuzzy guessing.
     """
     tokens = tokenize(text)
-    detected = set()
-
-    for med in mongo.db.medicines.find():
-        for i in range(5):
-            use = med.get(f"use{i}")
-            if not use:
-                continue
-
-            use_l = use.lower()
-
-            # compare each user token with full use phrase
-            for t in tokens:
-                similarity = fuzz.partial_ratio(t, use_l)
-                if similarity >= 70:
-                    detected.add(use_l)
-
-    return list(detected)
+    return list(set(tokens))
 
 
 # ---------- CHAT LOGGING ----------
@@ -192,18 +175,19 @@ def save_chat_turn(session_id, user_message, bot_message, medicines=None, quanti
 
 def find_medicines(symptoms):
     """
-    Strict symptom → use matching.
-    Medicines are returned ONLY if their USES
-    strongly match user symptoms.
+    STRICT medical relevance matching.
+    A medicine is suggested ONLY if:
+    - a symptom word is explicitly present
+    - inside a USE field (use0..use4)
     """
+
     results = []
-    symptom_text = " ".join(symptoms).lower()
 
     for med in mongo.db.medicines.find({"in_stock": True}):
         if med.get("stock", 1) <= 0:
             continue
 
-        best_match = 0
+        matched = False
         matched_uses = []
 
         for i in range(5):
@@ -213,31 +197,25 @@ def find_medicines(symptoms):
 
             use_l = use.lower()
 
-            # STRICT comparison
-            similarity = fuzz.token_set_ratio(use_l, symptom_text)
+            # STRICT WORD CONTAINMENT
+            for symptom in symptoms:
+                if symptom in use_l:
+                    matched = True
+                    matched_uses.append(use_l)
 
-            if similarity >= 85:  # 🔥 HARD THRESHOLD
-                matched_uses.append(use_l)
-                best_match = max(best_match, similarity)
-
-        if not matched_uses:
-            continue
+        if not matched:
+            continue  # ❌ reject medicine completely
 
         results.append({
             "name": med["name"],
-            "description": med.get("description", ""),
             "dosage": med.get("dosage", ""),
             "price": med.get("price"),
             "delivery_time": med.get("delivery_time", ""),
             "availability": "In stock" if med.get("in_stock") else "Out of stock",
-            "matched_uses": matched_uses,
-            "score": best_match,
+            "matched_uses": matched_uses
         })
 
-    # sort by medical relevance
-    results.sort(key=lambda x: x["score"], reverse=True)
-
-    # remove duplicates by name
+    # Remove duplicates
     seen = set()
     final = []
     for r in results:
@@ -246,6 +224,7 @@ def find_medicines(symptoms):
             final.append(r)
 
     return final[:5]
+
 
 
 
@@ -272,7 +251,7 @@ def get_medicine_details(med_name, intent):
     if intent == "PRICE":
         stock_val = med.get("stock", 0)
         return (
-            f"The price of {med['name']} is ₹{med.get('price')}."
+            f"The price of {med['name']} is {med.get('price')}."
             f" Current stock: {stock_val} units."
         )
 
@@ -416,7 +395,7 @@ def chat():
             msg_lines.append(
                 f"\n• {med['name']}\n"
                 f"  Dosage: {med.get('dosage', 'Not specified')}\n"
-                f"  Price: ₹{med.get('price')}\n"
+                f"  Price: {med.get('price')}\n"
                 f"  Delivery: {med.get('delivery_time', 'Not specified')}\n"
                 f"  Availability: {med.get('availability')}"
             )
