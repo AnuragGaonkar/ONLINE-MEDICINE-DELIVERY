@@ -8,6 +8,7 @@ from flask_pymongo import PyMongo
 import nltk
 from fuzzywuzzy import process, fuzz
 import re
+from bson.objectid import ObjectId, InvalidId
 
 # ----------------- NLTK SETUP -----------------
 try:
@@ -74,13 +75,12 @@ def extract_symptoms_from_text(text):
     Extracts symptoms using both DB patterns AND the broad regex 
     that was working in your original code.
     """
-    # 1. Exact phrase matching from DB (e.g., "allergic rhinitis")
+    # 1. Exact phrase matching from DB
     doc = nlp(text.lower())
     matches = matcher(doc)
     matched_symptoms = [doc[start:end].text for match_id, start, end in matches]
     
-    # 2. Broad Regex Fallback (RESTORED FROM YOUR WORKING CODE)
-    # This catches single words like "ulcers", "acidity", "gastritis"
+    # 2. Broad Regex Fallback
     tokens = nltk.word_tokenize(text.lower())
     regex_symptoms = [w for w in tokens if re.match(r'^[a-z]{3,15}$', w) and len(w) > 2]
     
@@ -130,7 +130,7 @@ def get_or_create_session(session_id):
             "last_mentioned_medicine": None,
             "awaiting_cart_confirmation": False,
             "last_medicines_for_cart": [],
-            "cart": [], # Explicitly storing cart in DB
+            "cart": [], 
         }
         mongo.db.sessions.insert_one(session)
     return session
@@ -142,16 +142,34 @@ def update_session(session_id, updates):
         upsert=True,
     )
 
-def add_item_to_cart(session_id, item_name, quantity, price=None):
-    """Helper to update persistent cart in MongoDB."""
-    if not price:
+def add_item_to_cart(session_id, item_name, quantity, price=None, medicine_id=None):
+    """
+    Helper to update persistent cart in MongoDB.
+    THIS INCLUDES THE CRITICAL PRICE FIX logic.
+    """
+    # 1. Fetch details if missing (Price should be Numeric for calculation)
+    if not price or not medicine_id:
         med = mongo.db.medicines.find_one({"name": {"$regex": f"^{item_name}$", "$options": "i"}})
-        price = med.get('price') if med else "Unknown"
+        if med:
+            # FIX: Prefer 'priceNumeric' if available to avoid NaN in frontend
+            price = med.get('priceNumeric') if med.get('priceNumeric') else med.get('price')
+            
+            # Fallback: if price is still a string like "₹20", strip it
+            if isinstance(price, str):
+                try:
+                    price = float(re.sub(r'[^\d.]', '', price))
+                except:
+                    price = 0
+            
+            medicine_id = str(med.get('_id'))
+        else:
+            price = 0
+            medicine_id = "unknown"
 
     session = get_or_create_session(session_id)
     cart = session.get("cart", [])
     
-    # Check if item exists, update quantity if so
+    # 2. Check if item exists, update quantity if so
     found = False
     for item in cart:
         if item["name"].lower() == item_name.lower():
@@ -159,8 +177,16 @@ def add_item_to_cart(session_id, item_name, quantity, price=None):
             found = True
             break
     
+    # 3. Add new item
     if not found:
-        cart.append({"name": item_name, "quantity": quantity, "price": price})
+        cart.append({
+            "medicineId": medicine_id, 
+            "name": item_name, 
+            "quantity": quantity, 
+            "price": price,
+            # Add image fallback for frontend
+            "imageUrl": "https://cdn-icons-png.flaticon.com/512/883/883407.png" 
+        })
         
     update_session(session_id, {"cart": cart})
     return cart
@@ -180,128 +206,71 @@ def save_chat_turn(session_id, user_message, bot_message, medicines=None, quanti
 def calculate_relevance(symptom, med_uses):
     score = 0
     all_uses = ' '.join(med_uses).lower()
-    
-    # Exact match
-    if symptom in all_uses:
-        score += 100
-    
-    # Fuzzy partial match
+    if symptom in all_uses: score += 100
     fuzzy_score = fuzz.partial_ratio(symptom, all_uses)
-    if fuzzy_score >= 85:
-        score += fuzzy_score
-    elif fuzzy_score >= 70:
-        score += fuzzy_score * 0.5
-    
-    # Stemmed word match
-    symptom_stem = symptom.rstrip('s') 
-    if symptom_stem in all_uses:
-        score += 60
-    
+    if fuzzy_score >= 85: score += fuzzy_score
+    elif fuzzy_score >= 70: score += fuzzy_score * 0.5
+    if symptom.rstrip('s') in all_uses: score += 60
     return score
 
 def find_medicines(symptoms):
-    if not symptoms:
-        return []
-    
-    scored_medicines = []
-    
-    # Use boolean 'in_stock'
+    if not symptoms: return []
+    scored = []
     for med in mongo.db.medicines.find({"in_stock": True}):
-        if med.get("in_stock") is False:
-            continue
-        
+        if med.get("in_stock") is False: continue
         uses = [med.get(f"use{i}", "") for i in range(5) if med.get(f"use{i}")]
-        if not uses:
-            continue
+        if not uses: continue
         
-        total_score = 0
-        match_count = 0
+        score, count = 0, 0
+        for s in symptoms:
+            if s in ["have", "what", "is", "the", "for", "and"]: continue
+            rel = calculate_relevance(s, uses)
+            if rel > 20:
+                score += rel
+                count += 1
         
-        for symptom in symptoms:
-            # Skip common stopwords that might be caught by regex
-            if symptom in ["have", "what", "is", "the", "for", "and"]:
-                continue
-
-            relevance = calculate_relevance(symptom, uses)
-            if relevance > 20: 
-                total_score += relevance
-                match_count += 1
-        
-        if match_count > 0:
-            scored_medicines.append({
+        if count > 0:
+            scored.append({
                 "name": med["name"],
                 "dosage": med.get("dosage", ""),
                 "price": med.get("price"),
                 "delivery_time": med.get("delivery_time", ""),
                 "availability": "In stock",
-                "score": total_score / match_count,
-                "matched_symptoms": symptoms, # simplified
+                "score": score / count,
                 "uses": uses
             })
     
-    scored_medicines.sort(key=lambda x: x["score"], reverse=True)
-    
-    # Dedupe by name
-    seen = set()
-    final = []
-    for med in scored_medicines:
+    scored.sort(key=lambda x: x["score"], reverse=True)
+    seen, final = set(), []
+    for med in scored:
         if med["name"] not in seen:
             seen.add(med["name"])
             final.append(med)
-            if len(final) == 5:
-                break
-    
+            if len(final) == 5: break
     return final
 
 def build_overview(med):
     uses = [med.get(f"use{i}") for i in range(5) if med.get(f"use{i}")]
-    stock_val = "In Stock" if med.get("in_stock") else "Out of Stock"
-    stock_info = f" Current stock: {stock_val} units."
-    return (
-        f"{med['name']} is commonly used for {', '.join(uses[:3])}. "
-        f"The recommended dosage is {med.get('dosage', 'not specified')}. "
-        f"It costs {med.get('price')}. "
-        f"The delivery time is {med.get('delivery_time', 'not specified')}."
-        + stock_info
-    )
+    stock = "In Stock" if med.get("in_stock") else "Out of Stock"
+    return f"{med['name']} is used for {', '.join(uses[:3])}. Dosage: {med.get('dosage')}. Price: {med.get('price')}. Stock: {stock}."
 
 def get_medicine_details(med_name, intent):
     med = mongo.db.medicines.find_one({"name": {"$regex": med_name, "$options": "i"}})
-    if not med:
-        return None
-
-    if intent == "PRICE":
-        stock_val = "In Stock" if med.get("in_stock") else "Out of Stock"
-        return f"The price of {med['name']} is {med.get('price')}. Availability: {stock_val}."
-
-    if intent == "DOSAGE":
-        return f"The recommended dosage for {med['name']} is {med.get('dosage', 'not specified')}."
-
-    if intent == "SIDE_EFFECTS" and med.get("side_effects"):
-        return f"The side effects include {', '.join(med['side_effects'])}."
-
-    if intent == "PRECAUTIONS" and med.get("precautions"):
-        return f"Precautions include {', '.join(med['precautions'])}."
-
-    if intent == "DELIVERY":
-        return f"The delivery time for {med['name']} is {med.get('delivery_time', 'not specified')}."
-
-    if intent == "MEDICINE_OVERVIEW":
-        return build_overview(med)
-
+    if not med: return None
+    if intent == "PRICE": return f"The price of {med['name']} is {med.get('price')}."
+    if intent == "DOSAGE": return f"Dosage: {med.get('dosage')}."
+    if intent == "SIDE_EFFECTS": return f"Side effects: {', '.join(med.get('side_effects', []))}."
+    if intent == "PRECAUTIONS": return f"Precautions: {', '.join(med.get('precautions', []))}."
+    if intent == "DELIVERY": return f"Delivery time: {med.get('delivery_time')}."
+    if intent == "MEDICINE_OVERVIEW": return build_overview(med)
     return None
 
 # ---------- CART HANDLING ----------
 def text_to_int(text):
-    mapping = {
-        'one': 1, 'two': 2, 'three': 3, 'four': 4, 'five': 5, 
-        'six': 6, 'seven': 7, 'eight': 8, 'nine': 9, 'ten': 10
-    }
+    mapping = {'one':1, 'two':2, 'three':3, 'four':4, 'five':5, 'six':6, 'ten':10}
     for t in text.lower().replace(',', ' ').split():
-        if t.isdigit(): 
-            return int(t)
-        if t in mapping: 
-            return mapping[t]
+        if t.isdigit(): return int(t)
+        if t in mapping: return mapping[t]
     return None
 
 def handle_cart_chat(session, message):
@@ -337,31 +306,52 @@ def handle_cart_chat(session, message):
             return {
                 "type": "ADD_TO_CART",
                 "message": "I've added the items to your cart. You can proceed to checkout or add more medicines.",
-                "items": current_cart # Return full cart state
+                "items": current_cart 
             }
         return {"type": "ASK_QUANTITY", "message": "Please enter a valid quantity (for example: 1 or 2)."}
     return None
 
-# ---------- NEW API ROUTE: DIRECT CART ADD (FIXES 500 ERROR) ----------
+# ---------- FIX 500 ERROR & TYPE MISMATCH: API ROUTE ----------
 @app.route("/api/cart/add", methods=["POST"])
 def api_add_to_cart():
     try:
         session_id = get_session_id()
-        data = request.get_json(force=True) # force=True handles incorrect content-types
+        data = request.get_json(force=True)
         
+        # 1. Extract params (Handle both 'name' and 'medicineId')
+        # This handles the frontend sending ID and the Chatbot sending Name
         name = data.get("name")
+        medicine_id = data.get("medicineId")
         quantity = int(data.get("quantity", 1))
         
-        if not name:
-            return jsonify({"error": "Product name is required"}), 400
+        resolved_name = None
+        resolved_id = None
 
-        # Update persistent cart
-        updated_cart = add_item_to_cart(session_id, name, quantity)
+        if medicine_id:
+            # Check if it's a valid ID from the Frontend
+            if ObjectId.is_valid(medicine_id):
+                med = mongo.db.medicines.find_one({"_id": ObjectId(medicine_id)})
+                if med:
+                    resolved_name = med["name"]
+                    resolved_id = str(med["_id"])
+            else:
+                # Chatbot sometimes sends Name as ID field erroneously
+                resolved_name = medicine_id 
+
+        if not resolved_name and name:
+            resolved_name = name
+
+        if not resolved_name:
+            return jsonify({"error": "Product name or valid ID is required"}), 400
+
+        # 3. Update persistent cart (Uses name to lookup price/ID if missing)
+        updated_cart = add_item_to_cart(session_id, resolved_name, quantity, medicine_id=resolved_id)
         
+        # 4. Return correct structure matching Frontend 'data.cart.items' expectation
         return jsonify({
             "success": True, 
             "message": "Item added to cart", 
-            "cart": updated_cart
+            "cart": { "items": updated_cart } 
         })
         
     except Exception as e:
@@ -373,9 +363,9 @@ def api_add_to_cart():
 def chat():
     session_id = get_session_id()
     session = get_or_create_session(session_id)
-
     data = request.get_json(force=True)
     user_message = data.get("message", "").strip()
+
     if not user_message:
         return jsonify({"message": "Please enter a message.", "medicines": []}), 400
 
@@ -437,16 +427,13 @@ def chat():
         update_session(session_id, {"last_mentioned_medicine": meds[0]["name"]})
         msg_lines = [intro_text]
         for med in meds:
-            # FIX: Human-friendly match text instead of raw percentage
+            # Human-friendly match text
             score = med.get('score', 0)
-            if score > 130:
-                match_text = "Highly Recommended"
-            elif score > 90:
-                match_text = "Good Match"
-            else:
-                match_text = "Also effective"
+            if score > 130: match_text = "Highly Recommended"
+            elif score > 90: match_text = "Good Match"
+            else: match_text = "Also effective"
 
-            # RESTORED FULL VERBOSITY IN CHAT RESPONSE
+            # FULL VERBOSITY IN CHAT RESPONSE
             msg_lines.append(
                 f"\n• {med['name']} ({match_text})"
                 f"\n  Dosage: {med.get('dosage', 'See details')}"
