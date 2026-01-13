@@ -5,7 +5,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from flask_pymongo import PyMongo
 import nltk
-from fuzzywuzzy import process
+from fuzzywuzzy import process, fuzz
 
 # ----------------- NLTK SETUP -----------------
 
@@ -144,20 +144,34 @@ def save_chat_turn(session_id, user_message, bot_message, medicines=None, quanti
 
 def find_medicines(symptoms):
     """
-    Symptom-based search; only return medicines that are in_stock and have stock > 0.
+    Symptom-based search using phrase + fuzzy matching.
+    DOES NOT hardcode diseases.
+    Uses DB medicine uses dynamically.
     """
     results = []
-    # ensure we only show available medicines
+
+    # join tokens into a phrase for phrase-level matching
+    symptom_text = " ".join(symptoms).lower()
+
     for med in mongo.db.medicines.find({"in_stock": True}):
-        # optional: also check numeric stock field if present
         if med.get("stock") is not None and med.get("stock", 0) <= 0:
             continue
 
         score = 0
+
         for i in range(5):
             key = f"use{i}"
-            if med.get(key) and med[key] in symptoms:
-                score += 1
+            use = med.get(key)
+
+            if not use:
+                continue
+
+            # fuzzy phrase matching
+            similarity = fuzz.partial_ratio(use.lower(), symptom_text)
+
+            if similarity >= 70:
+                score += similarity
+
         if score > 0:
             results.append(
                 {
@@ -171,8 +185,10 @@ def find_medicines(symptoms):
                     "score": score,
                 }
             )
+
     results.sort(key=lambda x: x["score"], reverse=True)
     return results[:5]
+
 
 def build_overview(med):
     uses = [med.get(f"use{i}") for i in range(5) if med.get(f"use{i}")]
