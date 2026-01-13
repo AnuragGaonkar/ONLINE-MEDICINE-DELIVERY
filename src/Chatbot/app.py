@@ -192,49 +192,61 @@ def save_chat_turn(session_id, user_message, bot_message, medicines=None, quanti
 
 def find_medicines(symptoms):
     """
-    Symptom-based search using phrase + fuzzy matching.
-    DOES NOT hardcode diseases.
-    Uses DB medicine uses dynamically.
+    Strict symptom → use matching.
+    Medicines are returned ONLY if their USES
+    strongly match user symptoms.
     """
     results = []
-
-    # join tokens into a phrase for phrase-level matching
     symptom_text = " ".join(symptoms).lower()
 
     for med in mongo.db.medicines.find({"in_stock": True}):
-        if med.get("stock") is not None and med.get("stock", 0) <= 0:
+        if med.get("stock", 1) <= 0:
             continue
 
-        score = 0
+        best_match = 0
+        matched_uses = []
 
         for i in range(5):
-            key = f"use{i}"
-            use = med.get(key)
-
+            use = med.get(f"use{i}")
             if not use:
                 continue
 
-            # fuzzy phrase matching
-            similarity = fuzz.partial_ratio(use.lower(), symptom_text)
+            use_l = use.lower()
 
-            if similarity >= 70:
-                score += similarity
+            # STRICT comparison
+            similarity = fuzz.token_set_ratio(use_l, symptom_text)
 
-        if score > 0:
-            results.append(
-            {
-                "name": med["name"],
-                "description": med.get("description", ""),
-                "dosage": med.get("dosage", ""),
-                "price": med.get("price"),
-                "delivery_time": med.get("delivery_time", ""),
-                "availability": "In stock" if med.get("in_stock") else "Out of stock",
-                "score": score,
-            }
-            )
+            if similarity >= 85:  # 🔥 HARD THRESHOLD
+                matched_uses.append(use_l)
+                best_match = max(best_match, similarity)
 
+        if not matched_uses:
+            continue
+
+        results.append({
+            "name": med["name"],
+            "description": med.get("description", ""),
+            "dosage": med.get("dosage", ""),
+            "price": med.get("price"),
+            "delivery_time": med.get("delivery_time", ""),
+            "availability": "In stock" if med.get("in_stock") else "Out of stock",
+            "matched_uses": matched_uses,
+            "score": best_match,
+        })
+
+    # sort by medical relevance
     results.sort(key=lambda x: x["score"], reverse=True)
-    return results[:5]
+
+    # remove duplicates by name
+    seen = set()
+    final = []
+    for r in results:
+        if r["name"] not in seen:
+            seen.add(r["name"])
+            final.append(r)
+
+    return final[:5]
+
 
 
 def build_overview(med):
