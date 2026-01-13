@@ -150,17 +150,29 @@ def detect_intent(message):
 
 def extract_symptoms_from_text(text):
     """
-    Uses spaCy PhraseMatcher to extract symptom phrases
-    from user input based on DB medicine uses.
+    Dynamically infer symptoms by matching user words
+    against DB medicine uses (use0..use4).
+    No hardcoding. Fully data-driven.
     """
-    doc = nlp(text.lower())
-    matches = SYMPTOM_MATCHER(doc)
+    tokens = tokenize(text)
+    detected = set()
 
-    extracted = set()
-    for _, start, end in matches:
-        extracted.add(doc[start:end].text)
+    for med in mongo.db.medicines.find():
+        for i in range(5):
+            use = med.get(f"use{i}")
+            if not use:
+                continue
 
-    return list(extracted)
+            use_l = use.lower()
+
+            # compare each user token with full use phrase
+            for t in tokens:
+                similarity = fuzz.partial_ratio(t, use_l)
+                if similarity >= 70:
+                    detected.add(use_l)
+
+    return list(detected)
+
 
 # ---------- CHAT LOGGING ----------
 
@@ -227,12 +239,12 @@ def find_medicines(symptoms):
 
 def build_overview(med):
     uses = [med.get(f"use{i}") for i in range(5) if med.get(f"use{i}")]
-    stock_val = med.get("stock", 0)
-    stock_info = f" Current stock: {stock_val} units." if stock_val is not None else ""
+    stock_val = "In Stock" if med.get("in_stock") else "Out of Stock"
+    stock_info = f" Current stock: {stock_val} units." 
     return (
         f"{med['name']} is commonly used for {', '.join(uses)}. "
         f"The recommended dosage is {med.get('dosage', 'not specified')}. "
-        f"It costs ₹{med.get('price')}. "
+        f"It costs {med.get('price')}. "
         f"The delivery time is {med.get('delivery_time', 'not specified')}."
         + stock_info
     )
