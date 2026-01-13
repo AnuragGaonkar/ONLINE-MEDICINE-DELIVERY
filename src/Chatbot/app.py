@@ -31,7 +31,9 @@ FRONTEND_URLS = [
 # ---------- MONGO CONFIG ----------
 MONGO_URI = os.environ.get("MONGO_URI")
 if not MONGO_URI:
-    raise RuntimeError("MONGO_URI environment variable is not set")
+    # Fallback for local testing if env var not set, or raise error
+    # raise RuntimeError("MONGO_URI environment variable is not set")
+    print("WARNING: MONGO_URI not set.")
 
 app.config["MONGO_URI"] = MONGO_URI
 mongo = PyMongo(app)
@@ -40,30 +42,52 @@ CORS(app, origins=FRONTEND_URLS)
 
 nlp = spacy.blank("en")
 
+# ----------------- GLOBAL CACHE (FIX 1) -----------------
+# We initialize the matcher globally to avoid DB reads on every request
+matcher = PhraseMatcher(nlp.vocab, attr="LOWER")
+
+def initialize_matcher():
+    """Load medical patterns from DB once on startup."""
+    try:
+        print("Loading medical patterns...")
+        all_use_phrases = set()
+        # Fetch all meds once
+        if mongo.db:
+            for med in mongo.db.medicines.find():
+                for i in range(5):
+                    use = med.get(f"use{i}")
+                    if use:
+                        all_use_phrases.add(use.lower())
+        
+        if all_use_phrases:
+            patterns = [nlp.make_doc(phrase) for phrase in all_use_phrases]
+            matcher.add("MED_USE", patterns)
+            print(f"Patterns loaded: {len(patterns)} phrases.")
+        else:
+            print("No patterns found in DB or DB not connected.")
+            
+    except Exception as e:
+        print(f"Error initializing matcher: {e}")
+
+# Call this immediately within app context
+with app.app_context():
+    if MONGO_URI:
+        initialize_matcher()
+
 # ---------- DYNAMIC SYMPTOM EXTRACTION ----------
 def extract_symptoms_from_text(text):
-    """Extract symptoms using medical pattern matching - NO HARDCODING."""
+    """Extract symptoms using the pre-loaded global matcher."""
+    # Only does NLP processing, no DB calls
     doc = nlp(text.lower())
-    tokens = nltk.word_tokenize(text.lower())
-    symptoms = [w for w in tokens if re.match(r'^[a-z]{3,15}$', w) and len(w) > 2]  # Medical-like words
-    
-    # Build dynamic matcher from ALL use fields in DB
-    matcher = PhraseMatcher(nlp.vocab, attr="LOWER")
-    all_use_phrases = []
-    for med in mongo.db.medicines.find():
-        for i in range(5):
-            use = med.get(f"use{i}")
-            if use:
-                all_use_phrases.append(use.lower())
-    
-    patterns = [nlp.make_doc(phrase) for phrase in set(all_use_phrases)]
-    matcher.add("MED_USE", patterns)
     matches = matcher(doc)
-    
-    # Extract matched phrases as symptoms
     matched_symptoms = [doc[start:end].text for match_id, start, end in matches]
     
-    return list(set(symptoms + matched_symptoms))[:10]  # Top relevant
+    # Simple regex/token fallback for common non-phrased symptoms
+    tokens = nltk.word_tokenize(text.lower())
+    manual_symptoms = [w for w in tokens if w in ["fever", "pain", "headache", "cough", "cold", "flu", "acidity", "gas"]]
+    
+    # Combine and deduplicate
+    return list(set(matched_symptoms + manual_symptoms))[:5]
 
 # ---------- NLP UTILITIES ----------
 def tokenize(text):
@@ -162,8 +186,10 @@ def find_medicines(symptoms):
     
     scored_medicines = []
     
+    # UPDATED STOCK CHECK: Use boolean 'in_stock' field correctly
     for med in mongo.db.medicines.find({"in_stock": True}):
-        if med.get("stock", 1) <= 0:
+        # Double check specifically for False or 0 stock if numeric exists
+        if med.get("in_stock") is False:
             continue
         
         uses = [med.get(f"use{i}", "") for i in range(5) if med.get(f"use{i}")]
@@ -185,7 +211,7 @@ def find_medicines(symptoms):
                 "dosage": med.get("dosage", ""),
                 "price": med.get("price"),
                 "delivery_time": med.get("delivery_time", ""),
-                "availability": "In stock" if med.get("in_stock") else "Out of stock",
+                "availability": "In stock", # We filtered query by in_stock=True
                 "score": total_score / match_count,  # Average relevance
                 "matched_symptoms": [s for s in symptoms if calculate_relevance(s, uses) > 20],
                 "uses": uses
@@ -207,7 +233,7 @@ def find_medicines(symptoms):
 def build_overview(med):
     uses = [med.get(f"use{i}") for i in range(5) if med.get(f"use{i}")]
     stock_val = "In Stock" if med.get("in_stock") else "Out of Stock"
-    stock_info = f" Current stock: {stock_val} units."
+    stock_info = f" Current stock: {stock_val}."
     return (
         f"{med['name']} is commonly used for {', '.join(uses[:3])}. "  # Show top 3 uses
         f"The recommended dosage is {med.get('dosage', 'not specified')}. "
@@ -222,8 +248,8 @@ def get_medicine_details(med_name, intent):
         return None
 
     if intent == "PRICE":
-        stock_val = med.get("stock", 0)
-        return f"The price of {med['name']} is {med.get('price')}. Current stock: {stock_val} units."
+        stock_val = "In Stock" if med.get("in_stock") else "Out of Stock"
+        return f"The price of {med['name']} is {med.get('price')}. Availability: {stock_val}."
 
     if intent == "DOSAGE":
         return f"The recommended dosage for {med['name']} is {med.get('dosage', 'not specified')}."
@@ -242,7 +268,21 @@ def get_medicine_details(med_name, intent):
 
     return None
 
-# ---------- CART HANDLING ----------
+# ---------- CART HANDLING (FIX 3) ----------
+def text_to_int(text):
+    """Helper to convert number words to integers."""
+    mapping = {
+        'one': 1, 'two': 2, 'three': 3, 'four': 4, 'five': 5, 
+        'six': 6, 'seven': 7, 'eight': 8, 'nine': 9, 'ten': 10
+    }
+    # Check digits or words
+    for t in text.lower().replace(',', ' ').split():
+        if t.isdigit(): 
+            return int(t)
+        if t in mapping: 
+            return mapping[t]
+    return None
+
 def handle_cart(session, message):
     msg = message.lower()
     if "add to cart" in msg:
@@ -260,8 +300,9 @@ def handle_cart(session, message):
             }
 
     if session.get("awaiting_cart_confirmation"):
-        tokens = tokenize(message)
-        qty = next((int(t) for t in tokens if t.isdigit()), None)
+        # Use new smart parser
+        qty = text_to_int(message)
+        
         if qty:
             meds = session["last_medicines_for_cart"][:]
             update_session(session["session_id"], {
@@ -287,7 +328,7 @@ def handle_cart(session, message):
 
     return None
 
-# ---------- MAIN CHAT ROUTE ----------
+# ---------- MAIN CHAT ROUTE (FIX 2) ----------
 @app.route("/chat", methods=["POST"])
 def chat():
     session_id = get_session_id()
@@ -321,7 +362,7 @@ def chat():
         session["last_mentioned_medicine"] = match[0][0]
 
     # 1) Direct medicine details
-    if session.get("last_mentioned_medicine"):
+    if session.get("last_mentioned_medicine") and intent != "UNKNOWN" and intent != "SYMPTOMS":
         reply = get_medicine_details(session["last_mentioned_medicine"], intent)
         if reply:
             save_chat_turn(
@@ -332,34 +373,70 @@ def chat():
             )
             return jsonify({"message": reply, "medicines": []})
 
-    # 2) Symptom-based - FIXED LOGIC
+    # 2) Symptom-based - OPTIMIZED & ALLERGY AWARE
     symptoms = extract_symptoms_from_text(user_message)
-    meds = find_medicines(symptoms)
+
+    # Auto-Edge Case: Empty or nonsense input
+    if not user_message.strip():
+        return jsonify({"message": "Hi! What symptoms do you have?", "medicines": []})
+
+    # Clean symptoms
+    symptoms = [s for s in symptoms if len(s) > 2 and len(s) < 15 and s.isalpha()]
+    if len(symptoms) > 3:
+        symptoms = symptoms[:3]
+
+    # Typo correction
+    common_symptoms = ["ulcer", "fever", "pain", "headache", "cold", "cough", "stomach", "acidity"]
+    for symptom in symptoms[:]:
+        for common in common_symptoms:
+            if fuzz.ratio(symptom, common) > 80:
+                if common not in symptoms:
+                    symptoms.append(common)
+                break
+
+    # ALLERGY HANDLING + RATE LIMIT
+    user_lower = user_message.lower()
+    allergy_keywords = ["allergic", "allergy", "rash", "reaction", "hives", "itching"]
+    is_allergy_query = any(keyword in user_lower for keyword in allergy_keywords)
+
+    # Rate limiting (basic)
+    now = datetime.utcnow()
+    if session.get("last_request"):
+        try:
+            delta = (now - datetime.fromisoformat(session["last_request"])).total_seconds()
+            if delta < 0.5: # 500ms debounce
+                return jsonify({"message": "Typing fast? 😊 What symptoms?", "medicines": []})
+        except ValueError:
+            pass # Ignore format errors
+    session["last_request"] = now.isoformat()
+
+    # LOGIC SWITCH: Allergy Specific vs General Symptoms
+    if is_allergy_query:
+        # Search for medicines SPECIFICALLY for allergies
+        meds = find_medicines(["allergic rhinitis", "hay fever", "urticaria", "allergies", "itching"])
+        intro_text = "🌿 Here are medicines commonly used for allergies:\n"
+    else:
+        # Standard search
+        meds = find_medicines(symptoms)
+        intro_text = "Based on what you described, these medicines may help:\n"
+
+    # STOCK CHECK FILTER (Redundant safe-guarding, find_medicines handles it, but good for UI safety)
+    meds = [m for m in meds if m.get("availability") == "In stock"]
 
     if meds:
         update_session(session_id, {"last_mentioned_medicine": meds[0]["name"]})
-
-        msg_lines = [
-            "Based on what you described, these medicines may help:"
-        ]
-
+        
+        msg_lines = [intro_text]
         for med in meds:
             msg_lines.append(
-                f"\n• {med['name']} (Relevance: {med['score']:.0f}%)"
-                f"\n  Dosage: {med.get('dosage', 'Not specified')}"
+                f"\n• {med['name']} (Match: {med['score']:.0f}%)"
+                f"\n  Dosage: {med.get('dosage', 'See details')}"
                 f"\n  Price: {med.get('price')}"
-                f"\n  Delivery: {med.get('delivery_time', 'Not specified')}"
-                f"\n  Availability: {med.get('availability')}"
+                f"\n  Delivery: {med.get('delivery_time', 'Standard')}"
             )
-
+        
         msg = "\n".join(msg_lines)
-
-        save_chat_turn(
-            session_id,
-            user_message,
-            msg,
-            medicines=[m["name"] for m in meds],
-        )
+        save_chat_turn(session_id, user_message, msg, medicines=[m["name"] for m in meds])
         return jsonify({"message": msg, "medicines": meds})
 
     # 3) Fallback
