@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
 import chatbot from "./chatbot.png";
 import "./Chatbot.css";
-import { CartContext } from "../context/CartContext";
+import { CartContext } from "../Cart/CartContext";
 
 // Backend base URLs
 const API_HOST = "https://mediquick-backend-yizx.onrender.com";
