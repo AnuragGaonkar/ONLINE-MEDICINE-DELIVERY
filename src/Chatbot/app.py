@@ -330,7 +330,7 @@ def chat():
 Dosage: {med.get('dosage', '')}
 Price: {med.get('price')}
 Delivery: {med.get('delivery_time', '')}
-Stock: {med.get('stock', 0)}"""
+Stock: {med.get('in_stock', 0)}"""
             )
         meds_block = "\n\n".join(numbered)
 
