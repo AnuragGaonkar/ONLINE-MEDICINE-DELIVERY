@@ -6,3 +6,4 @@ fuzzywuzzy[speedup]
 gunicorn
 pymongo
 python-Levenshtein
+spacy
