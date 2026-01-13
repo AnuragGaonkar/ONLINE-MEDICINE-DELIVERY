@@ -108,7 +108,6 @@ def detect_intent(message):
         return "DELIVERY"
     if any(x in msg for x in ["tell me", "about", "what is", "information", "details"]):
         return "MEDICINE_OVERVIEW"
-    # Added "have" to help catch "i have ulcers" as a symptom intent
     if any(x in msg for x in ["fever", "pain", "cold", "cough", "headache", "have", "suffering"]):
         return "SYMPTOMS"
     return "UNKNOWN"
@@ -131,7 +130,7 @@ def get_or_create_session(session_id):
             "last_mentioned_medicine": None,
             "awaiting_cart_confirmation": False,
             "last_medicines_for_cart": [],
-            "quantities": {},
+            "cart": [], # Explicitly storing cart in DB
         }
         mongo.db.sessions.insert_one(session)
     return session
@@ -142,6 +141,29 @@ def update_session(session_id, updates):
         {"$set": updates},
         upsert=True,
     )
+
+def add_item_to_cart(session_id, item_name, quantity, price=None):
+    """Helper to update persistent cart in MongoDB."""
+    if not price:
+        med = mongo.db.medicines.find_one({"name": {"$regex": f"^{item_name}$", "$options": "i"}})
+        price = med.get('price') if med else "Unknown"
+
+    session = get_or_create_session(session_id)
+    cart = session.get("cart", [])
+    
+    # Check if item exists, update quantity if so
+    found = False
+    for item in cart:
+        if item["name"].lower() == item_name.lower():
+            item["quantity"] += quantity
+            found = True
+            break
+    
+    if not found:
+        cart.append({"name": item_name, "quantity": quantity, "price": price})
+        
+    update_session(session_id, {"cart": cart})
+    return cart
 
 # ---------- CHAT LOGGING ----------
 def save_chat_turn(session_id, user_message, bot_message, medicines=None, quantities=None):
@@ -234,7 +256,7 @@ def find_medicines(symptoms):
 def build_overview(med):
     uses = [med.get(f"use{i}") for i in range(5) if med.get(f"use{i}")]
     stock_val = "In Stock" if med.get("in_stock") else "Out of Stock"
-    stock_info = f" Current stock: {stock_val}."
+    stock_info = f" Current stock: {stock_val} units."
     return (
         f"{med['name']} is commonly used for {', '.join(uses[:3])}. "
         f"The recommended dosage is {med.get('dosage', 'not specified')}. "
@@ -282,8 +304,9 @@ def text_to_int(text):
             return mapping[t]
     return None
 
-def handle_cart(session, message):
+def handle_cart_chat(session, message):
     msg = message.lower()
+    # 1. User asks to add
     if "add to cart" in msg:
         names = [m["name"] for m in mongo.db.medicines.find()]
         matches = process.extract(message, names, limit=5)
@@ -293,29 +316,57 @@ def handle_cart(session, message):
                 "awaiting_cart_confirmation": True,
                 "last_medicines_for_cart": matched,
             })
-            return {
-                "type": "ASK_QUANTITY",
-                "message": f"How many units of {', '.join(matched)} would you like to add?"
-            }
+            return {"type": "ASK_QUANTITY", "message": f"How many units of {', '.join(matched)} would you like to add?"}
 
+    # 2. User confirms quantity
     if session.get("awaiting_cart_confirmation"):
         qty = text_to_int(message)
         if qty:
             meds = session["last_medicines_for_cart"][:]
+            
+            # --- PERSIST TO DB ---
+            current_cart = []
+            for m in meds:
+                current_cart = add_item_to_cart(session["session_id"], m, qty)
+
             update_session(session["session_id"], {
                 "awaiting_cart_confirmation": False,
-                "last_medicines_for_cart": [],
+                "last_medicines_for_cart": []
             })
+            
             return {
                 "type": "ADD_TO_CART",
-                "message": "Items added to cart. Proceed to checkout or add more.",
-                "items": [{"name": med, "quantity": qty} for med in meds]
+                "message": "I've added the items to your cart. You can proceed to checkout or add more medicines.",
+                "items": current_cart # Return full cart state
             }
-        return {
-            "type": "ASK_QUANTITY",
-            "message": "Please enter a valid quantity (e.g., 1 or 2)."
-        }
+        return {"type": "ASK_QUANTITY", "message": "Please enter a valid quantity (for example: 1 or 2)."}
     return None
+
+# ---------- NEW API ROUTE: DIRECT CART ADD (FIXES 500 ERROR) ----------
+@app.route("/api/cart/add", methods=["POST"])
+def api_add_to_cart():
+    try:
+        session_id = get_session_id()
+        data = request.get_json(force=True) # force=True handles incorrect content-types
+        
+        name = data.get("name")
+        quantity = int(data.get("quantity", 1))
+        
+        if not name:
+            return jsonify({"error": "Product name is required"}), 400
+
+        # Update persistent cart
+        updated_cart = add_item_to_cart(session_id, name, quantity)
+        
+        return jsonify({
+            "success": True, 
+            "message": "Item added to cart", 
+            "cart": updated_cart
+        })
+        
+    except Exception as e:
+        print(f"API Cart Error: {e}")
+        return jsonify({"error": str(e)}), 500
 
 # ---------- MAIN CHAT ROUTE ----------
 @app.route("/chat", methods=["POST"])
@@ -331,13 +382,13 @@ def chat():
     intent = detect_intent(user_message)
 
     # Cart handling
-    cart_result = handle_cart(session, user_message)
+    cart_result = handle_cart_chat(session, user_message)
     if cart_result:
         save_chat_turn(session_id, user_message, cart_result["message"])
         return jsonify(cart_result)
 
     if "proceed to checkout" in user_message.lower():
-        return jsonify({"type": "PROCEED_TO_CHECKOUT", "message": "Taking you to checkout."})
+        return jsonify({"type": "PROCEED_TO_CHECKOUT", "message": "Taking you to the checkout page."})
 
     # Detect medicine mention
     medicine_names = [m["name"] for m in mongo.db.medicines.find()]
@@ -386,17 +437,29 @@ def chat():
         update_session(session_id, {"last_mentioned_medicine": meds[0]["name"]})
         msg_lines = [intro_text]
         for med in meds:
+            # FIX: Human-friendly match text instead of raw percentage
+            score = med.get('score', 0)
+            if score > 130:
+                match_text = "Highly Recommended"
+            elif score > 90:
+                match_text = "Good Match"
+            else:
+                match_text = "Also effective"
+
+            # RESTORED FULL VERBOSITY IN CHAT RESPONSE
             msg_lines.append(
-                f"\n• {med['name']} (Match: {med['score']:.0f}%)"
+                f"\n• {med['name']} ({match_text})"
                 f"\n  Dosage: {med.get('dosage', 'See details')}"
                 f"\n  Price: {med.get('price')}"
+                f"\n  Delivery: {med.get('delivery_time', 'Standard')}"
+                f"\n  Availability: {med.get('availability', 'In Stock')}"
             )
         msg = "\n".join(msg_lines)
         save_chat_turn(session_id, user_message, msg, medicines=[m["name"] for m in meds])
         return jsonify({"message": msg, "medicines": meds})
 
     # 3) Fallback
-    fallback = "I'm not fully sure what you mean. You can tell me your symptoms (e.g., stomach pain, fever) or ask about a medicine."
+    fallback = "I'm not fully sure what you mean. You can tell me your symptoms (for example: stomach pain, fever, acidity) or ask about a specific medicine."
     save_chat_turn(session_id, user_message, fallback)
     return jsonify({"message": fallback, "medicines": []})
 
