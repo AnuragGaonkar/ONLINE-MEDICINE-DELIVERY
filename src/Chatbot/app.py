@@ -42,7 +42,7 @@ mongo = PyMongo(app)
 # Allow both local and deployed frontend
 CORS(app, origins=FRONTEND_URLS)
 
-nlp = spacy.load("en_core_web_sm")
+nlp = spacy.load("en")
 # ---------- BUILD SYMPTOM MATCHER (DB-DRIVEN) ----------
 
 def build_symptom_matcher():

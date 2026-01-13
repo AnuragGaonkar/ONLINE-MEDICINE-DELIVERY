@@ -7,4 +7,3 @@ gunicorn
 pymongo
 python-Levenshtein
 spacy
-en-core-web-sm
