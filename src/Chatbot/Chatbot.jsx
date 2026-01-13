@@ -1,6 +1,7 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import chatbot from "./chatbot.png";
 import "./Chatbot.css";
+import { CartContext } from "../context/CartContext";
 
 // Backend base URLs
 const API_HOST = "https://mediquick-backend-yizx.onrender.com";
@@ -10,6 +11,7 @@ const Chatbot = ({ notifyCart }) => {
   const [hasToken, setHasToken] = useState(
     !!localStorage.getItem("auth-token")
   );
+  const { addToCart } = useContext(CartContext);
 
   const [sessionId, setSessionId] = useState(null);
 
@@ -209,9 +211,25 @@ const Chatbot = ({ notifyCart }) => {
       });
 
       const data = await response.json();
-      const botText = data.message; // already includes medicines if any
 
-      setMessages((prev) => [...prev, { text: botText, from: "bot" }]);
+      if (data.message) {
+        setMessages((prev) => [...prev, { text: data.message, from: "bot" }]);
+      }
+
+      /* 2️⃣ Handle ADD TO CART from chatbot */
+      if (data.type === "ADD_TO_CART" && Array.isArray(data.items)) {
+        data.items.forEach((item) => {
+          // item.name -> medicine name
+          // item.quantity -> quantity
+          addToCart(item.name, item.quantity);
+        });
+      }
+
+      /* 3️⃣ Handle PROCEED TO CHECKOUT */
+      if (data.type === "PROCEED_TO_CHECKOUT") {
+        window.location.href = "/cart";
+      }
+
     } catch (error) {
       setMessages((prev) => [
         ...prev,

@@ -1,6 +1,7 @@
 import os
 from datetime import datetime
-
+import spacy
+from spacy.matcher import PhraseMatcher
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from flask_pymongo import PyMongo
@@ -21,7 +22,6 @@ except LookupError:
     nltk.download("punkt_tab", quiet=True)
 
 # ----------------- FLASK APP -----------------
-
 app = Flask(__name__)
 
 # Frontend origins allowed for CORS
@@ -41,6 +41,28 @@ mongo = PyMongo(app)
 
 # Allow both local and deployed frontend
 CORS(app, origins=FRONTEND_URLS)
+
+nlp = spacy.load("en_core_web_sm")
+# ---------- BUILD SYMPTOM MATCHER (DB-DRIVEN) ----------
+
+def build_symptom_matcher():
+    matcher = PhraseMatcher(nlp.vocab, attr="LOWER")
+    symptom_phrases = set()
+
+    for med in mongo.db.medicines.find():
+        for i in range(5):
+            use = med.get(f"use{i}")
+            if use:
+                symptom_phrases.add(use.lower())
+
+    patterns = [nlp.make_doc(text) for text in symptom_phrases]
+    if patterns:
+        matcher.add("SYMPTOM", patterns)
+
+    return matcher
+
+global SYMPTOM_MATCHER
+SYMPTOM_MATCHER = build_symptom_matcher()
 
 # ---------- HEALTH CHECK ----------
 
@@ -126,6 +148,20 @@ def detect_intent(message):
 
     return "UNKNOWN"
 
+def extract_symptoms_from_text(text):
+    """
+    Uses spaCy PhraseMatcher to extract symptom phrases
+    from user input based on DB medicine uses.
+    """
+    doc = nlp(text.lower())
+    matches = SYMPTOM_MATCHER(doc)
+
+    extracted = set()
+    for _, start, end in matches:
+        extracted.add(doc[start:end].text)
+
+    return list(extracted)
+
 # ---------- CHAT LOGGING ----------
 
 def save_chat_turn(session_id, user_message, bot_message, medicines=None, quantities=None):
@@ -174,16 +210,15 @@ def find_medicines(symptoms):
 
         if score > 0:
             results.append(
-                {
-                    "name": med["name"],
-                    "description": med.get("description", ""),
-                    "dosage": med.get("dosage", ""),
-                    "price": med.get("price"),
-                    "delivery_time": med.get("delivery_time", ""),
-                    "in_stock": med.get("in_stock", True),
-                    "stock": med.get("stock", 0),
-                    "score": score,
-                }
+            {
+                "name": med["name"],
+                "description": med.get("description", ""),
+                "dosage": med.get("dosage", ""),
+                "price": med.get("price"),
+                "delivery_time": med.get("delivery_time", ""),
+                "availability": "In stock" if med.get("in_stock") else "Out of stock",
+                "score": score,
+            }
             )
 
     results.sort(key=lambda x: x["score"], reverse=True)
@@ -237,7 +272,10 @@ def get_medicine_details(med_name, intent):
 # ---------- CART HANDLING ----------
 
 def handle_cart(session, message):
-    if "add to cart" in message.lower():
+    msg = message.lower()
+
+    # STEP 1: detect add-to-cart intent
+    if "add to cart" in msg:
         names = [m["name"] for m in mongo.db.medicines.find()]
         matches = process.extract(message, names, limit=5)
         matched = [m[0] for m in matches if m[1] > 80]
@@ -250,21 +288,18 @@ def handle_cart(session, message):
                     "last_medicines_for_cart": matched,
                 },
             )
-            return f"Please specify quantity for {', '.join(matched)}."
+            return {
+                "type": "ASK_QUANTITY",
+                "message": f"How many units of {', '.join(matched)} would you like to add?"
+            }
 
+    # STEP 2: waiting for quantity
     if session.get("awaiting_cart_confirmation"):
         tokens = tokenize(message)
         qty = next((int(t) for t in tokens if t.isdigit()), None)
 
         if qty:
-            for med in session["last_medicines_for_cart"]:
-                mongo.db.cart.insert_one(
-                    {
-                        "medicine": med,
-                        "quantity": qty,
-                        "session_id": session["session_id"],
-                    }
-                )
+            meds = session["last_medicines_for_cart"][:]
 
             update_session(
                 session["session_id"],
@@ -274,7 +309,22 @@ def handle_cart(session, message):
                 },
             )
 
-            return "Items added to cart successfully."
+            return {
+                "type": "ADD_TO_CART",
+                "message": (
+                    "I’ve added the items to your cart. "
+                    "You can proceed to checkout or add more medicines."
+                ),
+                "items": [
+                    {"name": med, "quantity": qty}
+                    for med in meds
+                ]
+            }
+
+        return {
+            "type": "ASK_QUANTITY",
+            "message": "Please enter a valid quantity (for example: 1 or 2)."
+        }
 
     return None
 
@@ -293,11 +343,16 @@ def chat():
     intent = detect_intent(user_message)
 
     # Cart handling
-    cart_reply = handle_cart(session, user_message)
-    if cart_reply:
-        save_chat_turn(session_id, user_message, cart_reply)
-        return jsonify({"message": cart_reply, "medicines": []})
+    cart_result = handle_cart(session, user_message)
+    if cart_result:
+        save_chat_turn(session_id, user_message, cart_result["message"])
+        return jsonify(cart_result)
 
+    if "proceed to checkout" in user_message.lower():
+        return jsonify({
+            "type": "PROCEED_TO_CHECKOUT",
+            "message": "Taking you to the checkout page."
+        })
     # Detect medicine mention
     medicine_names = [m["name"] for m in mongo.db.medicines.find()]
     match = process.extract(user_message, medicine_names, limit=1)
@@ -319,25 +374,30 @@ def chat():
             return jsonify({"message": reply, "medicines": []})
 
     # 2) Symptom-based
-    meds = find_medicines(tokenize(user_message))
+    extracted_symptoms = extract_symptoms_from_text(user_message)
+
+    # fallback to token-based if spaCy finds nothing
+    search_terms = extracted_symptoms if extracted_symptoms else tokenize(user_message)
+
+    meds = find_medicines(search_terms)
+
     if meds:
         update_session(session_id, {"last_mentioned_medicine": meds[0]["name"]})
 
-        numbered = []
-        for idx, med in enumerate(meds, start=1):
-            numbered.append(
-                f"""{idx}. {med['name']}
-Dosage: {med.get('dosage', '')}
-Price: {med.get('price')}
-Delivery: {med.get('delivery_time', '')}
-Stock: {med.get('in_stock', 0)}"""
-            )
-        meds_block = "\n\n".join(numbered)
+        msg_lines = [
+            "Based on what you described, these medicines may help:"
+        ]
 
-        msg = (
-            "Here are some medicines that may help with your symptoms.\n\n"
-            + meds_block
-        )
+        for med in meds:
+            msg_lines.append(
+                f"\n• {med['name']}\n"
+                f"  Dosage: {med.get('dosage', 'Not specified')}\n"
+                f"  Price: ₹{med.get('price')}\n"
+                f"  Delivery: {med.get('delivery_time', 'Not specified')}\n"
+                f"  Availability: {med.get('availability')}"
+            )
+
+        msg = "\n".join(msg_lines)
 
         save_chat_turn(
             session_id,
@@ -349,21 +409,14 @@ Stock: {med.get('in_stock', 0)}"""
 
     # 3) Fallback
     fallback = (
-        "I could not understand that. You can ask about a medicine, "
-        "its price, dosage, side effects, or delivery time."
+        "I’m not fully sure what you mean yet. "
+        "You can tell me your symptoms (for example: stomach pain, fever, acidity), "
+        "or ask about a specific medicine."
     )
+
     save_chat_turn(session_id, user_message, fallback)
     return jsonify({"message": fallback, "medicines": []})
 
-# ---------- VIEW CART ----------
-
-@app.route("/view_cart", methods=["GET"])
-def view_cart():
-    session_id = get_session_id()
-    items = mongo.db.cart.find({"session_id": session_id})
-    return jsonify(
-        [{"medicine": i["medicine"], "quantity": i["quantity"]} for i in items]
-    )
 
 # ---------- HISTORY ----------
 
